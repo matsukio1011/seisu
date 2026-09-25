@@ -1,0 +1,2224 @@
+<!DOCTYPE html>
+<!-- saved from url=(0030)https://seisusosu.netlify.app/ -->
+<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=eceb7071-4175-447a-81f1-5de267c4c417
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数分類特訓ハイブリッドレッスン - 10連勝で合格、しかし…？</title>
+        <!-- Tailwind CSS & FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        };
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- MathJax 安全な事前設定 (自動全スキャンを完全に無効化し、誤認識バグを根絶します) -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            options: {
+                // デフォルトでページ全体の自動スキャンを完全に無視（ignore）させます
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            }
+        };
+    </script>
+    <!-- 数式レンダリング MathJax CDN -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&family=Outfit:wght@400;600;800&family=Yusei+Magic&display=swap');
+        
+        .font-math {
+            font-family: 'Outfit', 'Kiwi Maru', sans-serif;
+        }
+        
+        /* 分数表示のためのスタイル */
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            line-height: 1;
+            padding: 0 0.1em;
+        }
+        .fraction .numerator {
+            border-bottom: 2px solid currentColor;
+            padding-bottom: 2px;
+            width: 100%;
+            text-align: center;
+        }
+        .fraction .denominator {
+            padding-top: 2px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* ハッキングノイズアニメーション */
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, rgba(147, 51, 234, 0) 95%, rgba(147, 51, 234, 0.3) 95%);
+            background-size: 100% 6px;
+            animation: scanline 6s linear infinite;
+            pointer-events: none;
+        }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.sticky{position:sticky}.inset-0{inset:0px}.top-0{top:0px}.z-10{z-index:10}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mr-1{margin-right:0.25rem}.mr-2{margin-right:0.5rem}.mt-1{margin-top:0.25rem}.mt-1\.5{margin-top:0.375rem}.mt-2{margin-top:0.5rem}.mt-8{margin-top:2rem}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-24{height:6rem}.h-4{height:1rem}.h-5{height:1.25rem}.h-6{height:1.5rem}.max-h-\[70vh\]{max-height:70vh}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-2{width:0.5rem}.w-24{width:6rem}.w-4{width:1rem}.w-5{width:1.25rem}.w-6{width:1.5rem}.w-full{width:100%}.max-w-4xl{max-width:56rem}.max-w-lg{max-width:32rem}.max-w-md{max-width:28rem}.max-w-sm{max-width:24rem}.flex-grow{flex-grow:1}.scale-110{--tw-scale-x:1.1;--tw-scale-y:1.1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes bounce{0%, 100%{transform:translateY(-25%);animation-timing-function:cubic-bezier(0.8,0,1,1)}50%{transform:none;animation-timing-function:cubic-bezier(0,0,0.2,1)}}.animate-bounce{animation:bounce 1s infinite}@keyframes ping{75%, 100%{transform:scale(2);opacity:0}}.animate-ping{animation:ping 1s cubic-bezier(0, 0, 0.2, 1) infinite}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.select-none{-webkit-user-select:none;user-select:none}.list-disc{list-style-type:disc}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-start{justify-content:flex-start}.justify-end{justify-content:flex-end}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.space-x-1 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.25rem * var(--tw-space-x-reverse));margin-left:calc(0.25rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-2 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.5rem * var(--tw-space-x-reverse));margin-left:calc(0.5rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-3 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.75rem * var(--tw-space-x-reverse));margin-left:calc(0.75rem * calc(1 - var(--tw-space-x-reverse)))}.space-y-0\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.125rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.125rem * var(--tw-space-y-reverse))}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-amber-200{--tw-border-opacity:1;border-color:rgb(253 230 138 / var(--tw-border-opacity, 1))}.border-emerald-500{--tw-border-opacity:1;border-color:rgb(16 185 129 / var(--tw-border-opacity, 1))}.border-indigo-100{--tw-border-opacity:1;border-color:rgb(224 231 255 / var(--tw-border-opacity, 1))}.border-indigo-400{--tw-border-opacity:1;border-color:rgb(129 140 248 / var(--tw-border-opacity, 1))}.border-indigo-500{--tw-border-opacity:1;border-color:rgb(99 102 241 / var(--tw-border-opacity, 1))}.border-indigo-600{--tw-border-opacity:1;border-color:rgb(79 70 229 / var(--tw-border-opacity, 1))}.border-pink-500{--tw-border-opacity:1;border-color:rgb(236 72 153 / var(--tw-border-opacity, 1))}.border-purple-100{--tw-border-opacity:1;border-color:rgb(243 232 255 / var(--tw-border-opacity, 1))}.border-purple-400{--tw-border-opacity:1;border-color:rgb(192 132 252 / var(--tw-border-opacity, 1))}.border-purple-500{--tw-border-opacity:1;border-color:rgb(168 85 247 / var(--tw-border-opacity, 1))}.border-slate-100{--tw-border-opacity:1;border-color:rgb(241 245 249 / var(--tw-border-opacity, 1))}.border-slate-400{--tw-border-opacity:1;border-color:rgb(148 163 184 / var(--tw-border-opacity, 1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.bg-amber-100{--tw-bg-opacity:1;background-color:rgb(254 243 199 / var(--tw-bg-opacity, 1))}.bg-amber-50{--tw-bg-opacity:1;background-color:rgb(255 251 235 / var(--tw-bg-opacity, 1))}.bg-black{--tw-bg-opacity:1;background-color:rgb(0 0 0 / var(--tw-bg-opacity, 1))}.bg-emerald-100{--tw-bg-opacity:1;background-color:rgb(209 250 229 / var(--tw-bg-opacity, 1))}.bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129 / var(--tw-bg-opacity, 1))}.bg-emerald-600{--tw-bg-opacity:1;background-color:rgb(5 150 105 / var(--tw-bg-opacity, 1))}.bg-indigo-100{--tw-bg-opacity:1;background-color:rgb(224 231 255 / var(--tw-bg-opacity, 1))}.bg-indigo-50{--tw-bg-opacity:1;background-color:rgb(238 242 255 / var(--tw-bg-opacity, 1))}.bg-indigo-50\/50{background-color:rgb(238 242 255 / 0.5)}.bg-indigo-500{--tw-bg-opacity:1;background-color:rgb(99 102 241 / var(--tw-bg-opacity, 1))}.bg-indigo-600{--tw-bg-opacity:1;background-color:rgb(79 70 229 / var(--tw-bg-opacity, 1))}.bg-pink-50{--tw-bg-opacity:1;background-color:rgb(253 242 248 / var(--tw-bg-opacity, 1))}.bg-pink-500{--tw-bg-opacity:1;background-color:rgb(236 72 153 / var(--tw-bg-opacity, 1))}.bg-purple-50{--tw-bg-opacity:1;background-color:rgb(250 245 255 / var(--tw-bg-opacity, 1))}.bg-purple-500{--tw-bg-opacity:1;background-color:rgb(168 85 247 / var(--tw-bg-opacity, 1))}.bg-purple-700{--tw-bg-opacity:1;background-color:rgb(126 34 206 / var(--tw-bg-opacity, 1))}.bg-purple-950\/60{background-color:rgb(59 7 100 / 0.6)}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.bg-slate-400{--tw-bg-opacity:1;background-color:rgb(148 163 184 / var(--tw-bg-opacity, 1))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.bg-slate-900\/40{background-color:rgb(15 23 42 / 0.4)}.bg-slate-900\/60{background-color:rgb(15 23 42 / 0.6)}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.p-1{padding:0.25rem}.p-2{padding:0.5rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-8{padding-left:2rem;padding-right:2rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.pb-1{padding-bottom:0.25rem}.pl-4{padding-left:1rem}.pl-5{padding-left:1.25rem}.pt-4{padding-top:1rem}.pt-6{padding-top:1.5rem}.pt-8{padding-top:2rem}.text-center{text-align:center}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.font-sans{font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-5xl{font-size:3rem;line-height:1}.text-6xl{font-size:3.75rem;line-height:1}.text-\[10px\]{font-size:10px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-black{font-weight:900}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-semibold{font-weight:600}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.tracking-wide{letter-spacing:0.025em}.tracking-widest{letter-spacing:0.1em}.text-amber-800{--tw-text-opacity:1;color:rgb(146 64 14 / var(--tw-text-opacity, 1))}.text-emerald-600{--tw-text-opacity:1;color:rgb(5 150 105 / var(--tw-text-opacity, 1))}.text-indigo-500{--tw-text-opacity:1;color:rgb(99 102 241 / var(--tw-text-opacity, 1))}.text-indigo-600{--tw-text-opacity:1;color:rgb(79 70 229 / var(--tw-text-opacity, 1))}.text-indigo-700{--tw-text-opacity:1;color:rgb(67 56 202 / var(--tw-text-opacity, 1))}.text-indigo-900{--tw-text-opacity:1;color:rgb(49 46 129 / var(--tw-text-opacity, 1))}.text-indigo-950{--tw-text-opacity:1;color:rgb(30 27 75 / var(--tw-text-opacity, 1))}.text-pink-900{--tw-text-opacity:1;color:rgb(131 24 67 / var(--tw-text-opacity, 1))}.text-purple-500{--tw-text-opacity:1;color:rgb(168 85 247 / var(--tw-text-opacity, 1))}.text-purple-600{--tw-text-opacity:1;color:rgb(147 51 234 / var(--tw-text-opacity, 1))}.text-purple-700{--tw-text-opacity:1;color:rgb(126 34 206 / var(--tw-text-opacity, 1))}.text-purple-900{--tw-text-opacity:1;color:rgb(88 28 135 / var(--tw-text-opacity, 1))}.text-purple-950{--tw-text-opacity:1;color:rgb(59 7 100 / var(--tw-text-opacity, 1))}.text-red-500{--tw-text-opacity:1;color:rgb(239 68 68 / var(--tw-text-opacity, 1))}.text-rose-500{--tw-text-opacity:1;color:rgb(244 63 94 / var(--tw-text-opacity, 1))}.text-rose-600{--tw-text-opacity:1;color:rgb(225 29 72 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-slate-900{--tw-text-opacity:1;color:rgb(15 23 42 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.decoration-2{text-decoration-thickness:2px}.underline-offset-4{text-underline-offset:4px}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-inner{--tw-shadow:inset 0 2px 4px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:inset 0 2px 4px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-emerald-100{--tw-shadow-color:#d1fae5;--tw-shadow:var(--tw-shadow-colored)}.shadow-indigo-100{--tw-shadow-color:#e0e7ff;--tw-shadow:var(--tw-shadow-colored)}.shadow-indigo-200{--tw-shadow-color:#c7d2fe;--tw-shadow:var(--tw-shadow-colored)}.shadow-purple-200{--tw-shadow-color:#e9d5ff;--tw-shadow:var(--tw-shadow-colored)}.backdrop-blur-md{--tw-backdrop-blur:blur(12px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.backdrop-blur-sm{--tw-backdrop-blur:blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-1000{transition-duration:1000ms}.duration-150{transition-duration:150ms}.duration-200{transition-duration:200ms}.hover\:scale-\[1\.02\]:hover{--tw-scale-x:1.02;--tw-scale-y:1.02;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.hover\:bg-amber-100:hover{--tw-bg-opacity:1;background-color:rgb(254 243 199 / var(--tw-bg-opacity, 1))}.hover\:bg-emerald-700:hover{--tw-bg-opacity:1;background-color:rgb(4 120 87 / var(--tw-bg-opacity, 1))}.hover\:bg-indigo-100:hover{--tw-bg-opacity:1;background-color:rgb(224 231 255 / var(--tw-bg-opacity, 1))}.hover\:bg-indigo-700:hover{--tw-bg-opacity:1;background-color:rgb(67 56 202 / var(--tw-bg-opacity, 1))}.hover\:bg-purple-800:hover{--tw-bg-opacity:1;background-color:rgb(107 33 168 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-700:hover{--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-50:hover{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@media (min-width: 640px){.sm\:w-auto{width:auto}.sm\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.sm\:flex-row{flex-direction:row}.sm\:justify-end{justify-content:flex-end}}@media (min-width: 768px){.md\:p-8{padding:2rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-8xl{font-size:6rem;line-height:1}.md\:text-sm{font-size:0.875rem;line-height:1.25rem}}</style><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
+.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
+.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
+</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
+.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
+.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
+.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
+.CtxtMenu_MenuClose:hover:focus {  outline:none}
+</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
+.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
+.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
+.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
+.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
+.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
+.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
+.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
+.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
+.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
+.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
+.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
+.CtxtMenu_MenuSlider {  left: .1em;}
+.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
+.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
+.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
+.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
+.CtxtMenu_MenuDisabled {  color:GrayText}
+.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
+.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
+.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
+.CtxtMenu_ContextMenu:focus {  outline:none}
+.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
+.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
+.CtxtMenu_SelectionItem {  padding-right: 1em;}
+.CtxtMenu_Selection {  right: 40%; width:50%; }
+.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
+.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
+.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
+</style><style id="MJX-CHTML-styles">
+mjx-container[jax="CHTML"] {
+  line-height: 0;
+}
+
+mjx-container [space="1"] {
+  margin-left: .111em;
+}
+
+mjx-container [space="2"] {
+  margin-left: .167em;
+}
+
+mjx-container [space="3"] {
+  margin-left: .222em;
+}
+
+mjx-container [space="4"] {
+  margin-left: .278em;
+}
+
+mjx-container [space="5"] {
+  margin-left: .333em;
+}
+
+mjx-container [rspace="1"] {
+  margin-right: .111em;
+}
+
+mjx-container [rspace="2"] {
+  margin-right: .167em;
+}
+
+mjx-container [rspace="3"] {
+  margin-right: .222em;
+}
+
+mjx-container [rspace="4"] {
+  margin-right: .278em;
+}
+
+mjx-container [rspace="5"] {
+  margin-right: .333em;
+}
+
+mjx-container [size="s"] {
+  font-size: 70.7%;
+}
+
+mjx-container [size="ss"] {
+  font-size: 50%;
+}
+
+mjx-container [size="Tn"] {
+  font-size: 60%;
+}
+
+mjx-container [size="sm"] {
+  font-size: 85%;
+}
+
+mjx-container [size="lg"] {
+  font-size: 120%;
+}
+
+mjx-container [size="Lg"] {
+  font-size: 144%;
+}
+
+mjx-container [size="LG"] {
+  font-size: 173%;
+}
+
+mjx-container [size="hg"] {
+  font-size: 207%;
+}
+
+mjx-container [size="HG"] {
+  font-size: 249%;
+}
+
+mjx-container [width="full"] {
+  width: 100%;
+}
+
+mjx-box {
+  display: inline-block;
+}
+
+mjx-block {
+  display: block;
+}
+
+mjx-itable {
+  display: inline-table;
+}
+
+mjx-row {
+  display: table-row;
+}
+
+mjx-row > * {
+  display: table-cell;
+}
+
+mjx-mtext {
+  display: inline-block;
+}
+
+mjx-mstyle {
+  display: inline-block;
+}
+
+mjx-merror {
+  display: inline-block;
+  color: red;
+  background-color: yellow;
+}
+
+mjx-mphantom {
+  visibility: hidden;
+}
+
+_::-webkit-full-page-media, _:future, :root mjx-container {
+  will-change: opacity;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-math {
+  display: inline-block;
+  text-align: left;
+  line-height: 0;
+  text-indent: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 100%;
+  font-size-adjust: none;
+  letter-spacing: normal;
+  border-collapse: collapse;
+  word-wrap: normal;
+  word-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  padding: 1px 0;
+}
+
+mjx-container[jax="CHTML"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="CHTML"][display="true"][width="full"] {
+  display: flex;
+}
+
+mjx-container[jax="CHTML"][display="true"] mjx-math {
+  padding: 0;
+}
+
+mjx-container[jax="CHTML"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="CHTML"][justify="right"] {
+  text-align: right;
+}
+
+mjx-mfrac {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-frac {
+  display: inline-block;
+  vertical-align: 0.17em;
+  padding: 0 .22em;
+}
+
+mjx-frac[type="d"] {
+  vertical-align: .04em;
+}
+
+mjx-frac[delims] {
+  padding: 0 .1em;
+}
+
+mjx-frac[atop] {
+  padding: 0 .12em;
+}
+
+mjx-frac[atop][delims] {
+  padding: 0;
+}
+
+mjx-dtable {
+  display: inline-table;
+  width: 100%;
+}
+
+mjx-dtable > * {
+  font-size: 2000%;
+}
+
+mjx-dbox {
+  display: block;
+  font-size: 5%;
+}
+
+mjx-num {
+  display: block;
+  text-align: center;
+}
+
+mjx-den {
+  display: block;
+  text-align: center;
+}
+
+mjx-mfrac[bevelled] > mjx-num {
+  display: inline-block;
+}
+
+mjx-mfrac[bevelled] > mjx-den {
+  display: inline-block;
+}
+
+mjx-den[align="right"], mjx-num[align="right"] {
+  text-align: right;
+}
+
+mjx-den[align="left"], mjx-num[align="left"] {
+  text-align: left;
+}
+
+mjx-nstrut {
+  display: inline-block;
+  height: .054em;
+  width: 0;
+  vertical-align: -.054em;
+}
+
+mjx-nstrut[type="d"] {
+  height: .217em;
+  vertical-align: -.217em;
+}
+
+mjx-dstrut {
+  display: inline-block;
+  height: .505em;
+  width: 0;
+}
+
+mjx-dstrut[type="d"] {
+  height: .726em;
+}
+
+mjx-line {
+  display: block;
+  box-sizing: border-box;
+  min-height: 1px;
+  height: .06em;
+  border-top: .06em solid;
+  margin: .06em -.1em;
+  overflow: hidden;
+}
+
+mjx-line[type="d"] {
+  margin: .18em -.1em;
+}
+
+mjx-mn {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c {
+  display: inline-block;
+}
+
+mjx-utext {
+  display: inline-block;
+  padding: .75em 0 .2em 0;
+}
+
+mjx-mi {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-msqrt {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-root {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+mjx-surd {
+  display: inline-block;
+  vertical-align: top;
+}
+
+mjx-sqrt {
+  display: inline-block;
+  padding-top: .07em;
+}
+
+mjx-sqrt > mjx-box {
+  border-top: .07em solid;
+}
+
+mjx-sqrt.mjx-tall > mjx-box {
+  padding-left: .3em;
+  margin-left: -.3em;
+}
+
+mjx-mo {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-stretchy-h {
+  display: inline-table;
+  width: 100%;
+}
+
+mjx-stretchy-h > * {
+  display: table-cell;
+  width: 0;
+}
+
+mjx-stretchy-h > * > mjx-c {
+  display: inline-block;
+  transform: scalex(1.0000001);
+}
+
+mjx-stretchy-h > * > mjx-c::before {
+  display: inline-block;
+  width: initial;
+}
+
+mjx-stretchy-h > mjx-ext {
+  /* IE */ overflow: hidden;
+  /* others */ overflow: clip visible;
+  width: 100%;
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c::before {
+  transform: scalex(500);
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c {
+  width: 0;
+}
+
+mjx-stretchy-h > mjx-beg > mjx-c {
+  margin-right: -.1em;
+}
+
+mjx-stretchy-h > mjx-end > mjx-c {
+  margin-left: -.1em;
+}
+
+mjx-stretchy-v {
+  display: inline-block;
+}
+
+mjx-stretchy-v > * {
+  display: block;
+}
+
+mjx-stretchy-v > mjx-beg {
+  height: 0;
+}
+
+mjx-stretchy-v > mjx-end > mjx-c {
+  display: block;
+}
+
+mjx-stretchy-v > * > mjx-c {
+  transform: scaley(1.0000001);
+  transform-origin: left center;
+  overflow: hidden;
+}
+
+mjx-stretchy-v > mjx-ext {
+  display: block;
+  height: 100%;
+  box-sizing: border-box;
+  border: 0px solid transparent;
+  /* IE */ overflow: hidden;
+  /* others */ overflow: visible clip;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c::before {
+  width: initial;
+  box-sizing: border-box;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c {
+  transform: scaleY(500) translateY(.075em);
+  overflow: visible;
+}
+
+mjx-mark {
+  display: inline-block;
+  height: 0px;
+}
+
+mjx-c::before {
+  display: block;
+  width: 0;
+}
+
+.MJX-TEX {
+  font-family: MJXZERO, MJXTEX;
+}
+
+.TEX-B {
+  font-family: MJXZERO, MJXTEX-B;
+}
+
+.TEX-I {
+  font-family: MJXZERO, MJXTEX-I;
+}
+
+.TEX-MI {
+  font-family: MJXZERO, MJXTEX-MI;
+}
+
+.TEX-BI {
+  font-family: MJXZERO, MJXTEX-BI;
+}
+
+.TEX-S1 {
+  font-family: MJXZERO, MJXTEX-S1;
+}
+
+.TEX-S2 {
+  font-family: MJXZERO, MJXTEX-S2;
+}
+
+.TEX-S3 {
+  font-family: MJXZERO, MJXTEX-S3;
+}
+
+.TEX-S4 {
+  font-family: MJXZERO, MJXTEX-S4;
+}
+
+.TEX-A {
+  font-family: MJXZERO, MJXTEX-A;
+}
+
+.TEX-C {
+  font-family: MJXZERO, MJXTEX-C;
+}
+
+.TEX-CB {
+  font-family: MJXZERO, MJXTEX-CB;
+}
+
+.TEX-FR {
+  font-family: MJXZERO, MJXTEX-FR;
+}
+
+.TEX-FRB {
+  font-family: MJXZERO, MJXTEX-FRB;
+}
+
+.TEX-SS {
+  font-family: MJXZERO, MJXTEX-SS;
+}
+
+.TEX-SSB {
+  font-family: MJXZERO, MJXTEX-SSB;
+}
+
+.TEX-SSI {
+  font-family: MJXZERO, MJXTEX-SSI;
+}
+
+.TEX-SC {
+  font-family: MJXZERO, MJXTEX-SC;
+}
+
+.TEX-T {
+  font-family: MJXZERO, MJXTEX-T;
+}
+
+.TEX-V {
+  font-family: MJXZERO, MJXTEX-V;
+}
+
+.TEX-VB {
+  font-family: MJXZERO, MJXTEX-VB;
+}
+
+mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
+  font-family: MJXZERO, MJXTEX-S1, MJXTEX-S4, MJXTEX, MJXTEX-A ! important;
+}
+
+@font-face /* 0 */ {
+  font-family: MJXZERO;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff") format("woff");
+}
+
+@font-face /* 1 */ {
+  font-family: MJXTEX;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff");
+}
+
+@font-face /* 2 */ {
+  font-family: MJXTEX-B;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Bold.woff") format("woff");
+}
+
+@font-face /* 3 */ {
+  font-family: MJXTEX-I;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff") format("woff");
+}
+
+@font-face /* 4 */ {
+  font-family: MJXTEX-MI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Italic.woff") format("woff");
+}
+
+@font-face /* 5 */ {
+  font-family: MJXTEX-BI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Math-BoldItalic.woff") format("woff");
+}
+
+@font-face /* 6 */ {
+  font-family: MJXTEX-S1;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size1-Regular.woff") format("woff");
+}
+
+@font-face /* 7 */ {
+  font-family: MJXTEX-S2;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size2-Regular.woff") format("woff");
+}
+
+@font-face /* 8 */ {
+  font-family: MJXTEX-S3;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size3-Regular.woff") format("woff");
+}
+
+@font-face /* 9 */ {
+  font-family: MJXTEX-S4;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size4-Regular.woff") format("woff");
+}
+
+@font-face /* 10 */ {
+  font-family: MJXTEX-A;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_AMS-Regular.woff") format("woff");
+}
+
+@font-face /* 11 */ {
+  font-family: MJXTEX-C;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Regular.woff") format("woff");
+}
+
+@font-face /* 12 */ {
+  font-family: MJXTEX-CB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Bold.woff") format("woff");
+}
+
+@font-face /* 13 */ {
+  font-family: MJXTEX-FR;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Regular.woff") format("woff");
+}
+
+@font-face /* 14 */ {
+  font-family: MJXTEX-FRB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Bold.woff") format("woff");
+}
+
+@font-face /* 15 */ {
+  font-family: MJXTEX-SS;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Regular.woff") format("woff");
+}
+
+@font-face /* 16 */ {
+  font-family: MJXTEX-SSB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Bold.woff") format("woff");
+}
+
+@font-face /* 17 */ {
+  font-family: MJXTEX-SSI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Italic.woff") format("woff");
+}
+
+@font-face /* 18 */ {
+  font-family: MJXTEX-SC;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Script-Regular.woff") format("woff");
+}
+
+@font-face /* 19 */ {
+  font-family: MJXTEX-T;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Typewriter-Regular.woff") format("woff");
+}
+
+@font-face /* 20 */ {
+  font-family: MJXTEX-V;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Regular.woff") format("woff");
+}
+
+@font-face /* 21 */ {
+  font-family: MJXTEX-VB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Bold.woff") format("woff");
+}
+
+mjx-c.mjx-c32::before {
+  padding: 0.666em 0.5em 0 0;
+  content: "2";
+}
+
+mjx-c.mjx-c37::before {
+  padding: 0.676em 0.5em 0.022em 0;
+  content: "7";
+}
+
+mjx-c.mjx-c1D70B.TEX-I::before {
+  padding: 0.431em 0.57em 0.011em 0;
+  content: "\3C0";
+}
+
+mjx-c.mjx-c221A::before {
+  padding: 0.8em 0.853em 0.2em 0;
+  content: "\221A";
+}
+</style>
+    <!-- テーマ初期化スクリプト (ちらつき防止) -->
+    <script>
+        try {
+            const saved = localStorage.getItem('math_theme') || localStorage.getItem('fraction_theme') || localStorage.getItem('multiple_theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        } catch(e) {}
+    </script>
+</head>
+<!-- tex2jax_ignore クラスを付与し、MathJaxによる誤認識バグを完全に根絶します -->
+<body id="body-bg" class="tex2jax_ignore bg-indigo-50/50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-math h-screen max-h-screen overflow-hidden flex flex-col justify-between transition-colors duration-300">
+
+    <!-- ヘッダー -->
+    <header id="header-bg" class="bg-white dark:bg-slate-900 border-b border-indigo-100 dark:border-slate-800 shadow-xs shrink-0 transition-colors duration-300">
+        <div class="max-w-4xl mx-auto px-3 sm:px-4 py-1.5 flex items-center justify-between gap-2">
+            <div class="flex items-center space-x-2">
+                <a href="index.html" class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs font-bold transition-all flex items-center gap-1 shrink-0" title="アプリ選択画面へ戻る">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span class="hidden sm:inline">アプリ選択</span>
+                </a>
+                <div id="logo-icon" class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-base shadow-xs transition-all shrink-0">数</div>
+                <div>
+                    <h1 id="app-title" class="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-tight">数分類・絶対値トレーニング</h1>
+                    <p id="app-subtitle" class="text-[10px] text-slate-500 dark:text-slate-400 hidden sm:block">自然数・整数・素数の条件をマスターしよう！</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-1.5 sm:space-x-2">
+                <!-- スコア・戦闘力表示 -->
+                <div id="score-box" class="bg-indigo-50/50 dark:bg-slate-800/80 border border-indigo-100 dark:border-slate-700 px-2.5 py-1 rounded-lg flex items-center space-x-1.5 text-xs transition-all duration-300">
+                    <span id="score-label" class="text-[11px] font-bold text-indigo-500 dark:text-indigo-400">連続正解:</span>
+                    <span id="streak-counter" class="text-sm font-extrabold text-indigo-600 dark:text-indigo-300">0</span>
+                    <span id="score-unit" class="text-[10px] text-slate-400 dark:text-slate-500"> / 10 回</span>
+                </div>
+                <!-- ルール確認ボタン -->
+                <button id="cheat-btn" onclick="openCheatSheet()" class="px-2.5 py-1 bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 transition rounded-lg text-xs font-bold border border-amber-200 dark:border-amber-800 flex items-center space-x-1 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                    <span>言葉のルール</span>
+                </button>
+                <!-- テーマ切り替えボタン -->
+                <button id="themeToggleBtn" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer" title="テーマ切り替え">
+                    <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+                </button>
+                <!-- 全画面表示切り替えボタン -->
+                <button id="fullscreenToggleBtn" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer" title="全画面表示 (ON/OFF) [F]">
+                    <i id="fullscreenIcon" class="fa-solid fa-expand text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="max-w-4xl w-full mx-auto px-3 sm:px-4 py-1.5 sm:py-2 flex-1 flex flex-col justify-center min-h-0">
+
+        <!-- メインカード -->
+        <div id="main-card" class="bg-white dark:bg-slate-900/90 rounded-2xl border border-indigo-100 dark:border-slate-800 shadow-sm p-3.5 sm:p-4 w-full flex flex-col justify-between text-slate-800 dark:text-slate-100 transition-all my-auto min-h-0">
+            
+            <!-- 問題文エリア -->
+            <div class="mb-2">
+                <div class="flex items-center space-x-2 mb-1">
+                    <span id="question-index-badge" class="px-2 py-0.5 bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 rounded text-xs font-bold">第 1 問</span>
+                </div>
+
+                <!-- 問いの指示 -->
+                <div id="border-indicator" class="border-l-4 border-indigo-600 dark:border-indigo-400 pl-3 py-0.5">
+                    <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 flex flex-wrap items-center gap-1.5 leading-snug">
+                        <span id="question-prefix">下の数の中から、</span>
+                        <span id="question-target" class="text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/80 px-2 py-0.5 rounded-lg border border-indigo-100 dark:border-indigo-800 underline decoration-2 underline-offset-4 text-xs sm:text-sm">絶対値が 3 以上 5 以下の数</span>
+                        <span id="question-suffix">をすべて選んでください。</span>
+                    </h2>
+                </div>
+            </div>
+
+            <!-- 選択エリア -->
+            <div class="mb-2">
+                <p id="instruction-help" class="text-[11px] text-slate-400 dark:text-slate-400 mb-1.5 font-bold flex items-center">当てはまる数をすべて選んで、下の決定ボタンを押してください。[数字 1〜8 / Space]</p>
+                <div id="cards-container" class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5"><button id="card-random-0" class="h-24 bg-white hover:bg-slate-50 border-2 border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all duration-150 select-none cursor-pointer focus:outline-none shadow-sm text-xl font-bold text-slate-800 hover:scale-[1.02] active:scale-95">
+                    <div id="card-body-random-0" class="scale-110 flex items-center justify-center">
+                        <span class="font-math">-1</span>
+                    </div>
+                </button><button id="card-random-1" class="h-24 bg-white hover:bg-slate-50 border-2 border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all duration-150 select-none cursor-pointer focus:outline-none shadow-sm text-xl font-bold text-slate-800 hover:scale-[1.02] active:scale-95">
+                    <div id="card-body-random-1" class="scale-110 flex items-center justify-center">
+                        <span class="font-math">-3</span>
+                    </div>
+                </button><button id="card-random-2" class="h-24 bg-white hover:bg-slate-50 border-2 border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all duration-150 select-none cursor-pointer focus:outline-none shadow-sm text-xl font-bold text-slate-800 hover:scale-[1.02] active:scale-95">
+                    <div id="card-body-random-2" class="scale-110 flex items-center justify-center">
+                        <span class="font-math">+3</span>
+                    </div>
+                </button><button id="card-random-3" class="h-24 bg-white hover:bg-slate-50 border-2 border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all duration-150 select-none cursor-pointer focus:outline-none shadow-sm text-xl font-bold text-slate-800 hover:scale-[1.02] active:scale-95">
+                    <div id="card-body-random-3" class="scale-110 flex items-center justify-center">
+                        <span class="font-math">+1.5</span>
+                    </div>
+                </button><button id="card-random-4" class="h-24 bg-white hover:bg-slate-50 border-2 border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all duration-150 select-none cursor-pointer focus:outline-none shadow-sm text-xl font-bold text-slate-800 hover:scale-[1.02] active:scale-95">
+                    <div id="card-body-random-4" class="scale-110 flex items-center justify-center">
+                        <span class="font-math">+4</span>
+                    </div>
+                </button><button id="card-random-5" class="h-24 bg-white hover:bg-slate-50 border-2 border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all duration-150 select-none cursor-pointer focus:outline-none shadow-sm text-xl font-bold text-slate-800 hover:scale-[1.02] active:scale-95">
+                    <div id="card-body-random-5" class="scale-110 flex items-center justify-center">
+                        <span class="font-math">+2</span>
+                    </div>
+                </button><button id="card-random-6" class="h-24 bg-white hover:bg-slate-50 border-2 border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all duration-150 select-none cursor-pointer focus:outline-none shadow-sm text-xl font-bold text-slate-800 hover:scale-[1.02] active:scale-95">
+                    <div id="card-body-random-6" class="scale-110 flex items-center justify-center">
+                        <span class="font-math">+5</span>
+                    </div>
+                </button><button id="card-random-7" class="h-24 bg-white hover:bg-slate-50 border-2 border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all duration-150 select-none cursor-pointer focus:outline-none shadow-sm text-xl font-bold text-slate-800 hover:scale-[1.02] active:scale-95">
+                    <div id="card-body-random-7" class="scale-110 flex items-center justify-center">
+                        <span class="font-math">+1</span>
+                    </div>
+                </button></div>
+            </div>
+
+            <!-- アクション・結果エリア -->
+            <div id="action-divider" class="border-t border-indigo-100 dark:border-slate-800 pt-2 sm:pt-2.5">
+                <!-- 未送信時のアクション -->
+                <div id="action-bar-submit" class="flex flex-col sm:flex-row gap-2 items-center justify-between">
+                    <p id="hint-text" class="text-xs text-slate-500 font-bold">【ヒント】必ず少なくとも1つは、正しい数が含まれていますよ。[Spaceで決定]</p>
+                    <button id="btn-submit" onclick="submitAnswer()" class="w-full sm:w-auto px-6 py-2 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 active:scale-95 transition-all shadow-md shadow-indigo-100 flex items-center justify-center space-x-1.5 text-xs sm:text-sm cursor-pointer">
+                        <span>解答を決定する</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- 結果フィードバック（デフォルト非表示） -->
+                <div id="action-bar-feedback" class="hidden">
+                    <div class="flex flex-col sm:flex-row gap-2 items-center justify-between">
+                        <div id="feedback-alert" class="p-1.5 sm:p-2 rounded-xl flex items-center space-x-2 flex-1 w-full min-w-0">
+                            <!-- アイコンと成否メッセージ -->
+                        </div>
+
+                        <button id="btn-next" onclick="nextQuestion()" class="w-full sm:w-auto px-6 py-2 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 active:scale-95 transition-all shadow-md shadow-emerald-100 flex items-center justify-center space-x-1.5 text-xs sm:text-sm shrink-0 cursor-pointer">
+                            <span>次の問題へ進む [Space]</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- フッター -->
+    <footer id="footer-bg" class="bg-white dark:bg-slate-900 border-t border-indigo-100 dark:border-slate-800 py-1 text-slate-400 dark:text-slate-500 shrink-0 transition-colors duration-300">
+        <div class="max-w-4xl mx-auto px-4 text-center text-[10px] sm:text-[11px] text-slate-400">
+            <p id="footer-text">© 2026 数の分類トレーニング. すべての学習を応援します。</p>
+        </div>
+    </footer>
+
+    <!-- 第1部合格モーダル -->
+    <div id="normal-pass-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl p-8 text-center border border-indigo-100 dark:border-slate-700 animate-in zoom-in-95 duration-200">
+            <div class="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 text-5xl shadow-inner animate-bounce">
+                🎉
+            </div>
+            <h3 class="text-3xl font-extrabold text-emerald-600 mb-2">合格おめでとう！</h3>
+            <p class="text-slate-700 text-lg font-bold mb-4">10回連続正解を達成しました！</p>
+            <p class="text-xs text-slate-400 mb-6 leading-relaxed">素晴らしい実力です。基礎は完璧にマスターしましたね！</p>
+            <div class="p-3 bg-slate-50 rounded-xl text-xs font-semibold text-slate-500 animate-pulse">
+                次の画面へ自動で遷移します。しばらくお待ちください...
+            </div>
+        </div>
+    </div>
+
+    <!-- ハッキング・乱入演出スクリーン（不気味な赤とノイズ） -->
+    <div id="hacking-screen" class="hidden fixed inset-0 z-50 bg-black flex flex-col items-center justify-center p-4 scanline select-none">
+        <div class="text-red-500 font-mono text-center space-y-4">
+            <div class="text-6xl md:text-8xl font-black tracking-widest animate-ping">WARNING</div>
+            <div class="text-2xl md:text-3xl font-bold tracking-wide">SYSTEM HACKED BY "FREEZA"</div>
+            <p class="text-slate-400 text-sm max-w-sm mx-auto pt-4 leading-relaxed font-sans">
+                外部からの異常な戦闘力反応を検知しました。<br>
+                システム制御権が強制移行されます。
+            </p>
+            <div class="text-purple-500 text-5xl md:text-6xl font-black pt-8 animate-pulse">
+                ホッホッホ……
+            </div>
+        </div>
+    </div>
+
+    <!-- 真の合格おめでとうモーダル -->
+    <div id="pass-modal" class="hidden fixed inset-0 z-50 bg-purple-950/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl p-8 text-center border border-purple-100 dark:border-purple-800 animate-in zoom-in-95 duration-200">
+            <div class="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6 text-5xl shadow-inner animate-pulse">
+                👑
+            </div>
+            <h3 class="text-3xl font-extrabold text-purple-700 mb-2">🎉 素晴らしい！ 🎉</h3>
+            <p class="text-slate-700 text-lg font-bold mb-4">なんと、真の10回連続正解を達成しました！</p>
+            <p class="text-base text-purple-900 font-extrabold mb-8 leading-relaxed">「私の戦闘力は53万です……<br>ですが、もちろんフルパワーで戦う気はありませんからご心配なく……」</p>
+            <button onclick="restartAfterPass()" class="w-full py-4 bg-purple-700 hover:bg-purple-800 text-white font-extrabold rounded-2xl transition duration-150 active:scale-95 shadow-lg shadow-purple-200 text-base">
+                もう一度最初から挑戦するのですよ
+            </button>
+        </div>
+    </div>
+
+    <!-- 言葉の確認（チートシート）モーダル -->
+    <div id="cheat-sheet-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 border border-slate-200 dark:border-slate-700">
+            <div id="cheat-header" class="bg-indigo-50 dark:bg-slate-800 px-6 py-4 border-b border-indigo-100 dark:border-slate-700 flex items-center justify-between transition-colors duration-300">
+                <div class="flex items-center space-x-2 text-indigo-900" id="cheat-title-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                    <h3 id="cheat-title" class="font-bold text-lg">言葉のルールまとめ</h3>
+                </div>
+                <button onclick="closeCheatSheet()" class="p-1 rounded-full hover:bg-indigo-100 text-indigo-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="cheat-content" class="p-6 max-h-[70vh] overflow-y-auto space-y-6 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                <!-- 通常モードのチートシート (静的HTML配置でバグを防ぎます) -->
+                <div id="normal-cheat-section" class="space-y-6">
+                    <!-- 自然数 -->
+                    <div>
+                        <h4 class="font-bold text-slate-900 dark:text-slate-100 border-b-2 border-emerald-500 pb-1 mb-2 flex items-center">
+                            <span class="w-2 h-4 bg-emerald-500 rounded mr-2 inline-block"></span>
+                            自然数（しぜんすう）
+                        </h4>
+                        <p class="text-slate-600 dark:text-slate-300">
+                            「1, 2, 3, 4, ...」のように、<strong class="text-slate-900 font-bold">正の整数（1以上の整数）</strong>のことです。
+                        </p>
+                        <ul class="list-disc pl-5 mt-1 text-xs text-slate-500 space-y-0.5">
+                            <li><strong class="text-rose-500">注意！</strong> 「0」は自然数に<strong class="text-rose-500">含みません</strong>。</li>
+                            <li>負の整数（-1など）や小数、分数も自然数ではありません。</li>
+                        </ul>
+                    </div>
+
+                    <!-- 整数 -->
+                    <div>
+                        <h4 class="font-bold text-slate-900 dark:text-slate-100 border-b-2 border-indigo-500 pb-1 mb-2 flex items-center">
+                            <span class="w-2 h-4 bg-indigo-500 rounded mr-2 inline-block"></span>
+                            整数（せいすう）
+                        </h4>
+                        <p class="text-slate-600 dark:text-slate-300">
+                            「..., -3, -2, -1, 0, 1, 2, 3, ...」のように、小数点や分数を含まない、すっきりとした数のことです。
+                        </p>
+                        <ul class="list-disc pl-5 mt-1 text-xs text-slate-500 space-y-0.5">
+                            <li><strong class="text-emerald-600">ポイント！</strong> 「0」や「負の整数」も整数に含まれます。</li>
+                        </ul>
+                    </div>
+
+                    <!-- 素数 -->
+                    <div>
+                        <h4 class="font-bold text-slate-900 dark:text-slate-100 border-b-2 border-pink-500 pb-1 mb-2 flex items-center">
+                            <span class="w-2 h-4 bg-pink-500 rounded mr-2 inline-block"></span>
+                            素数（そすう）
+                        </h4>
+                        <p class="text-slate-600 dark:text-slate-300">
+                            <strong class="text-slate-900 font-bold">「1とその数自身のほかに約数がない、1より大きい自然数」</strong>のことです。
+                        </p>
+                        <div class="bg-pink-50 p-3 rounded-xl mt-2 text-xs text-pink-900">
+                            <strong class="font-bold">主な素数：</strong> 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 ...
+                        </div>
+                        <ul class="list-disc pl-5 mt-2 text-xs text-slate-500 space-y-0.5">
+                            <li><strong class="text-rose-500">超重要！</strong> 「1」は素数に<strong class="text-rose-500">含みません</strong>。</li>
+                            <li><strong class="text-emerald-600">ポイント！</strong> 「2」は、素数の中で<strong class="text-emerald-600">唯一の偶数</strong>です。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- フリーザ様モードのチートシート (エスケープバグを100%回避する静的配置) -->
+                <div id="freeza-cheat-section" class="space-y-6 hidden">
+                    <!-- 絶対値 -->
+                    <div class="bg-purple-50 p-4 rounded-2xl border border-purple-100">
+                        <h4 class="font-bold text-purple-950 border-b-2 border-purple-400 pb-1 mb-2 flex items-center">
+                            <span class="w-2 h-4 bg-purple-500 rounded mr-2 inline-block"></span>
+                            絶対値（ぜったいち）
+                        </h4>
+                        <p class="text-slate-600 text-xs md:text-sm">
+                            ホッホッホ。＋や－の符号を取っ払った、純粋な数の強さ（大きさ）のことですよ。<br>
+                            数直線上では、<strong class="text-purple-700 font-bold">原点（0）からの距離</strong>を示しています。
+                        </p>
+                        <div class="bg-white p-3 rounded-xl mt-2 text-xs border border-purple-10 text-slate-500 space-y-1">
+                            <div>・<strong class="text-slate-800 font-bold">＋3</strong> の絶対値 ＝ <strong class="text-purple-700 font-bold">3</strong></div>
+                            <div>・<strong class="text-slate-800 font-bold">－3</strong> の絶対値 ＝ <strong class="text-purple-700 font-bold">3</strong>（私の攻撃力は下がりません）</div>
+                            <div>・<strong class="text-slate-800 font-bold">0</strong> の絶対値 ＝ <strong class="text-purple-700 font-bold">0</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- 以上・以下・未満・より大きい -->
+                    <div>
+                        <h4 class="font-bold text-slate-900 dark:text-slate-100 border-b-2 border-slate-400 pb-1 mb-2 flex items-center">
+                            <span class="w-2 h-4 bg-slate-400 rounded mr-2 inline-block"></span>
+                            以上・以下・未満・より大きい
+                        </h4>
+                        <div class="grid grid-cols-2 gap-3 text-xs">
+                            <div class="bg-slate-100 dark:bg-slate-800 p-2 rounded-xl">
+                                <span class="font-bold text-slate-800 dark:text-slate-200">その数自身を「含みます」</span>
+                                <ul class="list-disc pl-4 mt-1 space-y-1 text-slate-500">
+                                    <li><strong>以上</strong>（その数と同じか、大きい）</li>
+                                    <li><strong>以下</strong>（その数と同じか、小さい）</li>
+                                </ul>
+                                <p class="text-[10px] mt-1.5 text-purple-700">※「5以下」には 5 も入るのですよ。</p>
+                            </div>
+                            <div class="bg-slate-100 dark:bg-slate-800 p-2 rounded-xl">
+                                <span class="font-bold text-slate-800 dark:text-slate-200">その数自身を「含みません」</span>
+                                <ul class="list-disc pl-4 mt-1 space-y-1 text-slate-500">
+                                    <li><strong>より大きい</strong>（その数を超える大きさ）</li>
+                                    <li><strong>未満</strong>（その数に届かない小ささ）</li>
+                                </ul>
+                                <p class="text-[10px] mt-1.5 text-rose-600">※「5未満」に 5 は絶対に許しません（入りません）。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 有理数・無理数 -->
+                    <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-100">
+                        <h4 class="font-bold text-indigo-950 border-b-2 border-indigo-400 pb-1 mb-2 flex items-center">
+                            <span class="w-2 h-4 bg-indigo-500 rounded mr-2 inline-block"></span>
+                            有理数・無理数（ゆうりすう・むりすう）
+                        </h4>
+                        <p class="text-slate-600 text-xs md:text-sm">
+                            ホッホッホ。分数で表せる数が「有理数」、表せない野蛮な数が「無理数」です。<br>
+                            美しい有理数には、すっきりした整数、割り切れる有限小数、精度に劣る近似値の分数も、分数で表せる以上はすべて有理数ですよ。
+                        </p>
+                        <!-- ここに数式スキャンを許可するクラス tex2jax_process を安全に仕込みます -->
+                        <div class="bg-white p-3 rounded-xl mt-2 text-xs border border-indigo-10 text-slate-500 space-y-1">
+                            <div>・<strong class="text-slate-800 font-bold">有理数</strong>：1, 0, -3, 0.6, <span class="tex2jax_process"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="0" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mfrac><mjx-frac><mjx-num><mjx-nstrut></mjx-nstrut><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-num><mjx-dbox><mjx-dtable><mjx-line></mjx-line><mjx-row><mjx-den><mjx-dstrut></mjx-dstrut><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c37"></mjx-c></mjx-mn></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="3" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mfrac><mjx-frac><mjx-num><mjx-nstrut></mjx-nstrut><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-num><mjx-dbox><mjx-dtable><mjx-line></mjx-line><mjx-row><mjx-den><mjx-dstrut></mjx-dstrut><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c37"></mjx-c></mjx-mn></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mfrac><mn>22</mn><mn>7</mn></mfrac></math></mjx-assistive-mml></mjx-container></mjx-assistive-mml></mjx-container></span>（有理数ですよ）</div>
+                            <div>・<strong class="text-slate-800 font-bold">無理数</strong>：<span class="tex2jax_process"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="1" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="4" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>π</mi></math></mjx-assistive-mml></mjx-container></mjx-assistive-mml></mjx-container></span> (円周率)、<span class="tex2jax_process"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="2" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msqrt><mjx-sqrt><mjx-surd><mjx-mo class="mjx-n"><mjx-c class="mjx-c221A"></mjx-c></mjx-mo></mjx-surd><mjx-box style="padding-top: 0.174em;"><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-box></mjx-sqrt></mjx-msqrt></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="5" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msqrt><mjx-sqrt><mjx-surd><mjx-mo class="mjx-n"><mjx-c class="mjx-c221A"></mjx-c></mjx-mo></mjx-surd><mjx-box style="padding-top: 0.174em;"><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-box></mjx-sqrt></mjx-msqrt></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msqrt><mn>2</mn></msqrt></math></mjx-assistive-mml></mjx-container></mjx-assistive-mml></mjx-container></span>（不規則な無限小数です）</div>
+                        </div>
+                    </div>
+
+                    <!-- 自然数 -->
+                    <div>
+                        <h4 class="font-bold text-slate-900 dark:text-slate-100 border-b-2 border-emerald-500 pb-1 mb-2 flex items-center">
+                            <span class="w-2 h-4 bg-emerald-500 rounded mr-2 inline-block"></span>
+                            自然数（しぜんすう）
+                        </h4>
+                        <p class="text-slate-600 dark:text-slate-300">
+                            「1, 2, 3, ...」のような、<strong class="text-slate-900 font-bold">正の整数（1以上の整数）</strong>のことです。
+                        </p>
+                        <ul class="list-disc pl-5 mt-1 text-xs text-slate-500 space-y-0.5">
+                            <li><strong class="text-rose-500">いいですか？</strong> 「0」は自然数には<strong class="text-rose-500">含まれません</strong>。私の慈悲でも入れられません。</li>
+                            <li>当然、マイナスの数や、小数・分数などという中途半端な数も認めません。</li>
+                        </ul>
+                    </div>
+
+                    <!-- 整数 -->
+                    <div>
+                        <h4 class="font-bold text-slate-900 dark:text-slate-100 border-b-2 border-purple-500 pb-1 mb-2 flex items-center">
+                            <span class="w-2 h-4 bg-purple-500 rounded mr-2 inline-block"></span>
+                            整数（せいすう）
+                        </h4>
+                        <p class="text-slate-600 dark:text-slate-300">
+                            「..., -3, -2, -1, 0, 1, 2, 3, ...」のように、小数点や分数といった余計な端数のない、すっきりとした美しい数のことです。
+                        </p>
+                        <ul class="list-disc pl-5 mt-1 text-xs text-slate-500 space-y-0.5">
+                            <li>「0」や「負の整数」もすべて網羅されておりますよ。</li>
+                            <li><strong class="text-purple-600">フリーザ級警告！</strong> <strong>`√4`</strong> や <strong>`+8/2`</strong>、<strong>`+3.0`</strong> は、計算して整えればそれぞれ `2`、`4`、`3` という「整数」になります。見た目に騙されるのはおバカさんだけですよ。</li>
+                        </ul>
+                    </div>
+
+                    <!-- 素数 -->
+                    <div>
+                        <h4 class="font-bold text-slate-900 dark:text-slate-100 border-b-2 border-pink-500 pb-1 mb-2 flex items-center">
+                            <span class="w-2 h-4 bg-pink-500 rounded mr-2 inline-block"></span>
+                            素数（そすう）
+                        </h4>
+                        <p class="text-slate-600 dark:text-slate-300">
+                            <strong class="text-slate-900 font-bold">「1とその数自身のほかに約数がない、1より大きい自然数」</strong>のことです。これ以上美しく割り切ることは不可能です。
+                        </p>
+                        <div class="bg-pink-50 p-3 rounded-xl mt-2 text-xs text-pink-900">
+                            <strong class="font-bold">主な精鋭たち：</strong> 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 ...
+                        </div>
+                        <ul class="list-disc pl-5 mt-2 text-xs text-slate-500 space-y-0.5">
+                            <li><strong class="text-rose-500">絶対に間違えないでください。</strong> 「1」は素数には<strong class="text-rose-500">入りません</strong>よ。</li>
+                            <li>「2」は、素数の中で<strong class="text-emerald-600">唯一の偶数</strong>です。素晴らしい。</li>
+                            <li><strong class="text-rose-500">フリーザ級警告！</strong> <strong>`57`</strong> (3×19) や <strong>`91`</strong> (7×13) は、一見素数に見えますが、美しく割り切れてしまう裏切り者（合成数）です。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-slate-50 px-6 py-4 border-t border-slate-100 flex justify-end">
+                <button id="cheat-close-btn" onclick="closeCheatSheet()" class="px-5 py-2.5 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700 transition">
+                    閉じる
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. グローバルヘルパー関数 ---
+        
+        // 配列シャッフル
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // 分数表示のためのHTML生成
+        function makeFractionHtml(signStr, num, den) {
+            return `
+                <div class="inline-flex items-center font-math select-none">
+                    ${signStr ? `<span class="mr-0.5">${signStr}</span>` : ''}
+                    <div class="fraction text-base">
+                        <span class="numerator">${num}</span>
+                        <span class="denominator">${den}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- 2. 効果音生成用のWeb Audio APIシステム ---
+        let audioCtx = null;
+
+        function playSound(type) {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const now = audioCtx.currentTime;
+
+                if (type === 'correct') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                    osc.frequency.setValueAtTime(1046.50, now + 0.2); // C6
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                    osc.start(now);
+                    osc.stop(now + 0.5);
+                } else if (type === 'incorrect') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.linearRampToValueAtTime(120, now + 0.3);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'click') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(150, now + 0.1);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                    osc.start(now);
+                    osc.stop(now + 0.1);
+                } else if (type === 'hacking') {
+                    // 低音のうなるノイズ
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(80, now);
+                    osc.frequency.linearRampToValueAtTime(40, now + 1.5);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 1.5);
+                    osc.start(now);
+                    osc.stop(now + 1.5);
+                } else if (type === 'pass') {
+                    const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const noteOsc = audioCtx.createOscillator();
+                        const noteGain = audioCtx.createGain();
+                        noteOsc.connect(noteGain);
+                        noteGain.connect(audioCtx.destination);
+                        
+                        noteOsc.type = 'triangle';
+                        noteOsc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                        noteGain.gain.setValueAtTime(0.12, now + idx * 0.08);
+                        noteGain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.08 + 0.4);
+                        
+                        noteOsc.start(now + idx * 0.08);
+                        noteOsc.stop(now + idx * 0.08 + 0.4);
+                    });
+                }
+            } catch (e) {
+                console.log("Audio failed:", e);
+            }
+        }
+
+        // --- 3. クラス定義 ---
+        class GameNumber {
+            constructor(id, type, sign, value, displayHtml, label) {
+                this.id = id;
+                this.type = type; // 'integer' | 'decimal' | 'fraction' | 'irrational'
+                this.sign = sign;
+                this.value = value;
+                this.displayHtml = displayHtml;
+                this.label = label;
+            }
+
+            isInteger() {
+                return Number.isInteger(this.value);
+            }
+            isNatural() {
+                return this.isInteger() && this.value > 0;
+            }
+            isPrime() {
+                if (!this.isInteger() || this.value <= 1) return false;
+                const v = this.value;
+                if (v === 2) return true;
+                if (v % 2 === 0) return false;
+                for (let i = 3; i <= Math.sqrt(v); i += 2) {
+                    if (v % i === 0) return false;
+                }
+                return true;
+            }
+            isRational() {
+                return this.type !== 'irrational';
+            }
+            isIrrational() {
+                return this.type === 'irrational';
+            }
+        }
+
+        // --- 4. 判定条件定義 ---
+        
+        // 通常(第1部)用
+        const NORMAL_CONDITIONS = {
+            NATURAL: {
+                id: 'NATURAL',
+                text: '自然数 (正の整数)',
+                desc: '「1, 2, 3, 4...」のように、1以上の整数のことです。0や負の整数、小数、分数は含まれません。',
+                check: (num) => num.isNatural()
+            },
+            NOT_NATURAL: {
+                id: 'NOT_NATURAL',
+                text: '自然数でないもの',
+                desc: '自然数（1以上の整数）に当てはまらないすべての数です。0、負の整数、小数、分数が該当します。',
+                check: (num) => !num.isNatural()
+            },
+            INTEGER: {
+                id: 'INTEGER',
+                text: '整数',
+                desc: '小数点や分数を含まない整った数です。正の整数（自然数）、0、負の整数がすべて含まれます。',
+                check: (num) => num.isInteger()
+            },
+            NOT_INTEGER: {
+                id: 'NOT_INTEGER',
+                text: '整数でないもの',
+                desc: '小数点や分数があり、整数に直すことができない数（小数や分数）のことです。',
+                check: (num) => !num.isInteger()
+            },
+            PRIME: {
+                id: 'PRIME',
+                text: '素数',
+                desc: '1とその数自身のほかに約数がない、1より大きい自然数のことです。1や負の数、小数、分数は含まれません。',
+                check: (num) => num.isPrime()
+            },
+            NOT_PRIME: {
+                id: 'NOT_PRIME',
+                text: '素数でないもの',
+                desc: '素数以外のすべての数です。1や負の数、小数、分数、合成数（4や9など）が該当します。',
+                check: (num) => !num.isPrime()
+            }
+        };
+
+        // フリーザ級(第2部)用
+        const FREEZA_CONDITIONS = {
+            NATURAL: {
+                id: 'NATURAL',
+                text: '美しき「自然数 (正の整数)」',
+                desc: 'ホッホッホ。1以上の整数のことですよ。0や負の整数、小数、分数は含まれません。もちろん約分して1以上になる分数や√も自然数ですよ。',
+                check: (num) => num.isNatural()
+            },
+            NOT_NATURAL: {
+                id: 'NOT_NATURAL',
+                text: '品性に欠ける「自然数ではない数」',
+                desc: '自然数以外のすべての数です。0、負の整数、小数、分数が嬉々として該当しますよ。',
+                check: (num) => !num.isNatural()
+            },
+            INTEGER: {
+                id: 'INTEGER',
+                text: '整然と並ぶ「整数」',
+                desc: '端数のないすっきりした、美しい私の兵隊たちです。正の数、負の数、そして0も完璧な整数ですよ。',
+                check: (num) => num.isInteger()
+            },
+            NOT_INTEGER: {
+                id: 'NOT_INTEGER',
+                text: '中途半端な「整数ではない数」',
+                desc: '小数や分数のように、中身がみすぼらしいおバカさんな数たちのことです。',
+                check: (num) => !num.isInteger()
+            },
+            PRIME: {
+                id: 'PRIME',
+                text: '孤高の戦闘力を持つ「素数」',
+                desc: '1より大きい自然数の中で、1と自分自身でしか割り切れないエリート数ですよ。「1」や「57」のような擬似素数は含みません。',
+                check: (num) => num.isPrime()
+            },
+            NOT_PRIME: {
+                id: 'NOT_PRIME',
+                text: '平凡極まりない「素数ではない数」',
+                desc: '誇り高き素数に選ばれなかった凡庸な数どもです。1やマイナスの数、小数・分数、他の数で割り切れてしまう腑抜けどもですよ。',
+                check: (num) => !num.isPrime()
+            },
+            RATIONAL: {
+                id: 'RATIONAL',
+                text: '分数で表現可能な「有理数」',
+                desc: '比（分数）の形で美しく表現できる知的で完璧な数です。整数や有限小数もすべてここに含まれますよ。',
+                check: (num) => num.isRational()
+            },
+            IRRATIONAL: {
+                id: 'IRRATIONAL',
+                text: '正体不明で野蛮な「無理数」',
+                desc: 'πや√2のように、小数点以下が不規則に無限に続く、非常にしつこく不愉快な数どものことです。',
+                check: (num) => num.isIrrational()
+            }
+        };
+
+        // --- 5. 数プールプール定義 ---
+        
+        // 第1部用の通常数プール
+        const NORMAL_POOL = [
+            { type: 'integer', sign: 1, value: 1, html: '<span class="font-math">+1</span>', label: '+1' },
+            { type: 'integer', sign: 1, value: 2, html: '<span class="font-math">+2</span>', label: '+2' },
+            { type: 'integer', sign: 1, value: 3, html: '<span class="font-math">+3</span>', label: '+3' },
+            { type: 'integer', sign: 1, value: 4, html: '<span class="font-math">+4</span>', label: '+4' },
+            { type: 'integer', sign: 1, value: 5, html: '<span class="font-math">+5</span>', label: '+5' },
+            { type: 'integer', sign: 1, value: 7, html: '<span class="font-math">+7</span>', label: '+7' },
+            { type: 'integer', sign: 1, value: 8, html: '<span class="font-math">+8</span>', label: '+8' },
+            { type: 'integer', sign: 0, value: 0, html: '<span class="font-math">0</span>', label: '0' },
+            { type: 'integer', sign: -1, value: -1, html: '<span class="font-math">-1</span>', label: '-1' },
+            { type: 'integer', sign: -1, value: -2, html: '<span class="font-math">-2</span>', label: '-2' },
+            { type: 'integer', sign: -1, value: -3, html: '<span class="font-math">-3</span>', label: '-3' },
+            { type: 'integer', sign: -1, value: -5, html: '<span class="font-math">-5</span>', label: '-5' },
+            { type: 'decimal', sign: 1, value: 0.5, html: '<span class="font-math">+0.5</span>', label: '+0.5' },
+            { type: 'decimal', sign: 1, value: 1.5, html: '<span class="font-math">+1.5</span>', label: '+1.5' },
+            { type: 'decimal', sign: -1, value: -2.5, html: '<span class="font-math">-2.5</span>', label: '-2.5' },
+            { type: 'decimal', sign: -1, value: -0.8, html: '<span class="font-math">-0.8</span>', label: '-0.8' },
+            { type: 'fraction', sign: 1, value: 0.5, html: makeFractionHtml('+', '1', '2'), label: '+\\frac{1}{2}' },
+            { type: 'fraction', sign: 1, value: 0.75, html: makeFractionHtml('+', '3', '4'), label: '+\\frac{3}{4}' },
+            { type: 'fraction', sign: -1, value: -0.5, html: makeFractionHtml('-', '1', '2'), label: '-\\frac{1}{2}' }
+        ];
+
+        // 第2部用の帝王級（フリーザ級）数プール
+        const FREEZA_POOL = [
+            { type: 'integer', sign: 1, value: 1, html: '<span class="font-math">+1</span>', label: '+1' },
+            { type: 'integer', sign: 1, value: 2, html: '<span class="font-math">+2</span>', label: '+2' },
+            { type: 'integer', sign: 1, value: 5, html: '<span class="font-math">+5</span>', label: '+5' },
+            { type: 'integer', sign: 0, value: 0, html: '<span class="font-math">0</span>', label: '0' },
+            { type: 'integer', sign: -1, value: -1, html: '<span class="font-math">-1</span>', label: '-1' },
+            { type: 'integer', sign: -1, value: -5, html: '<span class="font-math">-5</span>', label: '-5' },
+            
+            // 擬似素数の罠
+            { type: 'integer', sign: 1, value: 57, html: '<span class="font-math">+57</span>', label: '+57' }, // 3*19
+            { type: 'integer', sign: 1, value: 91, html: '<span class="font-math">+91</span>', label: '+91' }, // 7*13
+            { type: 'integer', sign: 1, value: 39, html: '<span class="font-math">+39</span>', label: '+39' }, // 3*13
+            
+            // ルートの罠
+            { type: 'integer', sign: 1, value: 2, html: '<span class="font-math">√4</span>', label: '√4' },
+            { type: 'integer', sign: 1, value: 3, html: '<span class="font-math">√9</span>', label: '√9' },
+            { type: 'integer', sign: 1, value: 4, html: '<span class="font-math">√16</span>', label: '√16' },
+            
+            // 小数に見える整数
+            { type: 'integer', sign: 1, value: 3, html: '<span class="font-math">+3.0</span>', label: '+3.0' },
+            
+            // 約分できる分数
+            { type: 'integer', sign: 1, value: 4, html: makeFractionHtml('+', '8', '2'), label: '+\\frac{8}{2}' },
+            { type: 'integer', sign: -1, value: -3, html: makeFractionHtml('-', '12', '4'), label: '-\\frac{12}{4}' },
+            { type: 'integer', sign: 0, value: 0, html: makeFractionHtml('+', '0', '5'), label: '\\frac{0}{5}' },
+            
+            // 通常の小数・分数
+            { type: 'decimal', sign: 1, value: 0.6, html: '<span class="font-math">+0.6</span>', label: '+0.6' },
+            { type: 'decimal', sign: -1, value: -1.5, html: '<span class="font-math">-1.5</span>', label: '-1.5' },
+            { type: 'fraction', sign: 1, value: 1/3, html: makeFractionHtml('+', '1', '3'), label: '+\\frac{1}{3}' },
+            { type: 'fraction', sign: -1, value: -3/4, html: makeFractionHtml('-', '3', '4'), label: '-\\frac{3}{4}' },
+            { type: 'fraction', sign: 22/7, value: 22/7, html: makeFractionHtml('+', '22', '7'), label: '+\\frac{22}{7}' }, // 有理数
+
+            // 無理数
+            { type: 'irrational', sign: 1, value: Math.PI, html: '<span class="font-math">π</span>', label: 'π' },
+            { type: 'irrational', sign: 1, value: Math.SQRT2, html: '<span class="font-math">√2</span>', label: '√2' },
+            { type: 'irrational', sign: 1, value: Math.sqrt(3), html: '<span class="font-math">√3</span>', label: '√3' },
+            { type: 'irrational', sign: 1, value: Math.sqrt(5), html: '<span class="font-math">√5</span>', label: '√5' }
+        ];
+
+        // --- 6. 条件自動生成関数 ---
+        
+        // 第1部 通常の絶対値条件
+        function generateNormalAbsCondition() {
+            const a = Math.floor(Math.random() * 3) + 1; // 1, 2, 3
+            const pattern = Math.floor(Math.random() * 3); // 0: 等しい, 1: 比較1つ, 2: 範囲
+
+            if (pattern === 0) {
+                return {
+                    id: `ABS_EQ_${a}`,
+                    text: `絶対値がちょうど ${a} になる数`,
+                    desc: `原点（0）からの距離が ${a} になる数（+${a} と -${a}）を選びます。`,
+                    check: (num) => Math.abs(num.value) === a
+                };
+            } else if (pattern === 1) {
+                const ops = [
+                    { text: '以下', desc: `${a} 以下（${a} を含む）の数`, check: (val) => val <= a },
+                    { text: '未満', desc: `${a} より小さい（${a} は含まない）数`, check: (val) => val < a },
+                    { text: '以上', desc: `${a} 以上（${a} を含む）の数`, check: (val) => val >= a }
+                ];
+                const op = ops[Math.floor(Math.random() * ops.length)];
+                return {
+                    id: `ABS_OP_${a}_${op.text}`,
+                    text: `絶対値が ${a} ${op.text}の数`,
+                    desc: `原点からの距離が ${op.desc} を選びます。`,
+                    check: (num) => op.check(Math.abs(num.value))
+                };
+            } else {
+                const b = a + 2; // a + 2
+                return {
+                    id: `ABS_RANGE_${a}_${b}`,
+                    text: `絶対値が ${a} 以上 ${b} 以下の数`,
+                    desc: `原点からの距離が ${a} から ${b} の間（端点を含む）にある数を選びます。`,
+                    check: (num) => Math.abs(num.value) >= a && Math.abs(num.value) <= b
+                };
+            }
+        }
+
+        // 第2部 フリーザ様の絶対値条件
+        function generateFreezaAbsCondition() {
+            const a = Math.floor(Math.random() * 4) + 1; // 1, 2, 3, 4
+            const pattern = Math.floor(Math.random() * 3);
+
+            if (pattern === 0) {
+                return {
+                    id: `ABS_EQ_${a}`,
+                    text: `絶対値がちょうど「${a}」になる数`,
+                    desc: `原点（0）からの距離が美しく ${a} になる完璧な数をお選びなさい。`,
+                    check: (num) => Math.abs(num.value) === a
+                };
+            } else if (pattern === 1) {
+                const ops = [
+                    { text: '以下', desc: `絶対値が ${a} 以下の、比較的小さなゴミども`, check: (val) => val <= a },
+                    { text: '未満', desc: `絶対値が ${a} 未満の、${a} を含まない腑抜けども`, check: (val) => val < a },
+                    { text: '以上', desc: `絶対値が ${a} 以上の、少し骨のある連中`, check: (val) => val >= a },
+                    { text: 'より大きい', desc: `絶対値が ${a} より大きく、${a} には届かない生意気な奴ら`, check: (val) => val > a }
+                ];
+                const op = ops[Math.floor(Math.random() * ops.length)];
+                return {
+                    id: `ABS_OP_${a}_${op.text}`,
+                    text: `絶対値が「${a}」${op.text}の数`,
+                    desc: op.desc,
+                    check: (num) => op.check(Math.abs(num.value))
+                };
+            } else {
+                const b = a + Math.floor(Math.random() * 3) + 1;
+                const rangeOps = [
+                    {
+                        text: `${a} 以上 ${b} 以下`,
+                        desc: `絶対値が ${a} 以上 ${b} 以下の範囲に逃げ込んでいる数`,
+                        check: (val) => val >= a && val <= b
+                    },
+                    {
+                        text: `${a} より大きく ${b} 未満`,
+                        desc: `絶対値が ${a} より大きく ${b} 未満の隙間にいる数（端数は除外ですよ）`,
+                        check: (val) => val > a && val < b
+                    },
+                    {
+                        text: `${a} 以上 ${b} 未満`,
+                        desc: `絶対値が ${a} 以上、${b} には満たない中途半端な数`,
+                        check: (val) => val >= a && val < b
+                    }
+                ];
+                const rangeOp = rangeOps[Math.floor(Math.random() * rangeOps.length)];
+                return {
+                    id: `ABS_RANGE_${a}_${b}`,
+                    text: `絶対値が「${rangeOp.text}」の数`,
+                    desc: rangeOp.desc,
+                    check: (num) => rangeOp.check(Math.abs(num.value))
+                };
+            }
+        }
+
+        // 第2部 複合ミックス条件
+        function generateMixCondition() {
+            const a = Math.floor(Math.random() * 4) + 2; // 2, 3, 4, 5
+            const mixPatterns = [
+                {
+                    id: `MIX_ABS_LE_NATURAL_${a}`,
+                    text: `絶対値が ${a} 以下の「自然数」`,
+                    desc: `私の美意識にかなう【自然数】であり、かつ【絶対値が ${a} 以下】の２つの条件を満たすエリートをお選びなさい。`,
+                    check: (num) => Math.abs(num.value) <= a && num.isNatural()
+                },
+                {
+                    id: `MIX_ABS_LT_PRIME_${a}`,
+                    text: `絶対値が ${a} 未満の「素数」`,
+                    desc: `孤高の戦闘力【素数】であり、かつ【絶対値が ${a} 未満】の数ですよ。0や1は絶対に選びませんよう。`,
+                    check: (num) => Math.abs(num.value) < a && num.isPrime()
+                },
+                {
+                    id: `MIX_ABS_GE_NEG_INT_${a}`,
+                    text: `絶対値が ${a} 以上の「負の整数」`,
+                    desc: `マイナス符号を持つ【負の整数】であり、かつ【絶対値（距離）が ${a} 以上】の戦士たちです。`,
+                    check: (num) => Math.abs(num.value) >= a && num.isInteger() && num.value < 0
+                },
+                {
+                    id: `MIX_ABS_LE_NOT_INT_${a}`,
+                    text: `絶対値が ${a} 以下の「整数ではない数」`,
+                    desc: `小数点や分数をもつ【整数ではないゴミ】であり、かつ【絶対値が ${a} 以下】の不完全な数どもをお選びなさい。`,
+                    check: (num) => Math.abs(num.value) <= a && !num.isInteger()
+                },
+                {
+                    id: `MIX_ABS_GT_INT_${a}`,
+                    text: `絶対値が ${a} より大きい「整数」`,
+                    desc: `端数のない【整数】であり、かつ【絶対値が ${a} を超える】、少しは骨のある数共ですよ。`,
+                    check: (num) => Math.abs(num.value) > a && num.isInteger()
+                }
+            ];
+
+            return mixPatterns[Math.floor(Math.random() * mixPatterns.length)];
+        }
+
+        // --- 7. アプリ状態変数 ---
+        let currentNumbers = [];
+        let currentCondition = null;
+        let selectedIds = new Set();
+        let isAnswered = false;
+        let streakCount = 0; // 0 ~ 20 (10でフリーザハッキング発動)
+        let isFreezaMode = false; // 11〜20問目はフリーザモード
+
+        // --- 8. UI表示・描画用関数 (setupQuestionUI) ---
+        function setupQuestionUI() {
+            // 送信ボタン群・フィードバック欄の初期表示制御
+            document.getElementById('action-bar-submit').classList.remove('hidden');
+            document.getElementById('action-bar-feedback').classList.add('hidden');
+
+            // 問題ターゲット(指示)のテキストを完全にバインド
+            document.getElementById('question-target').textContent = currentCondition.text;
+
+            const badge = document.getElementById('question-index-badge');
+            if (isFreezaMode) {
+                // フリーザ戦闘力メーターバッジの更新
+                if (streakCount === 18) {
+                    badge.className = "px-2.5 py-1 bg-amber-900/50 text-amber-300 rounded-lg text-xs font-bold animate-pulse flex items-center gap-1 border border-amber-600";
+                    badge.innerHTML = `<span>🔥 第 19 段階:</span> <span class="font-extrabold text-pink-400">絶望の絶対値複合レッスン！</span>`;
+                } else if (streakCount === 19) {
+                    badge.className = "px-2.5 py-1 bg-red-950 text-pink-400 rounded-lg text-xs font-bold animate-pulse flex items-center gap-1 border border-pink-500";
+                    badge.innerHTML = `<span>👑 最終試練:</span> <span class="font-extrabold text-red-500">私がフルパワーで遊んで差し上げます！</span>`;
+                } else {
+                    badge.className = "px-2 py-0.5 bg-purple-900 text-pink-300 rounded text-xs font-bold border border-purple-700";
+                    badge.textContent = `レッスン 第 ${streakCount - 10 + 1} 段階`;
+                }
+            } else {
+                // 通常モード第1部
+                badge.className = "px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-xs font-bold";
+                badge.textContent = `第 ${streakCount + 1} 問`;
+            }
+
+            // カードレンダリング
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+
+            currentNumbers.forEach(num => {
+                const card = document.createElement('button');
+                card.id = `card-${num.id}`;
+                card.onclick = () => toggleSelect(num.id);
+                
+                // モードに応じてカードスタイル切り替え
+                const keyIndex = currentNumbers.indexOf(num) + 1;
+                if (isFreezaMode) {
+                    card.className = "h-16 sm:h-18 bg-purple-900/40 hover:bg-purple-800/40 border-2 border-purple-700 rounded-xl flex flex-col items-center justify-center transition-all duration-150 select-none cursor-pointer focus:outline-none shadow-xs text-lg sm:text-xl font-bold text-purple-100 hover:scale-[1.02] active:scale-95 relative";
+                } else {
+                    card.className = "h-16 sm:h-18 bg-white dark:bg-slate-800/90 hover:bg-slate-50 dark:hover:bg-slate-700/80 border-2 border-slate-200 dark:border-slate-700 rounded-xl flex flex-col items-center justify-center transition-all duration-150 select-none cursor-pointer focus:outline-none shadow-xs text-lg sm:text-xl font-bold text-slate-800 dark:text-slate-100 hover:scale-[1.02] active:scale-95 relative";
+                }
+                
+                card.innerHTML = `
+                    <span class="absolute top-1 left-1.5 w-4 h-4 rounded bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-400 text-[10px] font-mono font-bold flex items-center justify-center opacity-70">${keyIndex}</span>
+                    <div id="card-body-${num.id}" class="scale-105 flex items-center justify-center">
+                        ${num.displayHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // --- 9. 問題自動生成システム (正解最低1つ保証) ---
+        function generateQuestion() {
+            selectedIds.clear();
+            isAnswered = false;
+
+            // 送信ボタン群の初期化
+            document.getElementById('action-bar-submit').classList.remove('hidden');
+            document.getElementById('action-bar-feedback').classList.add('hidden');
+
+            // 第2部フリーザモード判定
+            isFreezaMode = (streakCount >= 10);
+
+            // 背景と色のシステムテーマ切り替え
+            const body = document.getElementById('body-bg');
+            const header = document.getElementById('header-bg');
+            const card = document.getElementById('main-card');
+            const border = document.getElementById('border-indicator');
+            const divider = document.getElementById('action-divider');
+            const footer = document.getElementById('footer-bg');
+            const targetSpan = document.getElementById('question-target');
+            const btnSubmit = document.getElementById('btn-submit');
+            const scoreBox = document.getElementById('score-box');
+            const scoreLabel = document.getElementById('score-label');
+            const streakCounterSpan = document.getElementById('streak-counter');
+
+            let condition;
+
+            if (isFreezaMode) {
+                // フリーザ級ダークパープルテーマ
+                body.className = "tex2jax_ignore bg-purple-950 text-slate-100 dark:bg-purple-950 dark:text-slate-100 font-math h-screen max-h-screen overflow-hidden flex flex-col justify-between transition-colors duration-300";
+                header.className = "bg-purple-900 border-b border-purple-800 shadow-md shrink-0 transition-all";
+                card.className = "bg-purple-900/50 rounded-2xl border border-purple-800 shadow-md p-3.5 sm:p-4 w-full flex flex-col justify-between text-white transition-all my-auto min-h-0";
+                border.className = "border-l-4 border-pink-500 pl-3 py-0.5";
+                divider.className = "border-t border-purple-800 pt-2 sm:pt-2.5";
+                footer.className = "bg-purple-900 border-t border-purple-800 py-1 text-purple-300 shrink-0";
+                targetSpan.className = "text-pink-400 bg-purple-950 px-2 py-0.5 rounded-lg border border-pink-500/30 underline decoration-2 underline-offset-4 text-xs sm:text-sm";
+                btnSubmit.className = "w-full sm:w-auto px-6 py-2 bg-pink-600 text-white font-bold rounded-xl hover:bg-pink-700 active:scale-95 transition-all shadow-md shadow-pink-900/50 flex items-center justify-center space-x-1.5 text-xs sm:text-sm cursor-pointer";
+                scoreBox.className = "bg-purple-950 border border-pink-500/30 px-2.5 py-1 rounded-lg flex items-center space-x-1.5 text-xs text-pink-300";
+                scoreLabel.textContent = "帝王の怒り度:";
+                scoreLabel.className = "text-xs font-bold text-pink-400";
+                
+                // 戦闘力換算表示
+                const freezaStreak = streakCount - 10;
+                const power = freezaStreak * 53000;
+                streakCounterSpan.textContent = power.toLocaleString();
+                streakCounterSpan.className = "text-base font-extrabold text-pink-500";
+                document.getElementById('score-unit').textContent = " / 530,000";
+
+                // テキスト変更
+                document.getElementById('app-title').textContent = "帝王フリーザのデス・レッスン";
+                document.getElementById('app-title').className = "text-xs sm:text-sm font-bold text-pink-400 leading-tight";
+                document.getElementById('app-subtitle').textContent = "ホッホッホ、私の戦闘力53万に追いついてごらんなさい";
+                document.getElementById('app-subtitle').className = "text-[10px] text-purple-300 hidden sm:block";
+                document.getElementById('logo-icon').className = "w-8 h-8 bg-pink-600 rounded-lg flex items-center justify-center text-white font-bold text-base shadow-xs transition-all shrink-0";
+                document.getElementById('logo-icon').textContent = "帝";
+                document.getElementById('question-prefix').textContent = "おやおや、下の数共の中から、私の指示する";
+                document.getElementById('question-suffix').textContent = "をすべて選んでごらんなさい。";
+                document.getElementById('instruction-help').textContent = "選ぶべき数をすべてタップし、「決定して差し上げます」を押すのですよ。";
+                document.getElementById('instruction-help').className = "text-[11px] text-purple-300 mb-1.5 font-bold flex items-center";
+                document.getElementById('hint-text').textContent = "いいですか、少なくとも１つは必ず正解となる数が隠されていますよ。私の目を騙せると思わないことです。";
+                document.getElementById('hint-text').className = "text-xs text-pink-400 font-bold";
+                document.getElementById('btn-submit').querySelector('span').textContent = "決定して差し上げます";
+                document.getElementById('btn-next').querySelector('span').textContent = "次の段階へ進んで差し上げます";
+                document.getElementById('footer-text').textContent = "© 2026 帝王フリーザ of 数分類レッスン. 逆らう者は絶対に許しませんよ。";
+
+                // 問題条件とプール
+                if (streakCount === 18 || streakCount === 19) {
+                    condition = generateMixCondition(); // 19, 20問目は複合ミックス
+                } else {
+                    if (Math.random() < 0.5) {
+                        condition = generateFreezaAbsCondition();
+                    } else {
+                        const keys = Object.keys(FREEZA_CONDITIONS);
+                        const randomKey = keys[Math.floor(Math.random() * keys.length)];
+                        condition = FREEZA_CONDITIONS[randomKey];
+                    }
+                }
+
+                // 数プール生成
+                const rawPool = FREEZA_POOL.map((item, idx) => new GameNumber(`temp-${idx}`, item.type, item.sign, item.value, item.html, item.label));
+                const corrects = rawPool.filter(num => condition.check(num));
+                const incorrects = rawPool.filter(num => !condition.check(num));
+
+                if (corrects.length === 0) {
+                    generateQuestion();
+                    return;
+                }
+
+                // 最低1つ保証
+                const numCorrect = Math.floor(Math.random() * Math.min(3, corrects.length)) + 1;
+                const chosenCorrects = shuffle(corrects).slice(0, numCorrect);
+                const chosenIncorrects = shuffle([...corrects.slice(numCorrect), ...incorrects]).slice(0, 8 - numCorrect);
+
+                currentNumbers = shuffle([...chosenCorrects, ...chosenIncorrects]).map((num, idx) => {
+                    return new GameNumber(`random-${idx}`, num.type, num.sign, num.value, num.displayHtml, num.label);
+                });
+
+            } else {
+                // ノーマルモード
+                body.className = "tex2jax_ignore bg-indigo-50/50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-math h-screen max-h-screen overflow-hidden flex flex-col justify-between transition-colors duration-300";
+                header.className = "bg-white dark:bg-slate-900 border-b border-indigo-100 dark:border-slate-800 shadow-xs shrink-0 transition-colors duration-300";
+                card.className = "bg-white dark:bg-slate-900/90 rounded-2xl border border-indigo-100 dark:border-slate-800 shadow-sm p-3.5 sm:p-4 w-full flex flex-col justify-between text-slate-800 dark:text-slate-100 transition-all my-auto min-h-0";
+                border.className = "border-l-4 border-indigo-600 dark:border-indigo-400 pl-3 py-0.5";
+                divider.className = "border-t border-indigo-100 dark:border-slate-800 pt-2 sm:pt-2.5";
+                footer.className = "bg-white dark:bg-slate-900 border-t border-indigo-100 dark:border-slate-800 py-1 text-slate-400 dark:text-slate-500 shrink-0 transition-colors duration-300";
+                targetSpan.className = "text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/80 px-2 py-0.5 rounded-lg border border-indigo-100 dark:border-indigo-800 underline decoration-2 underline-offset-4 text-xs sm:text-sm";
+                btnSubmit.className = "w-full sm:w-auto px-6 py-2 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 active:scale-95 transition-all shadow-md shadow-indigo-100 dark:shadow-none flex items-center justify-center space-x-1.5 text-xs sm:text-sm cursor-pointer";
+                scoreBox.className = "bg-indigo-50/50 dark:bg-slate-800/80 border border-indigo-100 dark:border-slate-700 px-2.5 py-1 rounded-lg flex items-center space-x-1.5 text-xs transition-all duration-300";
+                scoreLabel.textContent = "連続正解:";
+                scoreLabel.className = "text-[11px] font-bold text-indigo-500 dark:text-indigo-400";
+                
+                streakCounterSpan.textContent = streakCount;
+                streakCounterSpan.className = "text-sm font-extrabold text-indigo-600 dark:text-indigo-300";
+                document.getElementById('score-unit').textContent = " / 10 回";
+
+                document.getElementById('app-title').textContent = "数分類・絶対値トレーニング";
+                document.getElementById('app-title').className = "text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-tight";
+                document.getElementById('app-subtitle').textContent = "自然数・整数・素数の条件をマスターしよう！";
+                document.getElementById('app-subtitle').className = "text-[10px] text-slate-500 dark:text-slate-400 hidden sm:block";
+                document.getElementById('logo-icon').className = "w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-base shadow-xs transition-all shrink-0";
+                document.getElementById('logo-icon').textContent = "数";
+                document.getElementById('question-prefix').textContent = "下の数の中から、";
+                document.getElementById('question-suffix').textContent = "をすべて選んでください。";
+                document.getElementById('instruction-help').textContent = "当てはまる数をすべて選んで、下の決定ボタンを押してください。[数字 1〜8 / Space]";
+                document.getElementById('instruction-help').className = "text-[11px] text-slate-400 dark:text-slate-400 mb-1.5 font-bold flex items-center";
+                document.getElementById('hint-text').textContent = "【ヒント】必ず少なくとも1つは、正しい数が含まれていますよ。[Spaceで決定]";
+                document.getElementById('hint-text').className = "text-xs text-slate-500 dark:text-slate-400 font-bold";
+                document.getElementById('btn-submit').querySelector('span').textContent = "解答を決定する";
+                document.getElementById('btn-next').querySelector('span').textContent = "次の問題へ進む";
+                document.getElementById('footer-text').textContent = "© 2026 数の分類トレーニング. すべての学習を応援します。";
+
+                // 通常問題作成
+                if (Math.random() < 0.4) {
+                    condition = generateNormalAbsCondition();
+                } else {
+                    const keys = Object.keys(NORMAL_CONDITIONS);
+                    const randomKey = keys[Math.floor(Math.random() * keys.length)];
+                    condition = NORMAL_CONDITIONS[randomKey];
+                }
+
+                const rawPool = NORMAL_POOL.map((item, idx) => new GameNumber(`temp-${idx}`, item.type, item.sign, item.value, item.html, item.label));
+                const corrects = rawPool.filter(num => condition.check(num));
+                const incorrects = rawPool.filter(num => !condition.check(num));
+
+                if (corrects.length === 0) {
+                    generateQuestion();
+                    return;
+                }
+
+                const numCorrect = Math.floor(Math.random() * Math.min(3, corrects.length)) + 1;
+                const chosenCorrects = shuffle(corrects).slice(0, numCorrect);
+                const chosenIncorrects = shuffle([...corrects.slice(numCorrect), ...incorrects]).slice(0, 8 - numCorrect);
+
+                currentNumbers = shuffle([...chosenCorrects, ...chosenIncorrects]).map((num, idx) => {
+                    return new GameNumber(`random-${idx}`, num.type, num.sign, num.value, num.displayHtml, num.label);
+                });
+            }
+
+            // 出題する条件と数リストをグローバルに反映して描画
+            currentCondition = condition;
+            setupQuestionUI();
+
+            // ★ 改善点：MathJaxによる、問題文（question-target）のテキスト誤認識・非表示化を防ぐため、
+            // レンダリングのスキャン対象をチートシートモーダルのみに制限します！
+            if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('cheat-sheet-modal')]);
+            }
+        }
+
+        // --- 10. カードの選択処理 ---
+        function toggleSelect(id) {
+            if (isAnswered) return;
+
+            playSound('click');
+
+            const card = document.getElementById(`card-${id}`);
+            if (selectedIds.has(id)) {
+                selectedIds.delete(id);
+                if (isFreezaMode) {
+                    card.className = "h-16 sm:h-18 bg-purple-900/40 hover:bg-purple-800/40 border-2 border-purple-700 rounded-xl flex flex-col items-center justify-center transition-all duration-150 select-none cursor-pointer focus:outline-none shadow-xs text-lg sm:text-xl font-bold text-purple-100 hover:scale-[1.02] active:scale-95 relative";
+                } else {
+                    card.className = "h-16 sm:h-18 bg-white dark:bg-slate-800/90 hover:bg-slate-50 dark:hover:bg-slate-700/80 border-2 border-slate-200 dark:border-slate-700 rounded-xl flex flex-col items-center justify-center transition-all duration-150 select-none cursor-pointer focus:outline-none shadow-xs text-lg sm:text-xl font-bold text-slate-800 dark:text-slate-100 hover:scale-[1.02] active:scale-95 relative";
+                }
+            } else {
+                selectedIds.add(id);
+                if (isFreezaMode) {
+                    card.className = "h-16 sm:h-18 bg-purple-950 border-2 sm:border-3 border-pink-500 rounded-xl flex flex-col items-center justify-center transition-all duration-150 select-none cursor-pointer focus:outline-none shadow-sm shadow-pink-900/50 text-lg sm:text-xl font-bold text-pink-300 scale-98 relative";
+                } else {
+                    card.className = "h-16 sm:h-18 bg-indigo-50 dark:bg-indigo-950/90 border-2 sm:border-3 border-indigo-600 dark:border-indigo-400 rounded-xl flex flex-col items-center justify-center transition-all duration-150 select-none cursor-pointer focus:outline-none shadow-sm shadow-indigo-100 dark:shadow-indigo-950 text-lg sm:text-xl font-bold text-indigo-900 dark:text-indigo-200 scale-98 relative";
+                }
+            }
+        }
+
+        // --- 11. 解法・解答決定処理 ---
+        function submitAnswer() {
+            if (isAnswered) return;
+            isAnswered = true;
+
+            let isAllCorrect = true;
+
+            currentNumbers.forEach(num => {
+                const shouldBeSelected = currentCondition.check(num);
+                const isSelected = selectedIds.has(num.id);
+
+                if (shouldBeSelected !== isSelected) {
+                    isAllCorrect = false;
+                }
+            });
+
+            // 正誤判定＆連続正解計算
+            if (isAllCorrect) {
+                playSound('correct');
+                streakCount++;
+            } else {
+                playSound('incorrect');
+                streakCount = 0; // ミスで0にリセット（地獄のルール）
+            }
+
+            // スコアボード更新
+            const displayScoreElement = document.getElementById('streak-counter');
+            if (streakCount >= 10) {
+                const freezaStreak = streakCount - 10;
+                displayScoreElement.textContent = (freezaStreak * 53000).toLocaleString();
+            } else {
+                displayScoreElement.textContent = streakCount;
+            }
+
+            // 表示切り替え
+            document.getElementById('action-bar-submit').classList.add('hidden');
+            document.getElementById('action-bar-feedback').classList.remove('hidden');
+
+            // フィードバックアラート描画
+            const alertBox = document.getElementById('feedback-alert');
+            if (isAllCorrect) {
+                if (isFreezaMode) {
+                    alertBox.className = "p-1.5 sm:p-2 rounded-xl flex items-center space-x-2 bg-pink-950/90 border border-pink-500 text-pink-300 min-w-0";
+                    alertBox.innerHTML = `
+                        <div class="w-6 h-6 bg-pink-500 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0">✓</div>
+                        <div class="min-w-0">
+                            <p class="font-extrabold text-xs text-pink-300">ホッホッホ、正解ですよ！</p>
+                            <p class="text-[10px] text-pink-400 truncate">おやおや、少しは頭が回るようですね。褒めて差し上げます。</p>
+                        </div>
+                    `;
+                } else {
+                    alertBox.className = "p-1.5 sm:p-2 rounded-xl flex items-center space-x-2 bg-emerald-50 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800 min-w-0";
+                    alertBox.innerHTML = `
+                        <div class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0">✓</div>
+                        <div class="min-w-0">
+                            <p class="font-extrabold text-xs text-emerald-700">正解！ すばらしい！</p>
+                            <p class="text-[10px] text-emerald-600 truncate">お見事！すべての数を正しく分類できました！</p>
+                        </div>
+                    `;
+                }
+            } else {
+                if (isFreezaMode) {
+                    alertBox.className = "p-1.5 sm:p-2 rounded-xl flex items-center space-x-2 bg-red-950/80 border border-red-500 text-red-300 min-w-0";
+                    alertBox.innerHTML = `
+                        <div class="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0">✕</div>
+                        <div class="min-w-0">
+                            <p class="font-extrabold text-xs text-red-300">おやおや、間違えるなんて！</p>
+                            <p class="text-[10px] text-red-400 truncate">戦闘力は0に巻き戻し、もう一度叩き込み直して差し上げます。</p>
+                        </div>
+                    `;
+                } else {
+                    alertBox.className = "p-1.5 sm:p-2 rounded-xl flex items-center space-x-2 bg-rose-50 dark:bg-rose-950/80 text-rose-800 dark:text-rose-200 border border-rose-200 dark:border-rose-800 min-w-0";
+                    alertBox.innerHTML = `
+                        <div class="w-6 h-6 bg-rose-500 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0">✕</div>
+                        <div class="min-w-0">
+                            <p class="font-extrabold text-xs text-rose-700">ざんねん！ 不正解です</p>
+                            <p class="text-[10px] text-rose-600 truncate">連続正解数がリセットされました。カードのヒントを見て復習しましょう。</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // カードごとのフィードバック
+            currentNumbers.forEach(num => {
+                const card = document.getElementById(`card-${num.id}`);
+                const shouldBeSelected = currentCondition.check(num);
+                const isSelected = selectedIds.has(num.id);
+
+                let badgeHtml = '';
+                if (shouldBeSelected && isSelected) {
+                    card.className = "h-16 sm:h-18 bg-emerald-50 dark:bg-emerald-950/80 border-2 sm:border-3 border-emerald-500 dark:border-emerald-400 rounded-xl flex flex-col items-center justify-center transition-all select-none relative shadow-xs text-lg sm:text-xl font-bold text-emerald-900 dark:text-emerald-100";
+                    badgeHtml = `<span class="absolute top-1 right-1.5 px-1.5 py-0.2 bg-emerald-500 text-white text-[9px] font-extrabold rounded">${isFreezaMode ? '正解ですよ' : '正解'}</span>`;
+                } else if (shouldBeSelected && !isSelected) {
+                    card.className = "h-16 sm:h-18 bg-amber-50 dark:bg-amber-950/80 border-2 sm:border-3 border-dashed border-amber-500 dark:border-amber-400 rounded-xl flex flex-col items-center justify-center transition-all select-none relative shadow-xs text-lg sm:text-xl font-bold text-amber-900 dark:text-amber-100";
+                    badgeHtml = `<span class="absolute top-1 right-1.5 px-1.5 py-0.2 bg-amber-500 text-white text-[9px] font-extrabold rounded">${isFreezaMode ? '見落としです' : '見落とし'}</span>`;
+                } else if (!shouldBeSelected && isSelected) {
+                    card.className = "h-16 sm:h-18 bg-rose-50 dark:bg-rose-950/80 border-2 sm:border-3 border-rose-500 dark:border-rose-400 rounded-xl flex flex-col items-center justify-center transition-all select-none relative shadow-xs text-lg sm:text-xl font-bold text-rose-900 dark:text-rose-100";
+                    badgeHtml = `<span class="absolute top-1 right-1.5 px-1.5 py-0.2 bg-rose-500 text-white text-[9px] font-extrabold rounded">${isFreezaMode ? '違いますよ' : 'ちがうよ'}</span>`;
+                } else {
+                    if (isFreezaMode) {
+                        card.className = "h-16 sm:h-18 bg-purple-950/40 border border-purple-800 opacity-40 rounded-xl flex flex-col items-center justify-center transition-all select-none text-lg sm:text-xl font-bold text-purple-400 relative";
+                    } else {
+                        card.className = "h-16 sm:h-18 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 opacity-60 rounded-xl flex flex-col items-center justify-center transition-all select-none text-lg sm:text-xl font-bold text-slate-400 dark:text-slate-500 relative";
+                    }
+                }
+
+                if (badgeHtml) {
+                    card.insertAdjacentHTML('beforeend', badgeHtml);
+                }
+            });
+
+            // モーダル・合格・ハッキングのイベント分岐
+            if (streakCount === 10) {
+                // 10問正解！まずは通常クリアモーダルを出す
+                setTimeout(() => {
+                    showNormalPassModal();
+                }, 600);
+            } else if (streakCount >= 20) {
+                // 真の合格（フリーザ様撃破）
+                setTimeout(() => {
+                    showPassModal();
+                }, 600);
+            } else if (isAllCorrect) {
+                // 正解かつモーダル対象でない場合、1秒後に自動で次へ
+                setTimeout(() => {
+                    if (isAnswered) {
+                        nextQuestion();
+                    }
+                }, 1000);
+            }
+        }
+
+        // --- 12. モーダル ＆ ハッキング乱入イベントの演出 ---
+        
+        // 通常合格モーダル
+        function showNormalPassModal() {
+            playSound('pass');
+            const modal = document.getElementById('normal-pass-modal');
+            modal.classList.remove('hidden');
+
+            // 2秒後にハッキングノイズ演出をトリガー
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                triggerHacking();
+            }, 2000);
+        }
+
+        // ハッキングハック
+        function triggerHacking() {
+            playSound('hacking');
+            const hackScreen = document.getElementById('hacking-screen');
+            hackScreen.classList.remove('hidden');
+
+            // 不気味なノイズ効果
+            let flashCount = 0;
+            const flashInterval = setInterval(() => {
+                hackScreen.style.backgroundColor = (flashCount % 2 === 0) ? '#4c1d95' : '#000000';
+                flashCount++;
+                if (flashCount > 10) clearInterval(flashInterval);
+            }, 100);
+
+            // 3秒後にハッキング終了してフリーザ級第1問目へ突入
+            setTimeout(() => {
+                hackScreen.classList.add('hidden');
+                generateQuestion(); // この時点で streakCount=10 なので自動的にフリーザモードに切り替わる
+            }, 3000);
+        }
+
+        // 真の合格モーダル表示
+        function showPassModal() {
+            playSound('pass');
+            document.getElementById('pass-modal').classList.remove('hidden');
+        }
+
+        // 真の合格後リスタート
+        function restartAfterPass() {
+            playSound('click');
+            document.getElementById('pass-modal').classList.add('hidden');
+            streakCount = 0;
+            isFreezaMode = false;
+            generateQuestion();
+        }
+
+        function nextQuestion() {
+            playSound('click');
+            generateQuestion();
+        }
+
+        // --- 13. 言葉のルール（チートシート）の動的描画 ---
+        function openCheatSheet() {
+            playSound('click');
+            const modal = document.getElementById('cheat-sheet-modal');
+            const header = document.getElementById('cheat-header');
+            const titleContainer = document.getElementById('cheat-title-container');
+            const closeBtn = document.getElementById('cheat-close-btn');
+            
+            const normalSection = document.getElementById('normal-cheat-section');
+            const freezaSection = document.getElementById('freeza-cheat-section');
+
+            if (isFreezaMode) {
+                // フリーザ様のチートシート表示
+                header.className = "bg-purple-900 px-6 py-4 border-b border-purple-800 flex items-center justify-between text-pink-400 transition-colors duration-300";
+                titleContainer.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    <h3 id="cheat-title" class="font-bold text-lg text-pink-400">帝王フリーザのありがたい数学講話</h3>
+                `;
+                closeBtn.className = "px-5 py-2.5 bg-purple-700 text-white font-bold rounded-xl hover:bg-purple-800 transition cursor-pointer";
+                closeBtn.textContent = "立ち去る";
+
+                normalSection.classList.add('hidden');
+                freezaSection.classList.remove('hidden');
+            } else {
+                // 普通モードのチートシート表示
+                header.className = "bg-indigo-50 dark:bg-slate-800 px-6 py-4 border-b border-indigo-100 dark:border-slate-700 flex items-center justify-between text-indigo-900 dark:text-indigo-200 transition-colors duration-300";
+                titleContainer.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-700 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    <h3 id="cheat-title" class="font-bold text-lg text-indigo-900 dark:text-indigo-200">言葉のルールまとめ</h3>
+                `;
+                closeBtn.className = "px-5 py-2.5 bg-slate-800 dark:bg-slate-700 text-white font-bold rounded-xl hover:bg-slate-700 dark:hover:bg-slate-600 transition cursor-pointer";
+                closeBtn.textContent = "閉じる";
+
+                normalSection.classList.remove('hidden');
+                freezaSection.classList.add('hidden');
+            }
+
+            modal.classList.remove('hidden');
+            
+            // 数式再読み込み
+            if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('cheat-sheet-modal')]);
+            }
+        }
+
+        function closeCheatSheet() {
+            playSound('click');
+            const modal = document.getElementById('cheat-sheet-modal');
+            modal.classList.add('hidden');
+        }
+
+        // 初期実行処理
+        
+        
+        // --- テーマ切り替え処理 ---
+        function initTheme() {
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            const themeIcon = document.getElementById('themeIcon');
+
+            function updateThemeUI(isDark) {
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                    if (themeIcon) themeIcon.className = 'fa-solid fa-sun text-sm text-amber-400';
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    if (themeIcon) themeIcon.className = 'fa-solid fa-moon text-sm text-slate-600 dark:text-slate-300';
+                }
+            }
+
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', () => {
+                    const isDark = !document.documentElement.classList.contains('dark');
+                    updateThemeUI(isDark);
+                    try {
+                        localStorage.setItem('math_theme', isDark ? 'dark' : 'light');
+                    } catch (e) {}
+                });
+            }
+
+            try {
+                const saved = localStorage.getItem('math_theme') || localStorage.getItem('fraction_theme') || localStorage.getItem('multiple_theme');
+                if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    updateThemeUI(true);
+                } else {
+                    updateThemeUI(false);
+                }
+            } catch (e) {}
+        }
+
+        // --- 全画面表示 (Fullscreen) 切り替え処理 ---
+        function isFullscreen() {
+            return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+        }
+
+        function toggleFullscreen() {
+            try {
+                if (!isFullscreen()) {
+                    const docEl = document.documentElement;
+                    if (docEl.requestFullscreen) {
+                        docEl.requestFullscreen().catch(err => console.warn(err));
+                    } else if (docEl.webkitRequestFullscreen) {
+                        docEl.webkitRequestFullscreen();
+                    } else if (docEl.msRequestFullscreen) {
+                        docEl.msRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen().catch(err => console.warn(err));
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                }
+            } catch (e) {
+                console.warn('Fullscreen error:', e);
+            }
+        }
+
+        function initFullscreen() {
+            const fsBtn = document.getElementById('fullscreenToggleBtn');
+            const fsIcon = document.getElementById('fullscreenIcon');
+
+            function updateFullscreenUI() {
+                const fs = isFullscreen();
+                if (fs) {
+                    if (fsIcon) fsIcon.className = 'fa-solid fa-compress text-sm text-indigo-600 dark:text-indigo-400';
+                    if (fsBtn) fsBtn.title = '全画面表示を解除 (Esc / F)';
+                } else {
+                    if (fsIcon) fsIcon.className = 'fa-solid fa-expand text-sm';
+                    if (fsBtn) fsBtn.title = '全画面表示 (ON/OFF) [F]';
+                }
+            }
+
+            if (fsBtn) {
+                fsBtn.addEventListener('click', toggleFullscreen);
+            }
+
+            document.addEventListener('fullscreenchange', updateFullscreenUI);
+            document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
+            document.addEventListener('mozfullscreenchange', updateFullscreenUI);
+            document.addEventListener('MSFullscreenChange', updateFullscreenUI);
+        }
+
+        // キーボード操作対応 (1〜8: カード選択, Enter/Space: 決定・次へ, F: 全画面, Esc: チートシート閉じる)
+        window.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            const key = e.key;
+            if (key >= '1' && key <= '8') {
+                const idx = parseInt(key, 10) - 1;
+                if (currentNumbers && currentNumbers[idx]) {
+                    toggleSelect(currentNumbers[idx].id);
+                }
+            } else if (key === 'Enter' || key === ' ') {
+                e.preventDefault();
+                if (!isAnswered) {
+                    submitAnswer();
+                } else {
+                    nextQuestion();
+                }
+            } else if (key === 'f' || key === 'F') {
+                e.preventDefault();
+                toggleFullscreen();
+            } else if (key === 'Escape') {
+                closeCheatSheet();
+            }
+        });
+
+        window.addEventListener('load', () => {
+            initTheme();
+            initFullscreen();
+            generateQuestion();
+        });
+    </script>
+
+</body></html>
