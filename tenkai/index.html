@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>式の展開・変形クイズ | 連続10問合格チャレンジ</title>
+  <!-- KaTeX CSS (ローカル優先、CDNフォールバック) -->
+  <link rel="stylesheet" href="lib/katex/katex.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-light">
+  <div id="app-container" class="app-container">
+    <!-- ヘッダーエリア -->
+    <header class="header">
+      <div class="header-left">
+        <a href="../index.html" class="icon-btn portal-home-btn" title="算数・数学ポータルへ戻る">
+          <span>🏠</span>
+          <span class="btn-text">ポータル</span>
+        </a>
+        <div class="app-logo">
+          <span class="logo-icon">📐</span>
+          <span class="logo-text">展開の工夫 <span class="logo-sub">式変形4択クイズ</span></span>
+        </div>
+        <div class="target-badge" title="連続で10問正解すると合格になります！">
+          🎯 連続10問正解で合格！
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- 合格者一覧ボタン -->
+        <button id="btn-hall-of-fame" class="icon-btn trophy-btn" title="合格者一覧・殿堂入りを表示 (W)" aria-label="合格者一覧">
+          <span class="btn-icon">🏆</span>
+          <span class="btn-text">合格者</span>
+        </button>
+        <!-- 履歴ボタン -->
+        <button id="btn-history" class="icon-btn highlight-btn" title="いつでも解答履歴を確認 (H)" aria-label="解答履歴">
+          <span class="btn-icon">📜</span>
+          <span class="btn-text">履歴</span>
+        </button>
+        <!-- サウンド切替 -->
+        <button id="btn-sound" class="icon-btn" title="サウンド切り替え (S)" aria-label="効果音">
+          <span id="sound-icon">🔊</span>
+        </button>
+        <!-- ダークモード切替 -->
+        <button id="btn-theme" class="icon-btn" title="ダークモード切り替え (T)" aria-label="テーマ切り替え">
+          <span id="theme-icon">🌙</span>
+          <span class="btn-text">ダーク</span>
+        </button>
+        <!-- 全画面表示ボタン -->
+        <button id="btn-fullscreen" class="icon-btn" title="全画面表示 (F)" aria-label="全画面表示">
+          <span id="fullscreen-icon">⛶</span>
+          <span class="btn-text" id="fullscreen-text">全画面</span>
+        </button>
+        <!-- リセットボタン -->
+        <button id="btn-restart" class="icon-btn" title="最初からやり直す" aria-label="リセット">
+          <span>🔄</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- プログレス＆ステータスバー -->
+    <div class="status-bar">
+      <div class="progress-wrap">
+        <div class="progress-info">
+          <span id="streak-counter" class="counter-text">
+            🔥 連続正解: <strong id="current-streak">0</strong> / 10 問
+          </span>
+          <span id="question-total-counter" class="total-counter-text">累計回答: 0問</span>
+        </div>
+        <div class="progress-track">
+          <div id="progress-bar" class="progress-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+      <div class="stats-wrap">
+        <div class="stat-item">
+          <span class="stat-label">正答率</span>
+          <span id="accuracy-display" class="stat-val">100%</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">合格回数</span>
+          <span id="pass-count-display" class="stat-val pass-val">0回</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- メインコンテンツ領域（PC画面スクロール絶対なし） -->
+    <main class="main-content">
+      <!-- クイズ画面 -->
+      <section id="quiz-screen" class="screen quiz-screen active">
+        <!-- 問題カード -->
+        <div class="card question-card">
+          <div class="question-header">
+            <span class="question-badge">展開しやすい形への変形</span>
+            <span class="keyboard-hint">⌨️ キー [1]〜[4] で回答 / [H] で履歴 / [W] で合格者</span>
+          </div>
+
+          <div class="question-body">
+            <div class="formula-instruction">
+              左辺の式を変形して、和と差の積 <span class="math-inline">(A+B)(A-B)</span> を作りやすい式を選んでください。
+            </div>
+            <div class="equation-display">
+              <div class="equation-left" id="equation-left">
+                <!-- KaTeXで左辺を表示 -->
+              </div>
+              <div class="equation-equal">=</div>
+              <div class="equation-right-placeholder" id="equation-target">
+                <span class="question-mark">？</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- フィードバックバナー（正解・不正解の即時表示） -->
+          <div id="feedback-banner" class="feedback-banner hidden">
+            <span id="feedback-icon" class="feedback-icon">⭕</span>
+            <div class="feedback-content">
+              <div id="feedback-title" class="feedback-title">正解！ 自動で次へ進みます...</div>
+              <div id="feedback-desc" class="feedback-desc"></div>
+            </div>
+            <button id="btn-next-manual" class="btn-next-manual hidden">次へ進む ➔</button>
+          </div>
+        </div>
+
+        <!-- 4択選択肢エリア (2x2 グリッド) -->
+        <div class="options-grid" id="options-grid">
+          <!-- 4つの選択肢ボタンがJSで動的生成されます（左辺\n＝右辺 が同サイズで表示） -->
+        </div>
+      </section>
+
+      <!-- 合格リザルト画面 -->
+      <section id="result-screen" class="screen result-screen hidden">
+        <div class="card result-card">
+          <div class="result-badge animate-bounce" id="result-medal">👑</div>
+          <h2 class="result-title" id="result-title">㊗️ 合格おめでとうございます！</h2>
+          <p class="result-subtitle" id="result-subtitle">連続10問正解を達成しました！式の展開変形は完璧です！</p>
+
+          <!-- 名前入力・登録エリア -->
+          <div class="pass-registration-box">
+            <div class="pass-reg-header">
+              <span class="reg-icon">🏅</span>
+              <span class="pass-reg-title">合格者としてお名前を登録</span>
+            </div>
+            <div id="pass-name-form" class="pass-name-form">
+              <input type="text" id="pass-user-name" class="pass-input" placeholder="お名前・ニックネームを入力" maxlength="15" autocomplete="off" />
+              <button id="btn-save-pass-name" class="action-btn success-btn btn-sm">
+                💾 登録する
+              </button>
+            </div>
+            <div id="pass-registered-msg" class="pass-registered-msg hidden">
+              ✨ <strong id="registered-name-display"></strong> さんを合格者一覧に登録しました！
+            </div>
+          </div>
+
+          <div class="result-stats-grid">
+            <div class="result-stat-box">
+              <span class="result-stat-num highlight-num" id="result-streak">10 連続</span>
+              <span class="result-stat-label">連続正解達成</span>
+            </div>
+            <div class="result-stat-box">
+              <span class="result-stat-num" id="result-accuracy">100%</span>
+              <span class="result-stat-label">全体の正答率</span>
+            </div>
+            <div class="result-stat-box">
+              <span class="result-stat-num" id="result-total-answered">10 問</span>
+              <span class="result-stat-label">総回答数</span>
+            </div>
+            <div class="result-stat-box">
+              <span class="result-stat-num" id="result-time">01:15</span>
+              <span class="result-stat-label">所要時間</span>
+            </div>
+          </div>
+
+          <div class="result-actions">
+            <button id="btn-retry-same" class="action-btn primary-btn">
+              🔄 最初から再挑戦
+            </button>
+            <button id="btn-continue" class="action-btn success-btn">
+              🚀 記録を伸ばす(11問目~)
+            </button>
+            <button id="btn-view-hof-from-result" class="action-btn trophy-btn-accent">
+              🏆 合格者一覧を見る
+            </button>
+            <button id="btn-view-history-from-result" class="action-btn secondary-btn">
+              📜 解答履歴
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- フッター（キーボードヘルプ＆解説） -->
+    <footer class="footer">
+      <div class="footer-tip">
+        💡 <strong>合格へのヒント:</strong> 同符号の項を前にまとめ、異符号の項はマイナスでくくり出して <span class="math-inline">(A+B)(A-B) = A^2 - B^2</span> の形を作ります。
+      </div>
+      <div class="footer-shortcuts">
+        <span>全画面: <kbd>F</kbd></span>
+        <span>テーマ: <kbd>T</kbd></span>
+        <span>音: <kbd>S</kbd></span>
+        <span>合格者: <kbd>W</kbd></span>
+        <span>履歴: <kbd>H</kbd></span>
+        <span>選択: <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd></span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 合格者一覧モーダル（殿堂入り） -->
+  <div id="hall-of-fame-modal" class="modal-overlay hidden" aria-modal="true" role="dialog">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon">🏆</span>
+          <h3 class="modal-title">合格者ランキング（所要時間順）</h3>
+          <span id="modal-hof-count" class="modal-count-badge">0 名</span>
+        </div>
+        <button id="btn-close-hof-modal" class="modal-close-btn" title="閉じる (Esc / W)" aria-label="閉じる">✖</button>
+      </div>
+
+      <!-- 合格者リストエリア（内部スクロール） -->
+      <div class="modal-body" id="hof-list-container">
+        <!-- 合格者カードが動的生成されます -->
+      </div>
+
+      <div class="modal-footer">
+        <button id="btn-clear-hof" class="btn-text-danger" title="合格者記録を消去">
+          🗑️ 合格者一覧をクリア
+        </button>
+        <button id="btn-close-hof-modal-bottom" class="action-btn primary-btn btn-sm">
+          クイズに戻る
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 解答履歴モーダル（いつでも閲覧可能） -->
+  <div id="history-modal" class="modal-overlay hidden" aria-modal="true" role="dialog">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon">📜</span>
+          <h3 class="modal-title">解答履歴</h3>
+          <span id="modal-history-count" class="modal-count-badge">0 件</span>
+        </div>
+        <button id="btn-close-modal" class="modal-close-btn" title="閉じる (Esc / H)" aria-label="閉じる">✖</button>
+      </div>
+
+      <div class="modal-summary">
+        <div class="summary-item">
+          <span class="summary-label">累計回答:</span>
+          <strong id="history-total-count">0</strong>問
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">正解数:</span>
+          <strong id="history-correct-count" class="text-success">0</strong>問
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">現在の連続正解:</span>
+          <strong id="history-current-streak" class="text-warning">0</strong>問
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">最大連続正解:</span>
+          <strong id="history-max-streak">0</strong>問
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">合格達成:</span>
+          <strong id="history-pass-count" class="text-pass">0</strong>回
+        </div>
+      </div>
+
+      <!-- 履歴リストエリア（内部スクロール） -->
+      <div class="modal-body" id="history-list-container">
+        <!-- 履歴カードが動的生成されます -->
+      </div>
+
+      <div class="modal-footer">
+        <button id="btn-clear-history" class="btn-text-danger" title="すべての履歴を消去">
+          🗑️ 履歴をクリア
+        </button>
+        <button id="btn-close-modal-bottom" class="action-btn primary-btn btn-sm">
+          クイズに戻る
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KaTeX JavaScript (ローカル優先、CDNフォールバック) -->
+  <script src="lib/katex/katex.min.js"></script>
+  <script>
+    if (typeof katex === 'undefined') {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js';
+      document.head.appendChild(script);
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css';
+      document.head.appendChild(link);
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

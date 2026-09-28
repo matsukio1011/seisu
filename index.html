@@ -112,23 +112,23 @@
   <main class="flex-1 max-w-5xl w-full mx-auto px-6 py-4 flex flex-col justify-center items-center min-h-0">
 
     <!-- Title & Instruction -->
-    <div class="text-center mb-4 sm:mb-6 shrink-0">
-      <h2 class="text-2xl sm:text-3xl font-black tracking-tight mb-1.5 flex items-center justify-center gap-2">
+    <div class="text-center mb-3 sm:mb-5 shrink-0">
+      <h2 class="text-2xl sm:text-3xl font-black tracking-tight mb-1 flex items-center justify-center gap-2">
         <span>どのトレーニングを始めますか？</span>
       </h2>
       <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
-        カードをクリックするか、キーボードの <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">1</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">2</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">3</kbd> を押してスタートできます
+        カードをクリックするか、キーボードの <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">1</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">2</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">3</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">4</kbd> を押してスタートできます
       </p>
     </div>
 
-    <!-- App Cards Container (3 Columns) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4.5 w-full max-w-5xl shrink-0 animate-pop">
+    <!-- App Cards Container (4 Columns) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5 w-full max-w-6xl shrink-0 animate-pop">
 
       <!-- APP 1: 分数 約分マスター -->
-      <a href="bunsu.html" id="cardBunsu" class="app-card group glass-card rounded-3xl border-2 border-slate-200 dark:border-slate-700 hover:border-brand-500 dark:hover:border-brand-500 shadow-md hover:shadow-xl hover:shadow-brand-500/10 p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 relative overflow-hidden cursor-pointer">
+      <a href="bunsu.html" id="cardBunsu" class="app-card group glass-card rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-brand-500 dark:hover:border-brand-500 shadow-md hover:shadow-xl hover:shadow-brand-500/10 p-3.5 sm:p-4 flex flex-col justify-between transition-all duration-200 relative overflow-hidden cursor-pointer">
         <!-- Top Badge & Number -->
-        <div class="flex items-center justify-between mb-3">
-          <div class="w-11 h-11 rounded-2xl bg-indigo-100 dark:bg-indigo-950 text-brand-600 dark:text-indigo-400 flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform">
+        <div class="flex items-center justify-between mb-2">
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-brand-600 dark:text-indigo-400 flex items-center justify-center text-lg shadow-inner group-hover:scale-110 transition-transform">
             <i class="fa-solid fa-divide"></i>
           </div>
           <div class="flex items-center gap-1.5">
@@ -142,34 +142,34 @@
         </div>
 
         <!-- Title & Description -->
-        <div class="space-y-1.5 mb-3">
-          <h3 class="text-lg sm:text-xl font-black tracking-tight group-hover:text-brand-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-1.5">
+        <div class="space-y-1 mb-2.5">
+          <h3 class="text-base sm:text-lg font-black tracking-tight group-hover:text-brand-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-1.5">
             <span>分数 約分マスター</span>
           </h3>
-          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-            分子・分母が50以下の真分数が「約分できるか」を瞬時に見極める！2や3の約分から超難問素数まで。
+          <p class="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2">
+            分子・分母50以下の真分数が約分できるか瞬時に見極める！2や3の約分から大素数まで。
           </p>
         </div>
 
         <!-- Feature Tags -->
-        <div class="flex flex-wrap gap-1 mb-4">
-          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">2・3で約分</span>
-          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">17・19大素数</span>
-          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">タイムアタック</span>
+        <div class="flex flex-wrap gap-1 mb-3">
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">2・3約分</span>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">大素数</span>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">タイムアタック</span>
         </div>
 
         <!-- Launch Button -->
-        <div class="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-500 group-hover:from-brand-700 group-hover:to-indigo-600 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
-          <span>分数マスターを始める</span>
-          <i class="fa-solid fa-arrow-right text-[11px] group-hover:translate-x-1 transition-transform"></i>
+        <div class="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-500 group-hover:from-brand-700 group-hover:to-indigo-600 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
+          <span>分数マスター</span>
+          <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
         </div>
       </a>
 
       <!-- APP 2: 倍数マスター -->
-      <a href="baisuu.html" id="cardBaisuu" class="app-card group glass-card rounded-3xl border-2 border-slate-200 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 shadow-md hover:shadow-xl hover:shadow-emerald-500/10 p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 relative overflow-hidden cursor-pointer">
+      <a href="baisuu.html" id="cardBaisuu" class="app-card group glass-card rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 shadow-md hover:shadow-xl hover:shadow-emerald-500/10 p-3.5 sm:p-4 flex flex-col justify-between transition-all duration-200 relative overflow-hidden cursor-pointer">
         <!-- Top Badge & Number -->
-        <div class="flex items-center justify-between mb-3">
-          <div class="w-11 h-11 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform">
+        <div class="flex items-center justify-between mb-2">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg shadow-inner group-hover:scale-110 transition-transform">
             <i class="fa-solid fa-calculator"></i>
           </div>
           <div class="flex items-center gap-1.5">
@@ -183,34 +183,34 @@
         </div>
 
         <!-- Title & Description -->
-        <div class="space-y-1.5 mb-3">
-          <h3 class="text-lg sm:text-xl font-black tracking-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors flex items-center gap-1.5">
+        <div class="space-y-1 mb-2.5">
+          <h3 class="text-base sm:text-lg font-black tracking-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors flex items-center gap-1.5">
             <span>倍数マスター</span>
           </h3>
-          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-            初級2択（割れる/割れない）＆ 総合4択！指定した数やランダム出題で倍数判定のコツをマスター。
+          <p class="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2">
+            初級2択＆総合4択！指定数やランダム出題で倍数判定のコツを瞬時にマスター。
           </p>
         </div>
 
         <!-- Feature Tags -->
-        <div class="flex flex-wrap gap-1 mb-4">
-          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800">初級2択＆総合4択</span>
-          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800">2〜5桁選択</span>
-          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">判定法早見表</span>
+        <div class="flex flex-wrap gap-1 mb-3">
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800">2択＆4択</span>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800">2〜5桁選択</span>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">早見表付き</span>
         </div>
 
         <!-- Launch Button -->
-        <div class="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 group-hover:from-emerald-700 group-hover:to-teal-600 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
-          <span>倍数マスターを始める</span>
-          <i class="fa-solid fa-arrow-right text-[11px] group-hover:translate-x-1 transition-transform"></i>
+        <div class="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 group-hover:from-emerald-700 group-hover:to-teal-600 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
+          <span>倍数マスター</span>
+          <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
         </div>
       </a>
 
       <!-- APP 3: 数分類・絶対値マスター -->
-      <a href="seisu.html" id="cardSeisu" class="app-card group glass-card rounded-3xl border-2 border-slate-200 dark:border-slate-700 hover:border-pink-500 dark:hover:border-pink-500 shadow-md hover:shadow-xl hover:shadow-pink-500/10 p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 relative overflow-hidden cursor-pointer">
+      <a href="seisu.html" id="cardSeisu" class="app-card group glass-card rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-pink-500 dark:hover:border-pink-500 shadow-md hover:shadow-xl hover:shadow-pink-500/10 p-3.5 sm:p-4 flex flex-col justify-between transition-all duration-200 relative overflow-hidden cursor-pointer">
         <!-- Top Badge & Number -->
-        <div class="flex items-center justify-between mb-3">
-          <div class="w-11 h-11 rounded-2xl bg-pink-100 dark:bg-pink-950 text-pink-600 dark:text-pink-400 flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform">
+        <div class="flex items-center justify-between mb-2">
+          <div class="w-10 h-10 rounded-xl bg-pink-100 dark:bg-pink-950 text-pink-600 dark:text-pink-400 flex items-center justify-center text-lg shadow-inner group-hover:scale-110 transition-transform">
             <i class="fa-solid fa-shapes"></i>
           </div>
           <div class="flex items-center gap-1.5">
@@ -224,26 +224,67 @@
         </div>
 
         <!-- Title & Description -->
-        <div class="space-y-1.5 mb-3">
-          <h3 class="text-lg sm:text-xl font-black tracking-tight group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors flex items-center gap-1.5">
+        <div class="space-y-1 mb-2.5">
+          <h3 class="text-base sm:text-lg font-black tracking-tight group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors flex items-center gap-1.5">
             <span>数分類・絶対値</span>
           </h3>
-          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-            自然数、整数、素数、絶対値の条件を見極めろ！10連勝で合格、その先に待ち受ける試練とは…？
+          <p class="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2">
+            自然数、整数、素数、絶対値の条件を見極めろ！10連勝で合格、その先に待つ試練とは…？
           </p>
         </div>
 
         <!-- Feature Tags -->
-        <div class="flex flex-wrap gap-1 mb-4">
-          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">自然数・整数・素数</span>
-          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">絶対値・範囲判定</span>
-          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-pink-50 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-800">言葉のルール付き</span>
+        <div class="flex flex-wrap gap-1 mb-3">
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">数の分類</span>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">絶対値判定</span>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-pink-50 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-800">10連勝合格</span>
         </div>
 
         <!-- Launch Button -->
-        <div class="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 group-hover:from-pink-700 group-hover:to-purple-700 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
-          <span>数分類を始める</span>
-          <i class="fa-solid fa-arrow-right text-[11px] group-hover:translate-x-1 transition-transform"></i>
+        <div class="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 group-hover:from-pink-700 group-hover:to-purple-700 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
+          <span>数分類マスター</span>
+          <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+        </div>
+      </a>
+
+      <!-- APP 4: 式の展開マスター (新設) -->
+      <a href="tenkai/index.html" id="cardTenkai" class="app-card group glass-card rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-500 shadow-md hover:shadow-xl hover:shadow-amber-500/10 p-3.5 sm:p-4 flex flex-col justify-between transition-all duration-200 relative overflow-hidden cursor-pointer">
+        <!-- Top Badge & Number -->
+        <div class="flex items-center justify-between mb-2">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg shadow-inner group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+              式変形・展開の工夫
+            </span>
+            <span class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 group-hover:bg-amber-600 group-hover:text-white text-slate-500 dark:text-slate-300 font-mono font-black text-xs flex items-center justify-center border border-slate-200 dark:border-slate-700 transition-colors shadow-xs">
+              4
+            </span>
+          </div>
+        </div>
+
+        <!-- Title & Description -->
+        <div class="space-y-1 mb-2.5">
+          <h3 class="text-base sm:text-lg font-black tracking-tight group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors flex items-center gap-1.5">
+            <span>式の展開マスター</span>
+          </h3>
+          <p class="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2">
+            左辺の式を変形して和と差の積 (A+B)(A-B) の形を作る4択トレーニング！連続10問で合格。
+          </p>
+        </div>
+
+        <!-- Feature Tags -->
+        <div class="flex flex-wrap gap-1 mb-3">
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">和と差の積</span>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">4択クイズ</span>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">タイムランキング</span>
+        </div>
+
+        <!-- Launch Button -->
+        <div class="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 group-hover:from-amber-600 group-hover:to-orange-600 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
+          <span>展開マスター</span>
+          <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
         </div>
       </a>
 
@@ -253,12 +294,13 @@
 
   <!-- ==================== FOOTER (1 Line Shortcuts Guide) ==================== -->
   <footer class="w-full border-t border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/80 backdrop-blur py-2 px-6 shrink-0 text-center text-xs text-slate-500 dark:text-slate-400">
-    <div class="max-w-5xl mx-auto flex items-center justify-between">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
       <span class="font-bold text-[11px]">算数・数学トレーニングシリーズ</span>
       <div class="hidden sm:flex items-center gap-3 font-mono text-[11px]">
-        <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">1</kbd> 分数マスター</span>
-        <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">2</kbd> 倍数マスター</span>
-        <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">3</kbd> 数分類マスター</span>
+        <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">1</kbd> 分数</span>
+        <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">2</kbd> 倍数</span>
+        <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">3</kbd> 数分類</span>
+        <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">4</kbd> 展開</span>
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">← / →</kbd> 選択</span>
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">Enter</kbd> 決定</span>
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">F</kbd> 全画面</span>
@@ -272,6 +314,7 @@
       cardBunsu: document.getElementById('cardBunsu'),
       cardBaisuu: document.getElementById('cardBaisuu'),
       cardSeisu: document.getElementById('cardSeisu'),
+      cardTenkai: document.getElementById('cardTenkai'),
       themeToggleBtn: document.getElementById('themeToggleBtn'),
       themeIcon: document.getElementById('themeIcon'),
       fullscreenToggleBtn: document.getElementById('fullscreenToggleBtn'),
@@ -279,7 +322,7 @@
     };
 
     let selectedIndex = 0;
-    const cards = [el.cardBunsu, el.cardBaisuu, el.cardSeisu];
+    const cards = [el.cardBunsu, el.cardBaisuu, el.cardSeisu, el.cardTenkai];
 
     function updateCardFocus() {
       cards.forEach((c, idx) => {
@@ -343,7 +386,7 @@
       document.addEventListener('MSFullscreenChange', updateFullscreenUI);
     }
 
-    // Keyboard Navigation: 1, 2, 3, ArrowLeft, ArrowRight, Enter, F
+    // Keyboard Navigation: 1, 2, 3, 4, ArrowLeft, ArrowRight, Enter, F
     window.addEventListener('keydown', (e) => {
       if (e.key === '1') {
         e.preventDefault();
@@ -354,6 +397,9 @@
       } else if (e.key === '3') {
         e.preventDefault();
         window.location.href = 'seisu.html';
+      } else if (e.key === '4') {
+        e.preventDefault();
+        window.location.href = 'tenkai/index.html';
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
         selectedIndex = (selectedIndex - 1 + cards.length) % cards.length;
