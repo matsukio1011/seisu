@@ -1362,3 +1362,523 @@ kbd {
 .hidden {
   display: none !important;
 }
+
+/* =========================================
+   モード切り替えタブ (ヘッダー中央)
+========================================= */
+.header-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mode-tabs {
+  display: flex;
+  align-items: center;
+  background: var(--bg-badge);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  padding: 3px;
+  gap: 3px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.mode-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.mode-tab:hover {
+  color: var(--text-main);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+body.theme-dark .mode-tab:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mode-tab.active {
+  background: var(--bg-card);
+  color: var(--primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+body.theme-dark .mode-tab.active {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.tab-badge {
+  font-size: 0.7rem;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: rgba(37, 99, 235, 0.12);
+  color: inherit;
+  font-weight: 800;
+}
+
+body.theme-dark .mode-tab.active .tab-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+/* =========================================
+   モードビュー (全画面スクロール絶対ゼロ対応)
+========================================= */
+.mode-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* =========================================
+   MODE 2: 因数分解8枚◯✕チェック スタイル
+========================================= */
+.factor-status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 6px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  min-height: 28px;
+}
+
+.factor-status-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.factor-selection-pill {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 2px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--primary-border);
+  transition: all var(--transition-fast);
+}
+
+.factor-key-hint {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.factor-status-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* 8枚カードグリッド (4列 x 2行) */
+.factor-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+  margin: 4px 0 6px;
+}
+
+.math-card {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  padding: 6px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.12s ease, border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  overflow: hidden;
+}
+
+.math-card:hover {
+  background-color: var(--bg-card-hover);
+  border-color: #94a3b8;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Card Header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.card-num-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--bg-badge);
+  border: 1px solid var(--border-color);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.card-shortcut {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
+/* ◯ / ✕ Choice Button Group */
+.card-choice-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.choice-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-page);
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.choice-btn:hover {
+  transform: scale(1.08);
+  border-color: #94a3b8;
+}
+
+.choice-btn.circle:hover {
+  color: #10b981;
+}
+
+.choice-btn.cross:hover {
+  color: #ef4444;
+}
+
+/* ◯ Active (Green) */
+.choice-btn.circle.active {
+  background: #10b981;
+  border-color: #059669;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+/* ✕ Active (Red) */
+.choice-btn.cross.active {
+  background: #ef4444;
+  border-color: #dc2626;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+
+/* Card Selection States based on Choice */
+.math-card.picked-circle {
+  border-color: #10b981;
+  background-color: rgba(16, 185, 129, 0.05);
+}
+
+.math-card.picked-cross {
+  border-color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+/* Unanswered Alert Shake */
+.math-card.unanswered-alert {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.5) !important;
+  animation: shake 0.35s ease-in-out;
+}
+
+/* Formula Container inside card */
+.card-formula {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--text-main);
+  padding: 3px 6px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.formula-line {
+  width: 100%;
+  max-width: 100%;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center center;
+  transition: transform 0.1s ease;
+}
+
+.formula-original {
+  font-size: clamp(0.95rem, 1.22vw, 1.25rem);
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.formula-transformed {
+  font-size: clamp(0.98rem, 1.28vw, 1.35rem);
+  color: var(--primary);
+  font-weight: 500;
+}
+
+body.theme-dark .formula-transformed {
+  color: #93c5fd;
+}
+
+.card-formula .katex {
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+/* Result Verdict Badges & Reasons */
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 22px;
+  font-size: 0.72rem;
+  margin-top: 2px;
+}
+
+.card-status-pill {
+  display: none;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.card-explain-btn {
+  display: none;
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.card-explain-btn:hover {
+  background: var(--bg-badge);
+  color: var(--text-main);
+}
+
+/* 判定結果のカードスタイル */
+.math-card.evaluated.eval-correct {
+  border-color: var(--success-border) !important;
+  background-color: var(--success-bg) !important;
+}
+.math-card.evaluated.eval-correct .card-status-pill {
+  display: inline-flex;
+  background: var(--success);
+  color: #ffffff;
+}
+
+.math-card.evaluated.eval-wrong {
+  border-color: var(--error-border) !important;
+  background-color: var(--error-bg) !important;
+  animation: shake 0.3s ease-in-out;
+}
+.math-card.evaluated.eval-wrong .card-status-pill {
+  display: inline-flex;
+  background: var(--error);
+  color: #ffffff;
+}
+
+.math-card.evaluated .card-explain-btn {
+  display: inline-block;
+}
+
+/* フッターコントロール */
+.factor-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 6px 14px;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+  gap: 12px;
+}
+
+.factor-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.factor-footer-center {
+  flex: 1;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.factor-footer-center .feedback-perfect {
+  color: var(--success);
+  font-size: 1.05rem;
+}
+.factor-footer-center .feedback-good {
+  color: var(--primary);
+}
+.factor-footer-center .feedback-retry {
+  color: var(--error);
+}
+
+.factor-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ボタン汎用 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: #ffffff;
+  box-shadow: var(--shadow-btn);
+}
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-success {
+  background-color: var(--success);
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+.btn-success:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: var(--bg-page);
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+.btn-secondary:hover {
+  background-color: var(--border-color);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border-color: var(--border-color);
+  color: var(--text-muted);
+}
+.btn-outline:hover {
+  background-color: var(--bg-page);
+  color: var(--text-main);
+}
+
+.shortcut-tag {
+  background: rgba(255, 255, 255, 0.25);
+  font-size: 0.72rem;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.btn-secondary .shortcut-tag,
+.btn-outline .shortcut-tag {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* ガイドテーブル */
+.guide-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin-top: 8px;
+}
+.guide-table th, .guide-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-light);
+  text-align: left;
+}
+.guide-table th {
+  border-bottom: 2px solid var(--border-color);
+  color: var(--text-muted);
+}
+.text-danger { color: var(--error); font-weight: 700; }
+.text-success { color: var(--success); font-weight: 700; }
+
+.modal-formula-box {
+  background: var(--bg-page);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  margin: 8px 0;
+}
+
+/* 紙吹雪 Canvas */
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 999;
+}

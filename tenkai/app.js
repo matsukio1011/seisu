@@ -570,6 +570,36 @@ class QuizApp {
 
       const key = e.key.toUpperCase();
 
+      // Mキー: 学習モード切り替え (展開4択 ⇄ 因数分解8枚◯✕)
+      if (key === 'M' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+        e.preventDefault();
+        if (window.modeController) {
+          window.modeController.toggleMode();
+        }
+        return;
+      }
+
+      // 共通キー (全画面・テーマ・音)
+      if (key === 'F') {
+        this.toggleFullscreen();
+        return;
+      } else if (key === 'T') {
+        this.toggleTheme();
+        return;
+      } else if (key === 'S') {
+        this.toggleSound();
+        return;
+      }
+
+      // モード2 (因数分解) がアクティブな場合は因数分解アプリに委譲
+      if (window.activeAppMode === 'factor') {
+        if (window.factoringApp) {
+          window.factoringApp.handleKeydown(e);
+        }
+        return;
+      }
+
+      // 以下、モード1 (展開クイズ) がアクティブな場合のキー処理
       // 合格者モーダルが開いている場合
       if (!this.dom.hallOfFameModal.classList.contains('hidden')) {
         if (e.key === 'Escape' || key === 'W') {
@@ -594,12 +624,6 @@ class QuizApp {
       } else if (key === 'H') {
         e.preventDefault();
         this.openHistoryModal();
-      } else if (key === 'F') {
-        this.toggleFullscreen();
-      } else if (key === 'T') {
-        this.toggleTheme();
-      } else if (key === 'S') {
-        this.toggleSound();
       } else if (['1', '2', '3', '4'].includes(key)) {
         const optionIndex = parseInt(key, 10) - 1;
         this.selectOption(optionIndex);
@@ -1185,7 +1209,959 @@ class QuizApp {
   }
 }
 
-// アプリケーション起動
+// =========================================
+// 紙吹雪演出マネージャー (Canvas Confetti)
+// =========================================
+class ConfettiManager {
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas ? canvas.getContext('2d') : null;
+    this.particles = [];
+    this.animId = null;
+    if (this.canvas) {
+      this.resize();
+      window.addEventListener('resize', () => this.resize());
+    }
+  }
+
+  resize() {
+    if (!this.canvas) return;
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+  }
+
+  fire() {
+    if (!this.canvas || !this.ctx) return;
+    this.resize();
+    this.particles = [];
+    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4'];
+    for (let i = 0; i < 90; i++) {
+      this.particles.push({
+        x: this.canvas.width / 2 + (Math.random() - 0.5) * 200,
+        y: this.canvas.height / 2,
+        vx: (Math.random() - 0.5) * 16,
+        vy: (Math.random() - 0.8) * 18,
+        size: Math.random() * 8 + 5,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rotation: Math.random() * 360,
+        vRot: (Math.random() - 0.5) * 10,
+        alpha: 1,
+        life: 0.98 + Math.random() * 0.015
+      });
+    }
+
+    if (this.animId) cancelAnimationFrame(this.animId);
+    this.animate();
+  }
+
+  animate() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+      const p = this.particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.35; // 重力
+      p.vx *= 0.98;
+      p.rotation += p.vRot;
+      p.alpha *= p.life;
+
+      if (p.alpha <= 0.02 || p.y > this.canvas.height + 50) {
+        this.particles.splice(i, 1);
+        continue;
+      }
+
+      this.ctx.save();
+      this.ctx.translate(p.x, p.y);
+      this.ctx.rotate((p.rotation * Math.PI) / 180);
+      this.ctx.globalAlpha = p.alpha;
+      this.ctx.fillStyle = p.color;
+      this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+      this.ctx.restore();
+    }
+
+    if (this.particles.length > 0) {
+      this.animId = requestAnimationFrame(() => this.animate());
+    } else {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.animId = null;
+    }
+  }
+}
+
+// =========================================
+// MODE 2: 因数分解問題バンク & 生成ロジック
+// =========================================
+const FACTOR_QUESTION_BANK = {
+  // 原本画像に掲載されている4問を含む重要パターン
+  coreSamples: [
+    // 1. (x - y)^2 - (a + 3b)^2
+    {
+      original: "(x - y)^2 - (a + 3b)^2",
+      correctForms: [
+        {
+          tex: "\\{(x - y) + (a + 3b)\\}\\{(x - y) - (a + 3b)\\}",
+          reason: "正しい変形です。公式 A² - B² = {A + B}{A - B} において A = (x - y), B = (a + 3b) を正しく代入しています。"
+        },
+        {
+          tex: "(x - y + a + 3b)(x - y - a - 3b)",
+          reason: "正しい変形です。中カッコを展開し、後ろのカッコの符号 -(a + 3b) = -a - 3b と正しく外しています。"
+        }
+      ],
+      wrongForms: [
+        {
+          tex: "\\{(x - y) + (a + 3b)\\}\\{(x - y) + (a + 3b)\\}",
+          reason: "誤り：後ろのカッコの符号も '+' になっています。公式は (A + B)(A - B) なので一方はマイナスでなければなりません。"
+        },
+        {
+          tex: "\\{(x - y) - (a + 3b)\\}\\{(x - y) - (a + 3b)\\}",
+          reason: "誤り：両方のカッコがマイナスになっています。公式は (A + B)(A - B) です。"
+        },
+        {
+          tex: "(x^2 - y^2) - (a^2 + 9b^2)",
+          reason: "誤り：(x - y)² を勝手に x² - y² としてはいけません (展開公式の二乗展開ミス)。"
+        },
+        {
+          tex: "\\{(x - y) - (a + 3b)\\}^2",
+          reason: "誤り：A² - B² は (A - B)² ではありません。(A - B)² = A² - 2AB + B² です。"
+        }
+      ]
+    },
+
+    // 2. (a + 2b)^2 - (x - 1)^2
+    {
+      original: "(a + 2b)^2 - (x - 1)^2",
+      correctForms: [
+        {
+          tex: "\\{(a + 2b) + (x - 1)\\}\\{(a + 2b) - (x - 1)\\}",
+          reason: "正しい変形です。A = (a + 2b), B = (x - 1) とおいた A² - B² = {A + B}{A - B} の中カッコの形です。"
+        },
+        {
+          tex: "(a + 2b + x - 1)(a + 2b - x + 1)",
+          reason: "正しい変形です。後ろのカッコ -(x - 1) を正しく展開して -x + 1 となっています。"
+        }
+      ],
+      wrongForms: [
+        {
+          tex: "(a + 2b + x - 1)(a + 2b - x - 1)",
+          reason: "誤り：最頻出ミス！後ろの -(x - 1) のカッコを外すとき、符号が反転して +1 になるべきところが -1 のままです。"
+        },
+        {
+          tex: "\\{(a + 2b) + (x - 1)\\}^2",
+          reason: "誤り：全体の二乗にはなりません。A² - B² = (A + B)(A - B) です。"
+        },
+        {
+          tex: "\\{(a + 2b) - (x - 1)\\}\\{(a + 2b) - (x - 1)\\}",
+          reason: "誤り：両方のカッコが引き算になっています。(A + B)(A - B) の和と差の積になりません。"
+        }
+      ]
+    },
+
+    // 3. (2x + y)^2 - 36
+    {
+      original: "(2x + y)^2 - 36",
+      correctForms: [
+        {
+          tex: "(2x + y + 6)(2x + y - 6)",
+          reason: "正しい変形です。36 = 6² なので、(2x + y + 6)(2x + y - 6) と因数分解できます。"
+        },
+        {
+          tex: "\\{(2x + y) + 6\\}\\{(2x + y) - 6\\}",
+          reason: "正しい変形です。36 を 6² と捉え、公式 {A + 6}{A - 6} を適用しています。"
+        }
+      ],
+      wrongForms: [
+        {
+          tex: "(2x + y + 36)(2x + y - 36)",
+          reason: "誤り：36 の平方根 (6) を取らずに、36 のまま因数分解してしまっています。"
+        },
+        {
+          tex: "(2x + y + 18)(2x + y - 18)",
+          reason: "誤り：36 を半分 (18) にしてしまっています。必要なのは 6² = 36 なので 6 です。"
+        },
+        {
+          tex: "(2x + y - 6)^2",
+          reason: "誤り：二乗の差 A² - B² は (A - B)² ではありません。"
+        },
+        {
+          tex: "(2x + y + 6)(2x + y + 6)",
+          reason: "誤り：両方足し算になっています。(A + B)(A - B) になる必要があります。"
+        }
+      ]
+    },
+
+    // 4. 64 - (x - y)^2
+    {
+      original: "64 - (x - y)^2",
+      correctForms: [
+        {
+          tex: "\\{8 + (x - y)\\}\\{8 - (x - y)\\}",
+          reason: "正しい変形です。64 = 8² より、{8 + (x - y)}{8 - (x - y)} となります。"
+        },
+        {
+          tex: "(8 + x - y)(8 - x + y)",
+          reason: "正しい変形です。後ろのカッコ -(x - y) を展開すると -x + y に正しく符号反転しています。"
+        }
+      ],
+      wrongForms: [
+        {
+          tex: "\\{64 + (x - y)\\}\\{64 - (x - y)\\}",
+          reason: "誤り：64 の平方根 (8) を取らず、64 のままにしてしまっています。"
+        },
+        {
+          tex: "\\{32 + (x - y)\\}\\{32 - (x - y)\\}",
+          reason: "誤り：64 を半分 (32) にしてしまっています。8² = 64 より 8 が正解です。"
+        },
+        {
+          tex: "(8 + x - y)(8 - x - y)",
+          reason: "誤り：後ろの -(x - y) を外すとき、-y の符号が反転して +y になるべきですが -y のままです。"
+        },
+        {
+          tex: "(x - y + 8)(x - y - 8)",
+          reason: "誤り：引く順番が逆です。64 - A² なので (8 + A)(8 - A) であり、全体に -1 倍の符号ズレが生じます。"
+        },
+        {
+          tex: "\\{8 - (x - y)\\}^2",
+          reason: "誤り：二乗の形にしてしまっています。正しくは和と差の積です。"
+        }
+      ]
+    },
+
+    // 5. (3x - 1)^2 - 25
+    {
+      original: "(3x - 1)^2 - 25",
+      correctForms: [
+        {
+          tex: "(3x - 1 + 5)(3x - 1 - 5)",
+          reason: "正しい変形です。25 = 5² なので (3x - 1 + 5)(3x - 1 - 5) と変形できます。"
+        },
+        {
+          tex: "\\{(3x - 1) + 5\\}\\{(3x - 1) - 5\\}",
+          reason: "正しい変形です。公式 A² - 5² = {A + 5}{A - 5} を正しく適用しています。"
+        }
+      ],
+      wrongForms: [
+        {
+          tex: "(3x - 1 + 25)(3x - 1 - 25)",
+          reason: "誤り：25 の平方根 (5) を取らず、25 のまま式を作っています。"
+        },
+        {
+          tex: "(3x + 4)(3x - 4)",
+          reason: "誤り：(3x - 1 - 5) は 3x - 6 になるはずですが、計算が合っていません。"
+        }
+      ]
+    },
+
+    // 6. 49 - (2a + b)^2
+    {
+      original: "49 - (2a + b)^2",
+      correctForms: [
+        {
+          tex: "\\{7 + (2a + b)\\}\\{7 - (2a + b)\\}",
+          reason: "正しい変形です。49 = 7² より {7 + (2a + b)}{7 - (2a + b)} です。"
+        },
+        {
+          tex: "(7 + 2a + b)(7 - 2a - b)",
+          reason: "正しい変形です。後ろのカッコ -(2a + b) を外して -2a - b と符号が正しく変化しています。"
+        }
+      ],
+      wrongForms: [
+        {
+          tex: "(7 + 2a + b)(7 - 2a + b)",
+          reason: "誤り：後ろのカッコ -(2a + b) の +b が -b に変わっていません。"
+        },
+        {
+          tex: "\\{49 + (2a + b)\\}\\{49 - (2a + b)\\}",
+          reason: "誤り：49 の平方根 (7) に直していません。"
+        }
+      ]
+    },
+
+    // 7. (x + 3)^2 - 16y^2
+    {
+      original: "(x + 3)^2 - 16y^2",
+      correctForms: [
+        {
+          tex: "(x + 3 + 4y)(x + 3 - 4y)",
+          reason: "正しい変形です。16y² = (4y)² なので (x + 3 + 4y)(x + 3 - 4y) となります。"
+        },
+        {
+          tex: "\\{(x + 3) + 4y\\}\\{(x + 3) - 4y\\}",
+          reason: "正しい変形です。A = (x + 3), B = 4y として公式を正しく用いています。"
+        }
+      ],
+      wrongForms: [
+        {
+          tex: "(x + 3 + 16y)(x + 3 - 16y)",
+          reason: "誤り：16 の平方根 (4) を取らず、16y のままにしてしまっています。"
+        },
+        {
+          tex: "(x + 3 + 8y)(x + 3 - 8y)",
+          reason: "誤り：16 を半分にして 8 にしてしまっています。4² = 16 なので 4y が正解です。"
+        }
+      ]
+    },
+
+    // 8. (2a - b)^2 - (a - 3b)^2
+    {
+      original: "(2a - b)^2 - (a - 3b)^2",
+      correctForms: [
+        {
+          tex: "\\{(2a - b) + (a - 3b)\\}\\{(2a - b) - (a - 3b)\\}",
+          reason: "正しい変形です。塊として A = (2a - b), B = (a - 3b) を {A + B}{A - B} に当てはめています。"
+        },
+        {
+          tex: "(2a - b + a - 3b)(2a - b - a + 3b)",
+          reason: "正しい変形です。-(a - 3b) のマイナスが分配されて -a + 3b に正しく符号反転しています。"
+        }
+      ],
+      wrongForms: [
+        {
+          tex: "(2a - b + a - 3b)(2a - b - a - 3b)",
+          reason: "誤り：-(a - 3b) のマイナス分配で、-3b が +3b に変わっていません。"
+        },
+        {
+          tex: "\\{(2a - b) + (a - 3b)\\}^2",
+          reason: "誤り：A² - B² は二乗にはならず、和と差の積 (A + B)(A - B) です。"
+        }
+      ]
+    }
+  ],
+
+  // 8問の問題セットを生成（正解の数は2〜5個のランダム）
+  generateRound(isFirstRound = false) {
+    const totalCards = 8;
+    const targetCorrectCount = Math.floor(Math.random() * 4) + 2; // 2, 3, 4, 5
+    const targetWrongCount = totalCards - targetCorrectCount;
+
+    const correctCandidates = [];
+    const wrongCandidates = [];
+
+    let samples = [...this.coreSamples];
+    if (isFirstRound) {
+      const top4 = samples.slice(0, 4);
+      const rest = samples.slice(4).sort(() => Math.random() - 0.5);
+      samples = [...top4, ...rest];
+    } else {
+      samples.sort(() => Math.random() - 0.5);
+    }
+
+    samples.forEach(item => {
+      item.correctForms.forEach(cf => {
+        correctCandidates.push({
+          original: item.original,
+          transformed: cf.tex,
+          fullEquation: `${item.original} = ${cf.tex}`,
+          isCorrect: true,
+          reason: cf.reason
+        });
+      });
+
+      item.wrongForms.forEach(wf => {
+        wrongCandidates.push({
+          original: item.original,
+          transformed: wf.tex,
+          fullEquation: `${item.original} = ${wf.tex}`,
+          isCorrect: false,
+          reason: wf.reason
+        });
+      });
+    });
+
+    if (!isFirstRound) {
+      correctCandidates.sort(() => Math.random() - 0.5);
+      wrongCandidates.sort(() => Math.random() - 0.5);
+    }
+
+    const selectedCorrect = [];
+    const usedEquations = new Set();
+
+    for (const c of correctCandidates) {
+      if (selectedCorrect.length >= targetCorrectCount) break;
+      if (!usedEquations.has(c.fullEquation)) {
+        selectedCorrect.push(c);
+        usedEquations.add(c.fullEquation);
+      }
+    }
+
+    const selectedWrong = [];
+    for (const w of wrongCandidates) {
+      if (selectedWrong.length >= targetWrongCount) break;
+      if (!usedEquations.has(w.fullEquation)) {
+        selectedWrong.push(w);
+        usedEquations.add(w.fullEquation);
+      }
+    }
+
+    const roundCards = [...selectedCorrect, ...selectedWrong].sort(() => Math.random() - 0.5);
+
+    return roundCards.map((card, idx) => ({
+      ...card,
+      id: idx,
+      shortcut: idx + 1, // 1..8
+      userChoice: null   // 'circle' | 'cross' | null
+    }));
+  }
+};
+
+// =========================================
+// MODE 2: 因数分解8枚◯✕チェック アプリ本体
+// =========================================
+class FactoringApp {
+  constructor(sharedQuizApp) {
+    this.quizApp = sharedQuizApp; // 共通のサウンド・テーマ設定を参照
+    this.confetti = new ConfettiManager(document.getElementById('confetti-canvas'));
+    
+    this.cards = [];
+    this.isEvaluated = false;
+
+    this.streak = 0;
+    this.totalRounds = 0;
+    this.totalCorrectJudgments = 0;
+    this.totalPossibleJudgments = 0;
+
+    this.initDOM();
+    this.initEvents();
+    this.startNewRound(true);
+  }
+
+  initDOM() {
+    this.cardsContainer = document.getElementById('factor-cards-container');
+    this.selectionStatus = document.getElementById('factor-selection-status');
+    this.resultSummary = document.getElementById('factor-result-summary');
+    this.roundFeedback = document.getElementById('factor-round-feedback');
+
+    this.btnCheck = document.getElementById('factor-btn-check');
+    this.btnNext = document.getElementById('factor-btn-next');
+    this.btnClear = document.getElementById('factor-btn-clear');
+    this.btnFormulaHint = document.getElementById('factor-btn-formula-hint');
+
+    // モーダル
+    this.modalOverlay = document.getElementById('factor-modal-overlay');
+    this.modalTitle = document.getElementById('factor-modal-title');
+    this.modalBody = document.getElementById('factor-modal-body');
+    this.modalClose = document.getElementById('factor-modal-close');
+    this.modalCloseBottom = document.getElementById('factor-modal-close-bottom');
+
+    this.guideModal = document.getElementById('factor-guide-modal');
+    this.guideModalClose = document.getElementById('factor-guide-modal-close');
+    this.guideModalCloseBottom = document.getElementById('factor-guide-modal-close-bottom');
+  }
+
+  initEvents() {
+    this.btnCheck.addEventListener('click', () => this.evaluate());
+    this.btnNext.addEventListener('click', () => this.startNewRound());
+    this.btnClear.addEventListener('click', () => this.clearAllChoices());
+    this.btnFormulaHint.addEventListener('click', () => this.showFormulaGuide());
+
+    // モーダル閉じる
+    this.modalClose.addEventListener('click', () => this.closeDetailModal());
+    this.modalCloseBottom.addEventListener('click', () => this.closeDetailModal());
+    this.modalOverlay.addEventListener('click', (e) => {
+      if (e.target === this.modalOverlay) this.closeDetailModal();
+    });
+
+    this.guideModalClose.addEventListener('click', () => this.closeGuideModal());
+    this.guideModalCloseBottom.addEventListener('click', () => this.closeGuideModal());
+    this.guideModal.addEventListener('click', (e) => {
+      if (e.target === this.guideModal) this.closeGuideModal();
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.activeAppMode === 'factor') {
+        this.fitAllFormulas();
+      }
+    });
+  }
+
+  // キーボードイベント (QuizAppから委譲される)
+  handleKeydown(e) {
+    if (this.modalOverlay && !this.modalOverlay.classList.contains('hidden')) {
+      if (e.key === 'Escape') this.closeDetailModal();
+      return;
+    }
+
+    if (this.guideModal && !this.guideModal.classList.contains('hidden')) {
+      if (e.key === 'Escape') this.closeGuideModal();
+      return;
+    }
+
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (!this.isEvaluated) {
+        this.evaluate();
+      } else {
+        this.startNewRound();
+      }
+      return;
+    }
+
+    // 1〜8キーで ◯/✕ トグル
+    if (e.key >= '1' && e.key <= '8') {
+      e.preventDefault();
+      const cardIndex = parseInt(e.key, 10) - 1;
+      this.toggleChoice(cardIndex);
+    }
+  }
+
+  startNewRound(isFirstRound = false) {
+    this.isEvaluated = false;
+    this.cards = FACTOR_QUESTION_BANK.generateRound(isFirstRound);
+
+    this.btnCheck.style.display = 'inline-flex';
+    this.btnNext.style.display = 'none';
+    this.btnClear.disabled = false;
+    this.roundFeedback.innerHTML = '';
+    this.resultSummary.innerHTML = '';
+    this.updateProgressStatus();
+
+    this.renderCards();
+  }
+
+  renderCards() {
+    this.cardsContainer.innerHTML = '';
+
+    this.cards.forEach((card, idx) => {
+      const cardEl = document.createElement('div');
+      cardEl.className = 'math-card';
+      cardEl.dataset.id = card.id;
+
+      const numLabel = idx + 1;
+      const shortcutLabel = card.shortcut;
+
+      cardEl.innerHTML = `
+        <div class="card-header">
+          <div style="display: flex; align-items: center; gap: 4px;">
+            <span class="card-num-tag">${numLabel}</span>
+            <span class="card-shortcut">[${shortcutLabel}]</span>
+          </div>
+          <div class="card-choice-group">
+            <button class="choice-btn circle ${card.userChoice === 'circle' ? 'active' : ''}" data-choice="circle" title="正しい変形 (◯)">◯</button>
+            <button class="choice-btn cross ${card.userChoice === 'cross' ? 'active' : ''}" data-choice="cross" title="間違った変形 (✕)">✕</button>
+          </div>
+        </div>
+        <div class="card-formula" id="factor-formula-${card.id}" title="クリックで ◯ / ✕ を切替">
+          <div class="formula-line formula-original" id="factor-orig-${card.id}"></div>
+          <div class="formula-line formula-transformed" id="factor-trans-${card.id}"></div>
+        </div>
+        <div class="card-footer">
+          <span class="card-status-pill" id="factor-pill-${card.id}"></span>
+          <button class="card-explain-btn" id="factor-explain-${card.id}">解説</button>
+        </div>
+      `;
+
+      // ◯ボタン
+      const btnCircle = cardEl.querySelector('.choice-btn.circle');
+      btnCircle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.setChoice(card.id, 'circle');
+      });
+
+      // ✕ボタン
+      const btnCross = cardEl.querySelector('.choice-btn.cross');
+      btnCross.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.setChoice(card.id, 'cross');
+      });
+
+      // 数式領域クリックでトグル
+      const formulaEl = cardEl.querySelector('.card-formula');
+      formulaEl.addEventListener('click', () => {
+        this.toggleChoice(card.id);
+      });
+
+      // 解説ボタン
+      const explainBtn = cardEl.querySelector('.card-explain-btn');
+      explainBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.showCardDetail(card);
+      });
+
+      this.cardsContainer.appendChild(cardEl);
+
+      // KaTeX 数式描画
+      this.renderFormulaLine(card.original, `factor-orig-${card.id}`);
+      this.renderFormulaLine(`= ${card.transformed}`, `factor-trans-${card.id}`);
+    });
+
+    setTimeout(() => this.fitAllFormulas(), 50);
+    setTimeout(() => this.fitAllFormulas(), 250);
+  }
+
+  renderFormulaLine(texStr, elementId) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+
+    const render = () => {
+      if (typeof katex !== 'undefined') {
+        try {
+          katex.render(texStr, el, { displayMode: false, throwOnError: false });
+          this.fitFormulaLine(el);
+          return true;
+        } catch (e) {
+          console.warn('KaTeX render error:', e);
+        }
+      }
+      return false;
+    };
+
+    if (render()) return;
+
+    const retryInterval = setInterval(() => {
+      if (render()) clearInterval(retryInterval);
+    }, 100);
+
+    setTimeout(() => {
+      clearInterval(retryInterval);
+      if (!el.innerHTML.trim()) {
+        el.textContent = texStr;
+        this.fitFormulaLine(el);
+      }
+    }, 3000);
+  }
+
+  // 式がカードからはみ出ない自動スケーリング
+  fitFormulaLine(lineEl) {
+    if (!lineEl) return;
+    lineEl.style.transform = 'none';
+
+    const inner = lineEl.querySelector('.katex-html') || lineEl.firstElementChild || lineEl;
+    const parentContainer = lineEl.closest('.card-formula') || lineEl.parentElement;
+    if (!inner || !parentContainer) return;
+
+    const naturalWidth = inner.scrollWidth || inner.offsetWidth;
+    const availableWidth = parentContainer.clientWidth - 12;
+
+    if (naturalWidth > availableWidth && availableWidth > 0) {
+      const scale = Math.max(0.65, availableWidth / naturalWidth);
+      lineEl.style.transform = `scale(${scale.toFixed(3)})`;
+    } else {
+      lineEl.style.transform = 'none';
+    }
+  }
+
+  fitAllFormulas() {
+    if (!this.cardsContainer) return;
+    const lines = this.cardsContainer.querySelectorAll('.formula-line');
+    lines.forEach(line => this.fitFormulaLine(line));
+  }
+
+  setChoice(id, choice) {
+    if (this.isEvaluated) return;
+    const card = this.cards.find(c => c.id === id);
+    if (!card) return;
+
+    if (card.userChoice === choice) {
+      card.userChoice = null;
+      this.quizApp.playSound('click');
+    } else {
+      card.userChoice = choice;
+      if (choice === 'circle') {
+        this.quizApp.playSound('correct');
+      } else {
+        this.quizApp.playSound('wrong');
+      }
+    }
+
+    this.updateCardChoiceUI(id);
+    this.updateProgressStatus();
+  }
+
+  toggleChoice(id) {
+    if (this.isEvaluated) return;
+    const card = this.cards.find(c => c.id === id);
+    if (!card) return;
+
+    if (card.userChoice === null) {
+      this.setChoice(id, 'circle');
+    } else if (card.userChoice === 'circle') {
+      this.setChoice(id, 'cross');
+    } else {
+      this.setChoice(id, 'cross'); // 解除
+    }
+  }
+
+  updateCardChoiceUI(id) {
+    const card = this.cards.find(c => c.id === id);
+    const cardEl = this.cardsContainer.querySelector(`[data-id="${id}"]`);
+    if (!card || !cardEl) return;
+
+    cardEl.classList.remove('picked-circle', 'picked-cross', 'unanswered-alert');
+
+    const btnCircle = cardEl.querySelector('.choice-btn.circle');
+    const btnCross = cardEl.querySelector('.choice-btn.cross');
+
+    if (card.userChoice === 'circle') {
+      cardEl.classList.add('picked-circle');
+      btnCircle.classList.add('active');
+      btnCross.classList.remove('active');
+    } else if (card.userChoice === 'cross') {
+      cardEl.classList.add('picked-cross');
+      btnCircle.classList.remove('active');
+      btnCross.classList.add('active');
+    } else {
+      btnCircle.classList.remove('active');
+      btnCross.classList.remove('active');
+    }
+  }
+
+  clearAllChoices() {
+    if (this.isEvaluated) return;
+    this.cards.forEach(card => {
+      card.userChoice = null;
+      this.updateCardChoiceUI(card.id);
+    });
+    this.updateProgressStatus();
+    this.quizApp.playSound('click');
+  }
+
+  updateProgressStatus() {
+    const answeredCount = this.cards.filter(c => c.userChoice !== null).length;
+    const total = this.cards.length;
+
+    if (answeredCount === total) {
+      this.selectionStatus.textContent = `全問回答完了！(8 / 8 枚)`;
+      this.selectionStatus.style.background = 'rgba(16, 185, 129, 0.15)';
+      this.selectionStatus.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+      this.selectionStatus.style.color = 'var(--success)';
+      this.roundFeedback.innerHTML = `<span style="color: var(--success); font-weight: 700;">✨ すべての回答がつきました！「答え合わせ」を押してください</span>`;
+    } else {
+      this.selectionStatus.textContent = `回答済み: ${answeredCount} / ${total} 枚`;
+      this.selectionStatus.style.background = '';
+      this.selectionStatus.style.borderColor = '';
+      this.selectionStatus.style.color = '';
+      if (!this.isEvaluated) {
+        this.roundFeedback.innerHTML = '';
+      }
+    }
+  }
+
+  evaluate() {
+    if (this.isEvaluated) return;
+
+    // 全てのカードにマルかバツがついているかチェック
+    const unansweredCards = this.cards.filter(c => c.userChoice === null);
+    if (unansweredCards.length > 0) {
+      unansweredCards.forEach(c => {
+        const cardEl = this.cardsContainer.querySelector(`[data-id="${c.id}"]`);
+        if (cardEl) {
+          cardEl.classList.add('unanswered-alert');
+          setTimeout(() => cardEl.classList.remove('unanswered-alert'), 450);
+        }
+      });
+
+      this.quizApp.playSound('wrong');
+      this.roundFeedback.innerHTML = `
+        <span class="feedback-retry">
+          ⚠️ すべてのカードに「◯」か「✕」をつけてから判定してください（残り ${unansweredCards.length} 枚未回答）
+        </span>
+      `;
+      return;
+    }
+
+    this.isEvaluated = true;
+
+    let correctDecisions = 0;
+    let correctCount = 0;
+
+    this.cards.forEach(card => {
+      const cardEl = this.cardsContainer.querySelector(`[data-id="${card.id}"]`);
+      const pillEl = document.getElementById(`factor-pill-${card.id}`);
+
+      const expectedChoice = card.isCorrect ? 'circle' : 'cross';
+      const isHit = (card.userChoice === expectedChoice);
+
+      if (card.isCorrect) correctCount++;
+
+      cardEl.classList.add('evaluated');
+
+      if (isHit) {
+        correctDecisions++;
+        cardEl.classList.add('eval-correct');
+        pillEl.textContent = card.isCorrect ? '◯ 正解！（正しい変形）' : '✕ 正解！（誤答を見抜いた）';
+      } else {
+        cardEl.classList.add('eval-wrong');
+        pillEl.textContent = card.isCorrect ? '✕ 不正解（正解は ◯）' : '✕ 不正解（正解は ✕）';
+      }
+    });
+
+    this.totalRounds++;
+    this.totalCorrectJudgments += correctDecisions;
+    this.totalPossibleJudgments += 8;
+
+    const isPerfect = (correctDecisions === 8);
+
+    if (isPerfect) {
+      this.streak++;
+      this.quizApp.playSound('fanfare');
+      this.confetti.fire();
+      this.roundFeedback.innerHTML = `<span class="feedback-perfect">🎉 素晴らしい！8問全問完全的中（パーフェクト）！</span>`;
+    } else if (correctDecisions >= 6) {
+      this.streak = 0;
+      this.quizApp.playSound('correct');
+      this.roundFeedback.innerHTML = `<span class="feedback-good">好調！8問中 ${correctDecisions} 問的中しました！</span>`;
+    } else {
+      this.streak = 0;
+      this.quizApp.playSound('wrong');
+      this.roundFeedback.innerHTML = `<span class="feedback-retry">的中: ${correctDecisions} / 8。カードの「解説」でポイントを確認してみましょう！</span>`;
+    }
+
+    this.btnCheck.style.display = 'none';
+    this.btnNext.style.display = 'inline-flex';
+    this.btnClear.disabled = true;
+
+    this.resultSummary.innerHTML = `
+      <span>正しい変形: <strong>${correctCount}問</strong> / 誤った変形: <strong>${8 - correctCount}問</strong></span>
+    `;
+  }
+
+  showCardDetail(card) {
+    this.modalTitle.textContent = `カード詳細解説 (問題 #${card.id + 1})`;
+    
+    const correctLabel = card.isCorrect ? '◯ 正しい変形' : '✕ 間違った変形';
+    const userLabel = card.userChoice === 'circle' ? '◯ 正しい' : card.userChoice === 'cross' ? '✕ 間違い' : '未回答';
+    const isHit = (card.userChoice === (card.isCorrect ? 'circle' : 'cross'));
+
+    const verdictBadge = this.isEvaluated 
+      ? (isHit 
+          ? '<span style="color: var(--success); font-weight: 800; font-size: 1.05rem;">🎉 的中！（正解）</span>' 
+          : '<span style="color: var(--error); font-weight: 800; font-size: 1.05rem;">✕ 不正解</span>')
+      : '';
+
+    this.modalBody.innerHTML = `
+      <div class="modal-section">
+        <h4 style="font-size: 0.95rem; margin-bottom: 6px; color: var(--primary);">問題の等式</h4>
+        <div class="modal-formula-box" id="factor-modal-formula-box"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding: 6px 12px; background: var(--bg-badge); border-radius: 6px; border: 1px solid var(--border-color);">
+          <div>
+            <strong>あなたの回答:</strong> <span style="font-weight: 700;">${userLabel}</span>
+            <span style="margin: 0 10px; color: var(--text-muted);">|</span>
+            <strong>正解:</strong> <span style="font-weight: 700; color: ${card.isCorrect ? 'var(--success)' : 'var(--error)'};">${correctLabel}</span>
+          </div>
+          <div>${verdictBadge}</div>
+        </div>
+      </div>
+
+      <div class="modal-section" style="margin-top: 12px;">
+        <h4 style="font-size: 0.95rem; margin-bottom: 6px; color: var(--primary);">変形のポイント・理由</h4>
+        <p style="background: rgba(0,0,0,0.03); padding: 10px; border-radius: 6px; border-left: 4px solid ${card.isCorrect ? 'var(--success)' : 'var(--error)'}; line-height: 1.6;">
+          ${card.reason}
+        </p>
+      </div>
+
+      <div class="modal-section" style="margin-top: 12px;">
+        <h4 style="font-size: 0.95rem; margin-bottom: 6px; color: var(--primary);">基本公式の確認</h4>
+        <div style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;">
+          $$A^2 - B^2 = (A + B)(A - B)$$
+          <ul style="padding-left: 20px; margin-top: 6px;">
+            <li>カッコのかたまりは 1つの文字（A や B）とみなして中カッコを用います。</li>
+            <li>後ろのカッコを外すときは <strong>$-(B)$ のマイナスがすべての項に分配される</strong>ため、符号反転に最大の注意が必要です！</li>
+          </ul>
+        </div>
+      </div>
+    `;
+
+    this.modalOverlay.classList.remove('hidden');
+
+    const formulaBox = document.getElementById('factor-modal-formula-box');
+    const eqTeX = `${card.original} = ${card.transformed}`;
+    if (typeof katex !== 'undefined') {
+      katex.render(eqTeX, formulaBox, { displayMode: true, throwOnError: false });
+    } else {
+      formulaBox.textContent = eqTeX;
+    }
+  }
+
+  showFormulaGuide() {
+    this.guideModal.classList.remove('hidden');
+    const guideBox = document.getElementById('guide-formula-box');
+    if (guideBox && typeof katex !== 'undefined') {
+      katex.render("A^2 - B^2 = (A + B)(A - B)", guideBox, { displayMode: true, throwOnError: false });
+    }
+  }
+
+  closeDetailModal() {
+    if (this.modalOverlay) this.modalOverlay.classList.add('hidden');
+  }
+
+  closeGuideModal() {
+    if (this.guideModal) this.guideModal.classList.add('hidden');
+  }
+}
+
+// =========================================
+// モード切り替えコントローラー (ModeController)
+// =========================================
+class ModeController {
+  constructor() {
+    this.btnTenkai = document.getElementById('btn-mode-tenkai');
+    this.btnFactor = document.getElementById('btn-mode-factor');
+    this.viewTenkai = document.getElementById('view-mode-tenkai');
+    this.viewFactor = document.getElementById('view-mode-factor');
+
+    this.init();
+  }
+
+  init() {
+    if (this.btnTenkai) {
+      this.btnTenkai.addEventListener('click', () => this.switchMode('tenkai'));
+    }
+    if (this.btnFactor) {
+      this.btnFactor.addEventListener('click', () => this.switchMode('factor'));
+    }
+
+    // URLパラメータまたはハッシュから初期モード判定
+    const params = new URLSearchParams(window.location.search);
+    const modeParam = params.get('mode') || (window.location.hash === '#factor' ? 'factor' : 'tenkai');
+    this.switchMode(modeParam);
+  }
+
+  switchMode(mode) {
+    window.activeAppMode = mode;
+
+    if (mode === 'factor') {
+      this.btnTenkai.classList.remove('active');
+      this.btnFactor.classList.add('active');
+      this.viewTenkai.classList.remove('active');
+      this.viewTenkai.classList.add('hidden');
+      this.viewFactor.classList.remove('hidden');
+      this.viewFactor.classList.add('active');
+
+      document.title = '因数分解の変形チェック (8枚◯✕) | 式の展開・因数分解マスター';
+
+      // 数式のスケーリングをジャストフィット
+      if (window.factoringApp) {
+        setTimeout(() => window.factoringApp.fitAllFormulas(), 50);
+        setTimeout(() => window.factoringApp.fitAllFormulas(), 200);
+      }
+    } else {
+      this.btnFactor.classList.remove('active');
+      this.btnTenkai.classList.add('active');
+      this.viewFactor.classList.remove('active');
+      this.viewFactor.classList.add('hidden');
+      this.viewTenkai.classList.remove('hidden');
+      this.viewTenkai.classList.add('active');
+
+      document.title = '展開の工夫 式変形4択クイズ | 連続10問合格チャレンジ';
+    }
+
+    // URLハッシュを更新 (履歴に残さずスムーズに)
+    try {
+      history.replaceState(null, '', `?mode=${mode}`);
+    } catch (e) {}
+  }
+
+  toggleMode() {
+    const nextMode = window.activeAppMode === 'factor' ? 'tenkai' : 'factor';
+    this.switchMode(nextMode);
+  }
+}
+
+// =========================================
+// アプリケーション統合起動
+// =========================================
 document.addEventListener('DOMContentLoaded', () => {
   window.quizApp = new QuizApp();
+  window.factoringApp = new FactoringApp(window.quizApp);
+  window.modeController = new ModeController();
 });

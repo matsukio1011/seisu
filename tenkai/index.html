@@ -26,6 +26,20 @@
         </div>
       </div>
 
+      <!-- モード切り替えタブ -->
+      <div class="header-center">
+        <nav class="mode-tabs" aria-label="学習モード切り替え">
+          <button id="btn-mode-tenkai" class="mode-tab active" title="展開の工夫 4択クイズ (Mキー)">
+            <span class="tab-icon">📐</span>
+            <span class="tab-title">展開の工夫 <small class="tab-badge">4択</small></span>
+          </button>
+          <button id="btn-mode-factor" class="mode-tab" title="因数分解の変形 8枚◯✕チェック (Mキー)">
+            <span class="tab-icon">✨</span>
+            <span class="tab-title">因数分解の変形 <small class="tab-badge">8枚◯✕</small></span>
+          </button>
+        </nav>
+      </div>
+
       <div class="header-right">
         <!-- 合格者一覧ボタン -->
         <button id="btn-hall-of-fame" class="icon-btn trophy-btn" title="合格者一覧・殿堂入りを表示 (W)" aria-label="合格者一覧">
@@ -58,149 +72,214 @@
       </div>
     </header>
 
-    <!-- プログレス＆ステータスバー -->
-    <div class="status-bar">
-      <div class="progress-wrap">
-        <div class="progress-info">
-          <span id="streak-counter" class="counter-text">
-            🔥 連続正解: <strong id="current-streak">0</strong> / 10 問
-          </span>
-          <span id="question-total-counter" class="total-counter-text">累計回答: 0問</span>
+    <!-- ==================== MODE 1: 展開の工夫 (4択クイズ) ==================== -->
+    <div id="view-mode-tenkai" class="mode-view active">
+      <!-- プログレス＆ステータスバー -->
+      <div class="status-bar">
+        <div class="progress-wrap">
+          <div class="progress-info">
+            <span id="streak-counter" class="counter-text">
+              🔥 連続正解: <strong id="current-streak">0</strong> / 10 問
+            </span>
+            <span id="question-total-counter" class="total-counter-text">累計回答: 0問</span>
+          </div>
+          <div class="progress-track">
+            <div id="progress-bar" class="progress-fill" style="width: 0%;"></div>
+          </div>
         </div>
-        <div class="progress-track">
-          <div id="progress-bar" class="progress-fill" style="width: 0%;"></div>
+        <div class="stats-wrap">
+          <div class="stat-item">
+            <span class="stat-label">正答率</span>
+            <span id="accuracy-display" class="stat-val">100%</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">合格回数</span>
+            <span id="pass-count-display" class="stat-val pass-val">0回</span>
+          </div>
         </div>
       </div>
-      <div class="stats-wrap">
-        <div class="stat-item">
-          <span class="stat-label">正答率</span>
-          <span id="accuracy-display" class="stat-val">100%</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">合格回数</span>
-          <span id="pass-count-display" class="stat-val pass-val">0回</span>
-        </div>
-      </div>
-    </div>
 
-    <!-- メインコンテンツ領域（PC画面スクロール絶対なし） -->
-    <main class="main-content">
-      <!-- クイズ画面 -->
-      <section id="quiz-screen" class="screen quiz-screen active">
-        <!-- 問題カード -->
-        <div class="card question-card">
-          <div class="question-header">
-            <span class="question-badge">展開しやすい形への変形</span>
-            <span class="keyboard-hint">⌨️ キー [1]〜[4] で回答 / [H] で履歴 / [W] で合格者</span>
-          </div>
-
-          <div class="question-body">
-            <div class="formula-instruction">
-              左辺の式を変形して、和と差の積 <span class="math-inline">(A+B)(A-B)</span> を作りやすい式を選んでください。
+      <!-- メインコンテンツ領域（PC画面スクロール絶対なし） -->
+      <main class="main-content">
+        <!-- クイズ画面 -->
+        <section id="quiz-screen" class="screen quiz-screen active">
+          <!-- 問題カード -->
+          <div class="card question-card">
+            <div class="question-header">
+              <span class="question-badge">展開しやすい形への変形</span>
+              <span class="keyboard-hint">⌨️ キー [1]〜[4] で回答 / [H] で履歴 / [W] で合格者 / [M] でモード切替</span>
             </div>
-            <div class="equation-display">
-              <div class="equation-left" id="equation-left">
-                <!-- KaTeXで左辺を表示 -->
+
+            <div class="question-body">
+              <div class="formula-instruction">
+                左辺の式を変形して、和と差の積 <span class="math-inline">(A+B)(A-B)</span> を作りやすい式を選んでください。
               </div>
-              <div class="equation-equal">=</div>
-              <div class="equation-right-placeholder" id="equation-target">
-                <span class="question-mark">？</span>
+              <div class="equation-display">
+                <div class="equation-left" id="equation-left">
+                  <!-- KaTeXで左辺を表示 -->
+                </div>
+                <div class="equation-equal">=</div>
+                <div class="equation-right-placeholder" id="equation-target">
+                  <span class="question-mark">？</span>
+                </div>
               </div>
             </div>
+
+            <!-- フィードバックバナー（正解・不正解の即時表示） -->
+            <div id="feedback-banner" class="feedback-banner hidden">
+              <span id="feedback-icon" class="feedback-icon">⭕</span>
+              <div class="feedback-content">
+                <div id="feedback-title" class="feedback-title">正解！ 自動で次へ進みます...</div>
+                <div id="feedback-desc" class="feedback-desc"></div>
+              </div>
+              <button id="btn-next-manual" class="btn-next-manual hidden">次へ進む ➔</button>
+            </div>
           </div>
 
-          <!-- フィードバックバナー（正解・不正解の即時表示） -->
-          <div id="feedback-banner" class="feedback-banner hidden">
-            <span id="feedback-icon" class="feedback-icon">⭕</span>
-            <div class="feedback-content">
-              <div id="feedback-title" class="feedback-title">正解！ 自動で次へ進みます...</div>
-              <div id="feedback-desc" class="feedback-desc"></div>
-            </div>
-            <button id="btn-next-manual" class="btn-next-manual hidden">次へ進む ➔</button>
+          <!-- 4択選択肢エリア (2x2 グリッド) -->
+          <div class="options-grid" id="options-grid">
+            <!-- 4つの選択肢ボタンがJSで動的生成されます（左辺\n＝右辺 が同サイズで表示） -->
           </div>
-        </div>
+        </section>
 
-        <!-- 4択選択肢エリア (2x2 グリッド) -->
-        <div class="options-grid" id="options-grid">
-          <!-- 4つの選択肢ボタンがJSで動的生成されます（左辺\n＝右辺 が同サイズで表示） -->
-        </div>
-      </section>
+        <!-- 合格リザルト画面 -->
+        <section id="result-screen" class="screen result-screen hidden">
+          <div class="card result-card">
+            <div class="result-badge animate-bounce" id="result-medal">👑</div>
+            <h2 class="result-title" id="result-title">㊗️ 合格おめでとうございます！</h2>
+            <p class="result-subtitle" id="result-subtitle">連続10問正解を達成しました！式の展開変形は完璧です！</p>
 
-      <!-- 合格リザルト画面 -->
-      <section id="result-screen" class="screen result-screen hidden">
-        <div class="card result-card">
-          <div class="result-badge animate-bounce" id="result-medal">👑</div>
-          <h2 class="result-title" id="result-title">㊗️ 合格おめでとうございます！</h2>
-          <p class="result-subtitle" id="result-subtitle">連続10問正解を達成しました！式の展開変形は完璧です！</p>
-
-          <!-- 名前入力・登録エリア -->
-          <div class="pass-registration-box">
-            <div class="pass-reg-header">
-              <span class="reg-icon">🏅</span>
-              <span class="pass-reg-title">合格者としてお名前を登録</span>
+            <!-- 名前入力・登録エリア -->
+            <div class="pass-registration-box">
+              <div class="pass-reg-header">
+                <span class="reg-icon">🏅</span>
+                <span class="pass-reg-title">合格者としてお名前を登録</span>
+              </div>
+              <div id="pass-name-form" class="pass-name-form">
+                <input type="text" id="pass-user-name" class="pass-input" placeholder="お名前・ニックネームを入力" maxlength="15" autocomplete="off" />
+                <button id="btn-save-pass-name" class="action-btn success-btn btn-sm">
+                  💾 登録する
+                </button>
+              </div>
+              <div id="pass-registered-msg" class="pass-registered-msg hidden">
+                ✨ <strong id="registered-name-display"></strong> さんを合格者一覧に登録しました！
+              </div>
             </div>
-            <div id="pass-name-form" class="pass-name-form">
-              <input type="text" id="pass-user-name" class="pass-input" placeholder="お名前・ニックネームを入力" maxlength="15" autocomplete="off" />
-              <button id="btn-save-pass-name" class="action-btn success-btn btn-sm">
-                💾 登録する
+
+            <div class="result-stats-grid">
+              <div class="result-stat-box">
+                <span class="result-stat-num highlight-num" id="result-streak">10 連続</span>
+                <span class="result-stat-label">連続正解達成</span>
+              </div>
+              <div class="result-stat-box">
+                <span class="result-stat-num" id="result-accuracy">100%</span>
+                <span class="result-stat-label">全体の正答率</span>
+              </div>
+              <div class="result-stat-box">
+                <span class="result-stat-num" id="result-total-answered">10 問</span>
+                <span class="result-stat-label">総回答数</span>
+              </div>
+              <div class="result-stat-box">
+                <span class="result-stat-num" id="result-time">01:15</span>
+                <span class="result-stat-label">所要時間</span>
+              </div>
+            </div>
+
+            <div class="result-actions">
+              <button id="btn-retry-same" class="action-btn primary-btn">
+                🔄 最初から再挑戦
+              </button>
+              <button id="btn-continue" class="action-btn success-btn">
+                🚀 記録を伸ばす(11問目~)
+              </button>
+              <button id="btn-view-hof-from-result" class="action-btn trophy-btn-accent">
+                🏆 合格者一覧を見る
+              </button>
+              <button id="btn-view-history-from-result" class="action-btn secondary-btn">
+                📜 解答履歴
               </button>
             </div>
-            <div id="pass-registered-msg" class="pass-registered-msg hidden">
-              ✨ <strong id="registered-name-display"></strong> さんを合格者一覧に登録しました！
-            </div>
           </div>
+        </section>
+      </main>
 
-          <div class="result-stats-grid">
-            <div class="result-stat-box">
-              <span class="result-stat-num highlight-num" id="result-streak">10 連続</span>
-              <span class="result-stat-label">連続正解達成</span>
-            </div>
-            <div class="result-stat-box">
-              <span class="result-stat-num" id="result-accuracy">100%</span>
-              <span class="result-stat-label">全体の正答率</span>
-            </div>
-            <div class="result-stat-box">
-              <span class="result-stat-num" id="result-total-answered">10 問</span>
-              <span class="result-stat-label">総回答数</span>
-            </div>
-            <div class="result-stat-box">
-              <span class="result-stat-num" id="result-time">01:15</span>
-              <span class="result-stat-label">所要時間</span>
-            </div>
-          </div>
-
-          <div class="result-actions">
-            <button id="btn-retry-same" class="action-btn primary-btn">
-              🔄 最初から再挑戦
-            </button>
-            <button id="btn-continue" class="action-btn success-btn">
-              🚀 記録を伸ばす(11問目~)
-            </button>
-            <button id="btn-view-hof-from-result" class="action-btn trophy-btn-accent">
-              🏆 合格者一覧を見る
-            </button>
-            <button id="btn-view-history-from-result" class="action-btn secondary-btn">
-              📜 解答履歴
-            </button>
-          </div>
+      <!-- フッター（キーボードヘルプ＆解説） -->
+      <footer class="footer">
+        <div class="footer-tip">
+          💡 <strong>合格へのヒント:</strong> 同符号の項を前にまとめ、異符号の項はマイナスでくくり出して <span class="math-inline">(A+B)(A-B) = A^2 - B^2</span> の形を作ります。
         </div>
-      </section>
-    </main>
+        <div class="footer-shortcuts">
+          <span>全画面: <kbd>F</kbd></span>
+          <span>テーマ: <kbd>T</kbd></span>
+          <span>音: <kbd>S</kbd></span>
+          <span>合格者: <kbd>W</kbd></span>
+          <span>履歴: <kbd>H</kbd></span>
+          <span>選択: <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd></span>
+          <span>モード切替: <kbd>M</kbd></span>
+        </div>
+      </footer>
+    </div>
 
-    <!-- フッター（キーボードヘルプ＆解説） -->
-    <footer class="footer">
-      <div class="footer-tip">
-        💡 <strong>合格へのヒント:</strong> 同符号の項を前にまとめ、異符号の項はマイナスでくくり出して <span class="math-inline">(A+B)(A-B) = A^2 - B^2</span> の形を作ります。
+    <!-- ==================== MODE 2: 因数分解の変形 (8枚◯✕チェック) ==================== -->
+    <div id="view-mode-factor" class="mode-view hidden">
+      <!-- ステータスバー -->
+      <div class="factor-status-bar">
+        <div class="factor-status-left">
+          <span class="factor-selection-pill" id="factor-selection-status">回答済み: 0 / 8 枚</span>
+          <span class="factor-key-hint">💡 [1]〜[8]キーで ◯/✕ 切替、全問回答後に [Enter] で判定</span>
+        </div>
+        <div class="factor-status-right" id="factor-result-summary">
+          <!-- 判定結果サマリー -->
+        </div>
       </div>
-      <div class="footer-shortcuts">
-        <span>全画面: <kbd>F</kbd></span>
-        <span>テーマ: <kbd>T</kbd></span>
-        <span>音: <kbd>S</kbd></span>
-        <span>合格者: <kbd>W</kbd></span>
-        <span>履歴: <kbd>H</kbd></span>
-        <span>選択: <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd></span>
+
+      <!-- 8 Selection Cards Grid (4 cols x 2 rows on PC) -->
+      <main class="factor-cards-grid" id="factor-cards-container">
+        <!-- 8枚のカードがJavaScriptで動的生成されます -->
+      </main>
+
+      <!-- フッターコントロール -->
+      <footer class="factor-footer">
+        <div class="factor-footer-left">
+          <button id="factor-btn-clear" class="btn btn-secondary">回答をリセット</button>
+          <button id="factor-btn-formula-hint" class="btn btn-outline">💡 公式・着眼点ヒント</button>
+        </div>
+
+        <div class="factor-footer-center" id="factor-round-feedback">
+          <!-- フィードバックテキスト -->
+        </div>
+
+        <div class="factor-footer-right">
+          <button id="factor-btn-check" class="btn btn-primary">
+            <span class="btn-text">答え合わせ（判定）</span>
+            <span class="shortcut-tag">Enter</span>
+          </button>
+          <button id="factor-btn-next" class="btn btn-success" style="display: none;">
+            <span class="btn-text">次の8問へ挑戦 ➔</span>
+            <span class="shortcut-tag">Enter</span>
+          </button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- 紙吹雪 Canvas (両モード共通) -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- 因数分解: 詳細解説モーダル -->
+  <div id="factor-modal-overlay" class="modal-overlay hidden" aria-modal="true" role="dialog">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="factor-modal-title" class="modal-title">変形の詳細解説</h3>
+        <button id="factor-modal-close" class="modal-close-btn" title="閉じる (Esc)">✖</button>
       </div>
-    </footer>
+      <div id="factor-modal-body" class="modal-body">
+        <!-- モーダルコンテンツ -->
+      </div>
+      <div class="modal-footer">
+        <button id="factor-modal-close-bottom" class="action-btn primary-btn btn-sm">閉じる</button>
+      </div>
+    </div>
   </div>
 
   <!-- 合格者一覧モーダル（殿堂入り） -->
@@ -278,6 +357,57 @@
         <button id="btn-close-modal-bottom" class="action-btn primary-btn btn-sm">
           クイズに戻る
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 因数分解: 公式・着眼点ヒントモーダル -->
+  <div id="factor-guide-modal" class="modal-overlay hidden" aria-modal="true" role="dialog">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">💡 二乗の差の因数分解 A² - B² 着眼点ガイド</h3>
+        <button id="factor-guide-modal-close" class="modal-close-btn" title="閉じる (Esc)">✖</button>
+      </div>
+      <div id="factor-guide-modal-body" class="modal-body">
+        <div class="modal-section">
+          <h4>1. 基本公式</h4>
+          <div class="modal-formula-box" id="guide-formula-box">
+            A^2 - B^2 = (A + B)(A - B)
+          </div>
+        </div>
+        <div class="modal-section">
+          <h4>2. よくある間違いと対策（テストで差がつくポイント！）</h4>
+          <table class="guide-table">
+            <tr>
+              <th>パターン</th>
+              <th>誤った変形（NG）</th>
+              <th>正しい変形（OK）</th>
+            </tr>
+            <tr>
+              <td><strong>平方根の取り忘れ</strong></td>
+              <td class="text-danger">(A + 36)(A - 36)</td>
+              <td class="text-success">(A + 6)(A - 6)</td>
+            </tr>
+            <tr>
+              <td><strong>半分にするミス</strong></td>
+              <td class="text-danger">(A + 18)(A - 18)</td>
+              <td class="text-success">(A + 6)(A - 6)</td>
+            </tr>
+            <tr>
+              <td><strong>符号の分配ミス</strong></td>
+              <td class="text-danger">A - (x - 1) = A - x - 1</td>
+              <td class="text-success">A - (x - 1) = A - x + 1</td>
+            </tr>
+            <tr>
+              <td><strong>両方同符号</strong></td>
+              <td class="text-danger">(A + B)(A + B) や (A - B)²</td>
+              <td class="text-success">(A + B)(A - B)</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="factor-guide-modal-close-bottom" class="action-btn primary-btn btn-sm">閉じる</button>
       </div>
     </div>
   </div>
