@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ja" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>間違いやすい方程式 6択特訓</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- KaTeX for crisp mathematical typography -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <!-- Tone.js for sound effects -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+  <style>
+    /* Prevent text selection during rapid clicking */
+    .no-select {
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .katex-display {
+      margin: 0 !important;
+    }
+  </style>
+</head>
+<body class="h-full overflow-hidden bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200 no-select">
+  <div class="h-screen w-screen flex flex-col justify-between p-3 md:p-5 max-w-6xl mx-auto">
+
+    <!-- TOP BAR: Title, Mode Selection, Controls, Stats -->
+    <header class="flex flex-col md:flex-row items-center justify-between gap-3 bg-white dark:bg-slate-900 px-4 py-2.5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+          <i>x</i>
+        </div>
+        <div>
+          <h1 class="font-bold text-base md:text-lg tracking-tight leading-none text-slate-900 dark:text-white">間違いやすい方程式</h1>
+          <span class="text-[11px] text-slate-500 dark:text-slate-400">逆数・除算・符号の混同を徹底克服</span>
+        </div>
+      </div>
+
+      <!-- Mode Selector -->
+      <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl gap-1 text-xs font-medium">
+        <button id="mode-pos-pos" onclick="setSignMode('pos-pos')" class="mode-btn px-2.5 py-1 rounded-lg transition-all">両辺正</button>
+        <button id="mode-neg-neg" onclick="setSignMode('neg-neg')" class="mode-btn px-2.5 py-1 rounded-lg transition-all">両辺負</button>
+        <button id="mode-pos-neg" onclick="setSignMode('pos-neg')" class="mode-btn px-2.5 py-1 rounded-lg transition-all">正と負</button>
+        <button id="mode-random" onclick="setSignMode('random')" class="mode-btn px-2.5 py-1 rounded-lg transition-all bg-white dark:bg-indigo-600 shadow-sm text-indigo-600 dark:text-white font-bold">ランダム</button>
+      </div>
+
+      <!-- Right Controls & Stats -->
+      <div class="flex items-center gap-3">
+        <!-- Stats Pill -->
+        <div class="flex items-center gap-3 text-xs bg-slate-50 dark:bg-slate-800/60 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
+          <div>連続正解: <span id="streak-count" class="font-bold text-amber-500 text-sm">0</span></div>
+          <div class="w-px h-3 bg-slate-300 dark:bg-slate-700"></div>
+          <div>正答率: <span id="accuracy-rate" class="font-bold text-indigo-600 dark:text-indigo-400 text-sm">0%</span></div>
+          <div class="text-[11px] text-slate-400">(<span id="correct-count">0</span>/<span id="total-count">0</span>)</div>
+        </div>
+
+        <!-- Utility Buttons -->
+        <div class="flex items-center gap-1.5">
+          <!-- Portal Link Button -->
+          <a href="index.html" title="ポータルへ戻る" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1">
+            <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span class="text-xs font-semibold hidden sm:inline">ポータル</span>
+          </a>
+
+          <!-- Sound Toggle -->
+          <button id="sound-btn" onclick="toggleSound()" title="効果音切替" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <svg id="sound-icon-on" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+            <svg id="sound-icon-off" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+          </button>
+
+          <!-- Dark Mode Toggle -->
+          <button id="theme-btn" onclick="toggleDarkMode()" title="ダークモード切替" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <svg id="theme-moon" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <svg id="theme-sun" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          </button>
+
+          <!-- Fullscreen Toggle -->
+          <button id="fullscreen-btn" onclick="toggleFullscreen()" title="全画面表示 (F)" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 flex flex-col justify-center items-center my-3 max-w-4xl w-full mx-auto gap-3 min-h-0">
+      
+      <!-- Problem Question Card -->
+      <div class="w-full bg-white dark:bg-slate-900 rounded-3xl p-5 md:p-8 shadow-md border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center relative overflow-hidden transition-all">
+        <!-- Target Question Indicator -->
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-xs uppercase tracking-wider font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-3 py-1 rounded-full border border-indigo-100 dark:border-indigo-900/60">
+            次の方程式を解け
+          </span>
+          <span id="pattern-tag" class="text-[11px] text-slate-400">基本形</span>
+        </div>
+
+        <!-- Rendered Equation (KaTeX) -->
+        <div id="equation-display" class="text-4xl md:text-6xl font-bold py-2 tracking-wide text-slate-900 dark:text-white transition-transform scale-100">
+          <!-- KaTeX will inject equation here -->
+        </div>
+
+        <!-- Feedback & Explanation Banner (Compact, never causes scroll) -->
+        <div id="feedback-banner" class="w-full mt-3 p-3 rounded-2xl hidden items-center justify-between text-sm transition-all opacity-0 pointer-events-none">
+          <div class="flex items-center gap-3">
+            <div id="feedback-icon" class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-base shrink-0"></div>
+            <div>
+              <div id="feedback-title" class="font-bold flex items-center gap-1.5 flex-wrap"></div>
+              <div id="feedback-desc" class="text-xs opacity-90 mt-0.5"></div>
+            </div>
+          </div>
+          <button id="next-btn" onclick="nextQuestion()" class="px-4 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 text-xs font-bold shadow transition-transform active:scale-95 flex items-center gap-1">
+            <span>次の問題</span>
+            <kbd class="text-[10px] opacity-60 bg-black/20 dark:bg-slate-200/50 px-1 py-0.5 rounded">Enter</kbd>
+          </button>
+        </div>
+      </div>
+
+      <!-- 6 Options Grid (2 rows x 3 columns on PC) -->
+      <div class="w-full grid grid-cols-2 md:grid-cols-3 gap-2.5 md:gap-3.5">
+        <!-- 6 Choice Buttons generated dynamically or static templates -->
+        <button id="opt-0" onclick="handleChoice(0)" class="option-btn group relative flex items-center justify-center p-3 md:p-4 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all active:scale-[0.98] h-20 md:h-24">
+          <span class="absolute top-2 left-3 text-[11px] font-mono font-semibold text-slate-400 group-hover:text-indigo-500">1</span>
+          <div class="opt-math text-xl md:text-2xl font-semibold"></div>
+        </button>
+        <button id="opt-1" onclick="handleChoice(1)" class="option-btn group relative flex items-center justify-center p-3 md:p-4 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all active:scale-[0.98] h-20 md:h-24">
+          <span class="absolute top-2 left-3 text-[11px] font-mono font-semibold text-slate-400 group-hover:text-indigo-500">2</span>
+          <div class="opt-math text-xl md:text-2xl font-semibold"></div>
+        </button>
+        <button id="opt-2" onclick="handleChoice(2)" class="option-btn group relative flex items-center justify-center p-3 md:p-4 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all active:scale-[0.98] h-20 md:h-24">
+          <span class="absolute top-2 left-3 text-[11px] font-mono font-semibold text-slate-400 group-hover:text-indigo-500">3</span>
+          <div class="opt-math text-xl md:text-2xl font-semibold"></div>
+        </button>
+        <button id="opt-3" onclick="handleChoice(3)" class="option-btn group relative flex items-center justify-center p-3 md:p-4 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all active:scale-[0.98] h-20 md:h-24">
+          <span class="absolute top-2 left-3 text-[11px] font-mono font-semibold text-slate-400 group-hover:text-indigo-500">4</span>
+          <div class="opt-math text-xl md:text-2xl font-semibold"></div>
+        </button>
+        <button id="opt-4" onclick="handleChoice(4)" class="option-btn group relative flex items-center justify-center p-3 md:p-4 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all active:scale-[0.98] h-20 md:h-24">
+          <span class="absolute top-2 left-3 text-[11px] font-mono font-semibold text-slate-400 group-hover:text-indigo-500">5</span>
+          <div class="opt-math text-xl md:text-2xl font-semibold"></div>
+        </button>
+        <button id="opt-5" onclick="handleChoice(5)" class="option-btn group relative flex items-center justify-center p-3 md:p-4 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all active:scale-[0.98] h-20 md:h-24">
+          <span class="absolute top-2 left-3 text-[11px] font-mono font-semibold text-slate-400 group-hover:text-indigo-500">6</span>
+          <div class="opt-math text-xl md:text-2xl font-semibold"></div>
+        </button>
+      </div>
+
+    </main>
+
+    <footer class="flex items-center justify-between text-xs text-slate-400 dark:text-slate-500 px-3 py-2 border-t border-slate-200 dark:border-slate-800/80 shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="hidden sm:inline">キー操作:</span>
+        <span class="bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono font-medium text-slate-600 dark:text-slate-300">1〜6</span>: 選択
+        <span class="bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono font-medium text-slate-600 dark:text-slate-300">Enter / Space</span>: 次へ
+        <span class="bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono font-medium text-slate-600 dark:text-slate-300">F</span>: 全画面
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="resetStats()" class="hover:text-slate-600 dark:hover:text-slate-300 underline underline-offset-2">成績リセット</button>
+        <span>一ツ橋進学塾 計算特訓</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // ----------------------------------------------------
+    // Sound Effects Engine using Tone.js Synth
+    // ----------------------------------------------------
+    let soundEnabled = true;
+    let correctSynth = null;
+    let wrongSynth = null;
+
+    function initAudio() {
+      if (correctSynth) return;
+      try {
+        correctSynth = new Tone.PolySynth(Tone.Synth, {
+          oscillator: { type: 'sine' },
+          envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.2 }
+        }).toDestination();
+        correctSynth.volume.value = -8;
+
+        wrongSynth = new Tone.MembraneSynth({
+          pitchDecay: 0.05,
+          octaves: 2,
+          oscillator: { type: 'triangle' },
+          envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.1 }
+        }).toDestination();
+        wrongSynth.volume.value = -6;
+      } catch (e) {
+        console.warn("Audio init failed", e);
+      }
+    }
+
+    function playSound(type) {
+      if (!soundEnabled) return;
+      initAudio();
+      try {
+        if (Tone.context.state !== 'running') {
+          Tone.context.resume();
+        }
+        if (type === 'correct' && correctSynth) {
+          const now = Tone.now();
+          correctSynth.triggerAttackRelease(['E5', 'B5'], '16n', now);
+        } else if (type === 'wrong' && wrongSynth) {
+          wrongSynth.triggerAttackRelease('G2', '8n');
+        }
+      } catch (e) {
+        // Fallback or ignore
+      }
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('sound-icon-on').classList.toggle('hidden', !soundEnabled);
+      document.getElementById('sound-icon-off').classList.toggle('hidden', soundEnabled);
+    }
+
+    // ----------------------------------------------------
+    // Dark Mode and Fullscreen Controls
+    // ----------------------------------------------------
+    function toggleDarkMode() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      try {
+        localStorage.setItem('eq_trainer_dark', isDark ? 'true' : 'false');
+      } catch (e) {}
+    }
+
+    // Initialize dark theme preference
+    if (localStorage.getItem('eq_trainer_dark') === 'true' || 
+        (!('eq_trainer_dark' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.warn("Fullscreen request failed", err);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // ----------------------------------------------------
+    // Fraction Class (Irreducible, signed, LaTeX export)
+    // ----------------------------------------------------
+    class Fraction {
+      constructor(n, d = 1) {
+        if (d === 0) throw new Error("Denominator cannot be 0");
+        let num = Math.round(n);
+        let den = Math.round(d);
+        if (den < 0) {
+          num = -num;
+          den = -den;
+        }
+        const g = Fraction.gcd(Math.abs(num), den);
+        this.n = num / g;
+        this.d = den / g;
+      }
+
+      static gcd(a, b) {
+        return b === 0 ? a : Fraction.gcd(b, a % b);
+      }
+
+      equals(other) {
+        return this.n === other.n && this.d === other.d;
+      }
+
+      reciprocal() {
+        return new Fraction(this.d, this.n);
+      }
+
+      negate() {
+        return new Fraction(-this.n, this.d);
+      }
+
+      multiply(other) {
+        return new Fraction(this.n * other.n, this.d * other.d);
+      }
+
+      divide(other) {
+        return new Fraction(this.n * other.d, this.d * other.n);
+      }
+
+      // Convert to LaTeX representation for coefficient of x
+      toCoeffLatex() {
+        if (this.n === 1 && this.d === 1) return "";
+        if (this.n === -1 && this.d === 1) return "-";
+        return this.toLatex();
+      }
+
+      toLatex() {
+        if (this.d === 1) return `${this.n}`;
+        if (this.n < 0) {
+          return `-\\frac{${Math.abs(this.n)}}{${this.d}}`;
+        }
+        return `\\frac{${this.n}}{${this.d}}`;
+      }
+    }
+
+    // ----------------------------------------------------
+    // Problem Generator Engine
+    // ----------------------------------------------------
+    // Base triads (a * b = c)
+    const TRIADS = [
+      { a: 2, b: 3, c: 6 },
+      { a: 2, b: 5, c: 10 },
+      { a: 3, b: 4, c: 12 },
+      { a: 2, b: 4, c: 8 },
+      { a: 3, b: 5, c: 15 }
+    ];
+
+    let currentMode = 'random'; // 'pos-pos', 'neg-neg', 'pos-neg', 'random'
+    let currentProblem = null;
+    let answered = false;
+    let autoAdvanceOnCorrect = true; // 正解時自動で次の問題へ
+    let autoNextTimer = null;
+
+    // Stats state
+    let stats = {
+      correct: 0,
+      total: 0,
+      streak: 0
+    };
+
+    // Helper: Convert LaTeX text containing $...$ or raw \frac to KaTeX HTML
+    function renderMathInText(text) {
+      if (!text) return '';
+      // 1. Render explicit $...$ LaTeX blocks
+      let result = text.replace(/\$([^\$]+)\$/g, (match, expr) => {
+        try {
+          return katex.renderToString(expr.trim(), { throwOnError: false, displayMode: false });
+        } catch (e) {
+          return match;
+        }
+      });
+      // 2. Render remaining standalone LaTeX \frac expressions if any
+      result = result.replace(/\\frac\{[^{}]+\}\{[^{}]+\}/g, (match) => {
+        try {
+          return katex.renderToString(match.trim(), { throwOnError: false, displayMode: false });
+        } catch (e) {
+          return match;
+        }
+      });
+      return result;
+    }
+
+    function setSignMode(mode) {
+      clearTimeout(autoNextTimer);
+      currentMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'dark:bg-indigo-600', 'shadow-sm', 'text-indigo-600', 'dark:text-white', 'font-bold');
+      });
+      const activeBtn = document.getElementById(`mode-${mode}`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-white', 'dark:bg-indigo-600', 'shadow-sm', 'text-indigo-600', 'dark:text-white', 'font-bold');
+      }
+      nextQuestion();
+    }
+
+    function generateProblem() {
+      // Pick random triad
+      const triad = TRIADS[Math.floor(Math.random() * TRIADS.length)];
+      const { a, b, c } = triad;
+
+      // 10 tricky patterns based on a * b = c
+      const patternTemplates = [
+        {
+          name: "基本除算 (係数が大)",
+          getCoeff: () => new Fraction(c),
+          getRight: () => new Fraction(a),
+          getDesc: (coeff, right, solution) => `両辺を係数 $${coeff.toLatex()}$ で割る（$\\times ${coeff.reciprocal().toLatex()}$）$\\rightarrow x = ${solution.toLatex()}$`
+        },
+        {
+          name: "基本除算 (係数が小)",
+          getCoeff: () => new Fraction(a),
+          getRight: () => new Fraction(c),
+          getDesc: (coeff, right, solution) => `両辺を係数 $${coeff.toLatex()}$ で割る $\\rightarrow x = ${solution.toLatex()}$`
+        },
+        {
+          name: "仮分数係数 × 整数",
+          getCoeff: () => new Fraction(c, a), // b
+          getRight: () => new Fraction(c),
+          getDesc: (coeff, right, solution) => `両辺に逆数 $${coeff.reciprocal().toLatex()}$ を掛ける $\\rightarrow x = ${solution.toLatex()}$`
+        },
+        {
+          name: "真分数係数 × 整数",
+          getCoeff: () => new Fraction(a, b),
+          getRight: () => new Fraction(c),
+          getDesc: (coeff, right, solution) => `両辺に逆数 $${coeff.reciprocal().toLatex()}$ を掛ける $\\rightarrow x = ${solution.toLatex()}$`
+        },
+        {
+          name: "真分数係数(逆) × 整数",
+          getCoeff: () => new Fraction(b, a),
+          getRight: () => new Fraction(c),
+          getDesc: (coeff, right, solution) => `両辺に逆数 $${coeff.reciprocal().toLatex()}$ を掛ける $\\rightarrow x = ${solution.toLatex()}$`
+        },
+        {
+          name: "整数係数 × 真分数",
+          getCoeff: () => new Fraction(c),
+          getRight: () => new Fraction(a, b),
+          getDesc: (coeff, right, solution) => `右辺に逆数 $\\times ${coeff.reciprocal().toLatex()}$ を掛ける（係数 $${coeff.toLatex()}$ で割る）$\\rightarrow x = ${solution.toLatex()}$`
+        },
+        {
+          name: "整数係数 × 仮分数",
+          getCoeff: () => new Fraction(c),
+          getRight: () => new Fraction(b, a),
+          getDesc: (coeff, right, solution) => `右辺に逆数 $\\times ${coeff.reciprocal().toLatex()}$ を掛ける（係数 $${coeff.toLatex()}$ で割る）$\\rightarrow x = ${solution.toLatex()}$`
+        },
+        {
+          name: "単位分数係数 × 分数",
+          getCoeff: () => new Fraction(1, c),
+          getRight: () => new Fraction(a, b),
+          getDesc: (coeff, right, solution) => `両辺に逆数 $${coeff.reciprocal().toLatex()}$ を掛ける $\\rightarrow x = ${solution.toLatex()}$`
+        },
+        {
+          name: "単位分数係数 × 分数(逆)",
+          getCoeff: () => new Fraction(1, c),
+          getRight: () => new Fraction(b, a),
+          getDesc: (coeff, right, solution) => `両辺に逆数 $${coeff.reciprocal().toLatex()}$ を掛ける $\\rightarrow x = ${solution.toLatex()}$`
+        },
+        {
+          name: "分数係数 × 単位分数",
+          getCoeff: () => new Fraction(a, b),
+          getRight: () => new Fraction(1, c),
+          getDesc: (coeff, right, solution) => `右辺に逆数 $${coeff.reciprocal().toLatex()}$ を掛ける $\\rightarrow x = ${solution.toLatex()}$`
+        },
+        {
+          name: "分数係数(逆) × 単位分数",
+          getCoeff: () => new Fraction(b, a),
+          getRight: () => new Fraction(1, c),
+          getDesc: (coeff, right, solution) => `右辺に逆数 $${coeff.reciprocal().toLatex()}$ を掛ける $\\rightarrow x = ${solution.toLatex()}$`
+        }
+      ];
+
+      const template = patternTemplates[Math.floor(Math.random() * patternTemplates.length)];
+      let coeff = template.getCoeff();
+      let right = template.getRight();
+
+      // Apply sign according to currentMode
+      let signConfig = currentMode;
+      if (signConfig === 'random') {
+        const modes = ['pos-pos', 'neg-neg', 'pos-neg'];
+        signConfig = modes[Math.floor(Math.random() * modes.length)];
+      }
+
+      if (signConfig === 'neg-neg') {
+        coeff = coeff.negate();
+        right = right.negate();
+      } else if (signConfig === 'pos-neg') {
+        // Randomly pick whether left is neg or right is neg
+        if (Math.random() < 0.5) {
+          coeff = coeff.negate();
+        } else {
+          right = right.negate();
+        }
+      }
+
+      // Exact solution: x = right / coeff
+      const solution = right.divide(coeff);
+
+      // Generate systematic distractors (common student traps)
+      const distractors = [];
+
+      function addDistractor(frac) {
+        if (!frac || frac.d === 0) return;
+        // Don't add if already equals solution or existing distractors
+        if (frac.equals(solution)) return;
+        if (distractors.some(d => d.equals(frac))) return;
+        distractors.push(frac);
+      }
+
+      // Trap 1: Inverted answer (divided upside-down)
+      addDistractor(solution.reciprocal());
+
+      // Trap 2: Sign error (forgot negative)
+      addDistractor(solution.negate());
+
+      // Trap 3: Inverted answer with sign error
+      addDistractor(solution.reciprocal().negate());
+
+      // Trap 4: Multiplied instead of dividing (or inverted the wrong side)
+      addDistractor(right.multiply(coeff));
+      addDistractor(right.multiply(coeff).negate());
+
+      // Trap 5: Misapplied reciprocal (multiplied by coeff directly)
+      addDistractor(right.multiply(new Fraction(coeff.n, coeff.d)));
+
+      // Trap 6: Swapping base values (a <-> b or a^2 <-> b^2)
+      addDistractor(new Fraction(a));
+      addDistractor(new Fraction(1, a));
+      addDistractor(new Fraction(b));
+      addDistractor(new Fraction(1, b));
+      addDistractor(new Fraction(a * a));
+      addDistractor(new Fraction(1, a * a));
+      addDistractor(new Fraction(b * b));
+      addDistractor(new Fraction(1, b * b));
+      addDistractor(new Fraction(-a));
+      addDistractor(new Fraction(-1, a));
+      addDistractor(new Fraction(-b));
+      addDistractor(new Fraction(-1, b));
+      addDistractor(new Fraction(-a * a));
+      addDistractor(new Fraction(-1, a * a));
+      addDistractor(new Fraction(-b * b));
+      addDistractor(new Fraction(-1, b * b));
+
+      // Pick 5 distinct distractors
+      const selectedDistractors = distractors.slice(0, 5);
+
+      // If somehow fewer than 5, supplement
+      let offset = 2;
+      while (selectedDistractors.length < 5) {
+        addDistractor(new Fraction(solution.n + offset, solution.d));
+        offset++;
+      }
+
+      // Pool of 6 choices (1 correct + 5 distractors)
+      const options = [solution, ...selectedDistractors.slice(0, 5)];
+
+      // Fisher-Yates shuffle
+      for (let i = options.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [options[i], options[j]] = [options[j], options[i]];
+      }
+
+      const correctIndex = options.findIndex(opt => opt.equals(solution));
+      const explanation = template.getDesc ? template.getDesc(coeff, right, solution) : template.desc;
+
+      return {
+        coeff,
+        right,
+        solution,
+        options,
+        correctIndex,
+        templateName: template.name,
+        explanation
+      };
+    }
+
+    // ----------------------------------------------------
+    // Render and Game Lifecycle
+    // ----------------------------------------------------
+    function renderQuestion() {
+      clearTimeout(autoNextTimer);
+      answered = false;
+      currentProblem = generateProblem();
+
+      // Reset & hide feedback banner completely on new question
+      const banner = document.getElementById('feedback-banner');
+      banner.className = "w-full mt-3 p-3 rounded-2xl hidden items-center justify-between text-sm opacity-0 pointer-events-none transition-all";
+      document.getElementById('feedback-title').innerHTML = '';
+      document.getElementById('feedback-desc').innerHTML = '';
+
+      // Update Tag
+      document.getElementById('pattern-tag').textContent = currentProblem.templateName;
+
+      // Render equation in KaTeX
+      const coeffTex = currentProblem.coeff.toCoeffLatex();
+      const rightTex = currentProblem.right.toLatex();
+      const eqTex = `${coeffTex}x = ${rightTex}`;
+      
+      katex.render(eqTex, document.getElementById('equation-display'), {
+        throwOnError: false,
+        displayMode: true
+      });
+
+      // Render 6 options
+      currentProblem.options.forEach((opt, idx) => {
+        const btn = document.getElementById(`opt-${idx}`);
+        // Reset classes
+        btn.className = "option-btn group relative flex items-center justify-center p-3 md:p-4 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all active:scale-[0.98] h-20 md:h-24 cursor-pointer";
+        btn.disabled = false;
+
+        const mathElem = btn.querySelector('.opt-math');
+        katex.render(`x = ${opt.toLatex()}`, mathElem, {
+          throwOnError: false,
+          displayMode: false
+        });
+      });
+    }
+
+    function handleChoice(chosenIndex) {
+      if (answered) return;
+      answered = true;
+
+      stats.total++;
+      const isCorrect = chosenIndex === currentProblem.correctIndex;
+
+      // Highlight buttons
+      currentProblem.options.forEach((_, idx) => {
+        const btn = document.getElementById(`opt-${idx}`);
+        btn.disabled = true;
+        btn.classList.remove('hover:border-indigo-400', 'dark:hover:border-indigo-500', 'cursor-pointer');
+
+        if (idx === currentProblem.correctIndex) {
+          // Highlight correct answer in green
+          btn.classList.add('border-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'dark:border-emerald-500', 'text-emerald-700', 'dark:text-emerald-300');
+        } else if (idx === chosenIndex) {
+          // Highlight selected wrong answer in red
+          btn.classList.add('border-rose-500', 'bg-rose-50', 'dark:bg-rose-950/40', 'dark:border-rose-500', 'text-rose-700', 'dark:text-rose-300');
+        } else {
+          btn.classList.add('opacity-40');
+        }
+      });
+
+      // Update statistics
+      if (isCorrect) {
+        stats.correct++;
+        stats.streak++;
+        playSound('correct');
+      } else {
+        stats.streak = 0;
+        playSound('wrong');
+      }
+      updateStatsUI();
+
+      // Show Feedback Banner with concise pedagogical explanation
+      const banner = document.getElementById('feedback-banner');
+      const icon = document.getElementById('feedback-icon');
+      const title = document.getElementById('feedback-title');
+      const desc = document.getElementById('feedback-desc');
+
+      const solLatex = `x = ${currentProblem.solution.toLatex()}`;
+      let solHtml = '';
+      try {
+        solHtml = katex.renderToString(solLatex, { throwOnError: false, displayMode: false });
+      } catch (e) {
+        solHtml = solLatex;
+      }
+
+      const nextBtn = document.getElementById('next-btn');
+
+      if (isCorrect) {
+        banner.className = "w-full mt-3 p-3 rounded-2xl flex items-center justify-between text-sm transition-all opacity-100 bg-emerald-100 text-emerald-900 dark:bg-emerald-950/80 dark:text-emerald-100 border border-emerald-300 dark:border-emerald-800";
+        icon.className = "w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold shrink-0";
+        icon.innerHTML = "✓";
+        title.innerHTML = `<span>正解！</span> <span class="ml-1.5 inline-block font-semibold">${solHtml}</span>`;
+        desc.innerHTML = `<span class="opacity-90 font-medium">正解です！ 次の問題へ…</span>`;
+        if (nextBtn) nextBtn.classList.add('hidden');
+        banner.classList.remove('pointer-events-none', 'translate-y-1');
+
+        // 正解のときは400msで自動的に次の問題へ進む
+        clearTimeout(autoNextTimer);
+        autoNextTimer = setTimeout(() => {
+          nextQuestion();
+        }, 400);
+      } else {
+        banner.className = "w-full mt-3 p-3 rounded-2xl flex items-center justify-between text-sm transition-all opacity-100 bg-rose-100 text-rose-900 dark:bg-rose-950/80 dark:text-rose-100 border border-rose-300 dark:border-rose-800";
+        icon.className = "w-8 h-8 rounded-full bg-rose-500 flex items-center justify-center text-white font-bold shrink-0";
+        icon.innerHTML = "✕";
+        title.innerHTML = `<span>不正解！ 正しい解は</span> <span class="ml-1.5 inline-block font-semibold">${solHtml}</span>`;
+        
+        // Render explanation with formula
+        const renderedExp = renderMathInText(currentProblem.explanation);
+        const signLabel = currentProblem.solution.n < 0 ? '負 (−)' : '正 (+)';
+        desc.innerHTML = `<span class="font-bold">思考ポイント:</span> ${renderedExp} <span class="opacity-80 ml-1.5">（符号: ${signLabel}）</span>`;
+        if (nextBtn) nextBtn.classList.remove('hidden');
+        banner.classList.remove('pointer-events-none', 'translate-y-1');
+
+        clearTimeout(autoNextTimer);
+      }
+    }
+
+    function nextQuestion() {
+      clearTimeout(autoNextTimer);
+      renderQuestion();
+    }
+
+    function updateStatsUI() {
+      document.getElementById('streak-count').textContent = stats.streak;
+      document.getElementById('correct-count').textContent = stats.correct;
+      document.getElementById('total-count').textContent = stats.total;
+      const rate = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+      document.getElementById('accuracy-rate').textContent = `${rate}%`;
+    }
+
+    function resetStats() {
+      clearTimeout(autoNextTimer);
+      stats.correct = 0;
+      stats.total = 0;
+      stats.streak = 0;
+      updateStatsUI();
+      nextQuestion();
+    }
+
+    // ----------------------------------------------------
+    // Keyboard Event Listener (1-6 for options, Enter/Space for next, F for fullscreen)
+    // ----------------------------------------------------
+    window.addEventListener('keydown', (e) => {
+      // 1 to 6 keys
+      if (['1', '2', '3', '4', '5', '6'].includes(e.key)) {
+        const index = parseInt(e.key, 10) - 1;
+        if (!answered) {
+          handleChoice(index);
+        }
+      } else if (e.key === 'Enter' || e.code === 'Space') {
+        if (answered) {
+          e.preventDefault();
+          nextQuestion();
+        }
+      } else if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        toggleFullscreen();
+      }
+    });
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      renderQuestion();
+    });
+  </script>
+</body>
+</html>
