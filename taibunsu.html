@@ -379,12 +379,12 @@
         }).toDestination();
         correctSynth.volume.value = -5;
 
-        // 不正解用の太いブザー音シンセ（ノコギリ波で輪郭を強調）
+        // 不正解用の穏やかで耳に優しいシンセ（サイン波＋丸みのあるソフトなエンベロープ）
         wrongSynth = new Tone.PolySynth(Tone.Synth, {
-          oscillator: { type: "sawtooth" },
-          envelope: { attack: 0.01, decay: 0.08, sustain: 0.7, release: 0.12 }
+          oscillator: { type: "sine" },
+          envelope: { attack: 0.02, decay: 0.18, sustain: 0.02, release: 0.25 }
         }).toDestination();
-        wrongSynth.volume.value = -6;
+        wrongSynth.volume.value = -10;
       }
     }
 
@@ -402,9 +402,9 @@
           correctSynth.triggerAttackRelease(["E5"], "16n", now + 0.08);
           correctSynth.triggerAttackRelease(["G5"], "8n", now + 0.16);
         } else if (type === 'wrong') {
-          // 誰でも一発でわかるクイズの「ブッ・ブー！」音（ノコギリ波＋不協和音による2連ブザー）
-          wrongSynth.triggerAttackRelease(["Eb3", "A2"], 0.12, now);
-          wrongSynth.triggerAttackRelease(["D3", "Ab2"], 0.32, now + 0.16);
+          // 穏やかで耳に優しいソフトな2音下降（ポ・ロン…）
+          wrongSynth.triggerAttackRelease(["E3"], "16n", now);
+          wrongSynth.triggerAttackRelease(["C3"], "8n", now + 0.12);
         } else if (type === 'fanfare') {
           // 合格ファンファーレ (C5 -> E5 -> G5 -> C6 和音)
           correctSynth.triggerAttackRelease(["C5", "G4"], "16n", now);
