@@ -123,10 +123,23 @@
       
       <!-- Subtle Badge / Question Mode Indicator -->
       <div class="flex items-center gap-2 mb-2 flex-wrap justify-center">
+        <!-- Quick Mode Selector Tabs -->
+        <div class="inline-flex p-0.5 rounded-xl bg-slate-100 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-700 mr-1 shadow-inner">
+          <button id="quickTypeFraction" type="button" class="quick-type-btn px-2.5 py-1 rounded-lg text-xs font-bold transition-all shadow-sm bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 cursor-pointer" data-type="fraction">
+            帯分数
+          </button>
+          <button id="quickTypeInteger" type="button" class="quick-type-btn px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer" data-type="integer">
+            整数のみ (6/2など)
+          </button>
+          <button id="quickTypeMixed" type="button" class="quick-type-btn px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer" data-type="mixed">
+            ミックス
+          </button>
+        </div>
+
         <span id="modeBadge" class="text-xs font-semibold px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
           仮分数 → 帯分数
         </span>
-        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+        <span id="typeBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
           既約分数
         </span>
         <span id="digitsBadge" class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400">
@@ -134,7 +147,7 @@
         </span>
       </div>
 
-      <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
+      <div id="questionPrompt" class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
         次の分数を正しい帯分数に直すとどれでしょう？
       </div>
 
@@ -254,6 +267,27 @@
       </div>
 
       <div class="py-4 space-y-4">
+        <!-- 出題タイプ（問題の種類） -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
+            出題タイプ（問題の種類）
+          </label>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" class="cfg-problem-type py-2 px-2 rounded-xl border-2 text-xs font-semibold transition flex flex-col items-center justify-center gap-0.5" data-value="fraction">
+              <span>帯分数（余りあり）</span>
+              <span class="text-[10px] font-normal opacity-70">例: 17/5 → 3と2/5</span>
+            </button>
+            <button type="button" class="cfg-problem-type py-2 px-2 rounded-xl border-2 text-xs font-semibold transition flex flex-col items-center justify-center gap-0.5" data-value="integer">
+              <span>整数のみ (割り切れる)</span>
+              <span class="text-[10px] font-normal opacity-70">例: 6/2 → 3</span>
+            </button>
+            <button type="button" class="cfg-problem-type py-2 px-2 rounded-xl border-2 text-xs font-semibold transition flex flex-col items-center justify-center gap-0.5" data-value="mixed">
+              <span>両方（ミックス）</span>
+              <span class="text-[10px] font-normal opacity-70">ランダム出題</span>
+            </button>
+          </div>
+        </div>
+
         <!-- 整数部分の有無（「2と」など） -->
         <div>
           <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
@@ -304,8 +338,8 @@
           </p>
         </div>
 
-        <!-- 既約分数についての案内 -->
-        <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs text-slate-600 dark:text-slate-300">
+        <!-- タイプに応じた案内 -->
+        <div id="typeNotice" class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs text-slate-600 dark:text-slate-300">
           ✨ 出題される分数はすべて<span class="font-bold text-emerald-600 dark:text-emerald-400">既約分数</span>（分子と分母が互いに素で約分できない分数）です。
         </div>
       </div>
@@ -324,9 +358,10 @@
       score: 0,
       streak: 0,
       soundEnabled: true,
-      hasWholeNumber: false, // 整数部分の有無 (例: "2と 7/5" vs "17/5")
-      numDigits: 1,          // 分子の桁数: 1 or 2
-      denDigits: 1,          // 分母の桁数: 1 or 2
+      problemType: 'fraction', // 'fraction' (帯分数) | 'integer' (整数のみ) | 'mixed' (ミックス)
+      hasWholeNumber: false,   // 整数部分の有無 (例: "2と 7/5" vs "17/5")
+      numDigits: 1,            // 分子の桁数: 1 or 2
+      denDigits: 1,            // 分母の桁数: 1 or 2
       currentProblem: null,
       isLocked: false
     };
@@ -404,10 +439,10 @@
     }
 
     /**
-     * 1桁または2桁の既約仮分数を生成する
+     * 1桁または2桁の既約仮分数を生成する（従来の帯分数問題）
      * 条件: 分子 > 分母 かつ gcd(分子, 分母) === 1
      */
-    function generateProblem() {
+    function generateFractionProblem() {
       const denDigits = state.denDigits;
       let numDigits = state.numDigits;
       const hasWhole = state.hasWholeNumber;
@@ -512,8 +547,167 @@
         finalRem,
         finalDen,
         quotient,
+        isInteger: false,
         choices
       };
+    }
+
+    /**
+     * 2分の6のような「割り切れて整数になる問題」を生成する
+     * 例: 6/2 = 3, 15/3 = 5, 24/4 = 6
+     */
+    function generateIntegerProblem() {
+      const denDigits = state.denDigits;
+      let numDigits = state.numDigits;
+      const hasWhole = state.hasWholeNumber;
+
+      if (numDigits === 1 && denDigits === 2) {
+        numDigits = 2;
+      }
+
+      let den = 2;
+      let k = 2; // 商 (num = den * k, k >= 2)
+      let num = 4;
+
+      if (numDigits === 1 && denDigits === 1) {
+        // 分子1桁 (4〜9), 分母1桁 (2〜4) で割り切れるペア
+        const validPairs = [
+          { den: 2, num: 4, k: 2 },
+          { den: 2, num: 6, k: 3 }, // 6/2 = 3
+          { den: 2, num: 8, k: 4 }, // 8/2 = 4
+          { den: 3, num: 6, k: 2 }, // 6/3 = 2
+          { den: 3, num: 9, k: 3 }, // 9/3 = 3
+          { den: 4, num: 8, k: 2 }, // 8/4 = 2
+        ];
+        const selected = validPairs[getRandomInt(0, validPairs.length - 1)];
+        den = selected.den;
+        num = selected.num;
+        k = selected.k;
+      } else if (denDigits === 1 && numDigits === 2) {
+        // 分母1桁 (2〜9), 分子2桁 (10〜99)
+        den = getRandomInt(2, 9);
+        const minK = Math.ceil(10 / den);
+        const maxK = Math.floor(99 / den);
+        k = getRandomInt(Math.max(2, minK), Math.max(2, maxK));
+        num = den * k;
+      } else {
+        // 分母2桁 (10〜49), 分子2桁 (10〜99)
+        den = getRandomInt(10, 49);
+        const maxK = Math.floor(99 / den);
+        k = getRandomInt(2, Math.max(2, maxK));
+        num = den * k;
+      }
+
+      let initialWhole = 0;
+      if (hasWhole) {
+        initialWhole = getRandomInt(1, 9);
+      }
+
+      const finalWhole = initialWhole + k;
+      const finalRem = 0;
+      const finalDen = den;
+
+      // 整数問題用の誤答選択肢生成
+      const distractors = generateIntegerDistractors(finalWhole, den, initialWhole, k);
+
+      const choices = [
+        { whole: finalWhole, rem: 0, den: finalDen, isCorrect: true },
+        ...distractors.map(d => ({ ...d, isCorrect: false }))
+      ];
+
+      // シャッフル
+      for (let i = choices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [choices[i], choices[j]] = [choices[j], choices[i]];
+      }
+
+      return {
+        initialWhole,
+        num,
+        den,
+        hasWhole,
+        finalWhole,
+        finalRem: 0,
+        finalDen,
+        quotient: k,
+        isInteger: true,
+        choices
+      };
+    }
+
+    /**
+     * 整数問題用の誤答（整数や、余りが出ると勘違いした帯分数ひっかけ）を生成
+     */
+    function generateIntegerDistractors(correctWhole, den, initialWhole, quotient) {
+      const candidates = new Set();
+      const serialize = (w, r) => `${w}_${r}`;
+      candidates.add(serialize(correctWhole, 0));
+
+      const results = [];
+
+      function tryAdd(w, r, d) {
+        if (w <= 0) return false;
+        if (r < 0 || r >= d) return false;
+        const key = serialize(w, r);
+        if (!candidates.has(key)) {
+          candidates.add(key);
+          results.push({ whole: w, rem: r, den: d });
+          return true;
+        }
+        return false;
+      }
+
+      // 誤答1: 整数商ミス (W - 1)
+      if (correctWhole > 1) tryAdd(correctWhole - 1, 0, den);
+
+      // 誤答2: 整数商ミス (W + 1)
+      tryAdd(correctWhole + 1, 0, den);
+
+      // 誤答3: 余りを出してしまった帯分数ひっかけ (例: (W-1)と1/den)
+      if (correctWhole > 1) {
+        tryAdd(correctWhole - 1, 1, den);
+      }
+
+      // 誤答4: 整数足し忘れ (initialWhole > 0 のとき)
+      if (initialWhole > 0) {
+        tryAdd(quotient, 0, den);
+      }
+
+      // 誤答5: 別の整数 (W + 2, W - 2)
+      tryAdd(correctWhole + 2, 0, den);
+      if (correctWhole > 2) tryAdd(correctWhole - 2, 0, den);
+
+      // 不足時のフォールバック
+      let step = 1;
+      while (results.length < 3) {
+        const wCandidate = Math.max(1, correctWhole + (step % 2 === 0 ? Math.floor(step / 2) : -Math.floor(step / 2)));
+        tryAdd(wCandidate, 0, den);
+        step++;
+        if (step > 40) {
+          tryAdd(correctWhole + results.length + 2, 0, den);
+          break;
+        }
+      }
+
+      return results.slice(0, 3);
+    }
+
+    /**
+     * 問題生成のメインディスパッチャー
+     */
+    function generateProblem() {
+      let isInt = false;
+      if (state.problemType === 'integer') {
+        isInt = true;
+      } else if (state.problemType === 'mixed') {
+        isInt = Math.random() < 0.5;
+      }
+
+      if (isInt) {
+        return generateIntegerProblem();
+      } else {
+        return generateFractionProblem();
+      }
     }
 
     function generateDistractors(correctWhole, correctRem, den, initialWhole, quotient) {
@@ -573,11 +767,19 @@
 
     /**
      * Builds a clean fraction DOM element using HTML structure
+     * 分数部分がない場合（num === 0 または !num）は整数のみを表示
      */
     function renderFractionHtml(whole, num, den, isLarge = false) {
       const wholeSize = isLarge ? 'text-4xl sm:text-6xl mr-2 sm:mr-3' : 'text-xl sm:text-2xl mr-1.5 sm:mr-2';
       const numDenSize = isLarge ? 'text-2xl sm:text-4xl font-bold px-3' : 'text-base sm:text-lg font-bold px-2';
       const barHeight = isLarge ? 'h-[3px]' : 'h-[2px]';
+
+      // 整数のみ（余りなし・分数部分なし）の場合
+      if (!num || num === 0) {
+        return `<div class="inline-flex items-center select-none justify-center">
+          <span class="font-extrabold ${isLarge ? 'text-4xl sm:text-6xl' : 'text-2xl sm:text-3xl'} text-slate-800 dark:text-slate-100">${whole}</span>
+        </div>`;
+      }
 
       let html = `<div class="inline-flex items-center select-none justify-center">`;
       
@@ -608,12 +810,35 @@
       banner.className = 'h-10 flex items-center justify-center px-4 rounded-xl text-sm font-medium transition-all opacity-0 pointer-events-none mt-1';
       banner.textContent = '';
 
+      // Update question prompt
+      const promptEl = document.getElementById('questionPrompt');
+      if (promptEl) {
+        promptEl.textContent = p.isInteger ? '次の分数を整数に直すとどれでしょう？' : '次の分数を正しい帯分数に直すとどれでしょう？';
+      }
+
       // Update question badges
       const modeBadge = document.getElementById('modeBadge');
-      modeBadge.textContent = p.hasWhole ? '仮帯分数 → 帯分数' : '仮分数 → 帯分数';
+      if (p.isInteger) {
+        modeBadge.textContent = p.hasWhole ? '仮帯分数 → 整数' : '仮分数 → 整数';
+      } else {
+        modeBadge.textContent = p.hasWhole ? '仮帯分数 → 帯分数' : '仮分数 → 帯分数';
+      }
+
+      const typeBadge = document.getElementById('typeBadge');
+      if (typeBadge) {
+        if (p.isInteger) {
+          typeBadge.textContent = '割り切れる（整数）';
+          typeBadge.className = 'text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800';
+        } else {
+          typeBadge.textContent = '既約分数';
+          typeBadge.className = 'text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800';
+        }
+      }
 
       const digitsBadge = document.getElementById('digitsBadge');
       digitsBadge.textContent = `分子${p.num.toString().length}桁 / 分母${p.den.toString().length}桁`;
+
+      updateQuickTypeButtons();
 
       // Render question fraction
       questionEl.innerHTML = renderFractionHtml(p.initialWhole, p.num, p.den, true);
@@ -654,7 +879,13 @@
         banner.className = 'h-10 flex items-center justify-center px-4 rounded-xl text-sm font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 opacity-100 transition-all mt-1';
         
         let explanationMsg = `正解！ `;
-        if (p.hasWhole) {
+        if (p.isInteger) {
+          if (p.hasWhole) {
+            explanationMsg += `${p.num} ÷ ${p.den} = ${p.quotient} より、${p.initialWhole} + ${p.quotient} = ${p.finalWhole}（整数になります）`;
+          } else {
+            explanationMsg += `${p.num} ÷ ${p.den} = ${p.finalWhole}（あまりが出ないので整数になります！）`;
+          }
+        } else if (p.hasWhole) {
           explanationMsg += `${p.num} ÷ ${p.den} = ${p.quotient} あまり ${p.finalRem} より、${p.initialWhole} + ${p.quotient} = ${p.finalWhole} と ${p.finalRem}/${p.finalDen}`;
         } else {
           explanationMsg += `${p.num} ÷ ${p.den} = ${p.finalWhole} あまり ${p.finalRem}`;
@@ -692,7 +923,13 @@
 
         banner.className = 'h-10 flex items-center justify-center px-4 rounded-xl text-sm font-semibold bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300 opacity-100 transition-all mt-1';
         let explanationMsg = `おしい！ `;
-        if (p.hasWhole) {
+        if (p.isInteger) {
+          if (p.hasWhole) {
+            explanationMsg += `${p.num} ÷ ${p.den} = ${p.quotient} → 正解は ${p.finalWhole}`;
+          } else {
+            explanationMsg += `${p.num} ÷ ${p.den} = ${p.finalWhole}（割り切れて整数 ${p.finalWhole} になります）`;
+          }
+        } else if (p.hasWhole) {
           explanationMsg += `${p.num} ÷ ${p.den} = ${p.quotient} あまり ${p.finalRem} → 正解は ${p.finalWhole} と ${p.finalRem}/${p.finalDen}`;
         } else {
           explanationMsg += `${p.num} ÷ ${p.den} = ${p.finalWhole} あまり ${p.finalRem}`;
@@ -861,6 +1098,7 @@
 
     // Temp state for modal
     let tempSettings = {
+      problemType: state.problemType,
       hasWholeNumber: state.hasWholeNumber,
       numDigits: state.numDigits,
       denDigits: state.denDigits
@@ -868,6 +1106,7 @@
 
     function syncSettingsUI() {
       tempSettings = {
+        problemType: state.problemType,
         hasWholeNumber: state.hasWholeNumber,
         numDigits: state.numDigits,
         denDigits: state.denDigits
@@ -876,6 +1115,28 @@
     }
 
     function updateModalOptionButtons() {
+      // Problem type buttons
+      document.querySelectorAll('.cfg-problem-type').forEach(btn => {
+        const val = btn.getAttribute('data-value');
+        if (val === tempSettings.problemType) {
+          btn.className = 'cfg-problem-type py-2 px-2 rounded-xl border-2 border-indigo-600 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold text-xs transition flex flex-col items-center justify-center gap-0.5 shadow-sm';
+        } else {
+          btn.className = 'cfg-problem-type py-2 px-2 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-xs transition flex flex-col items-center justify-center gap-0.5 hover:border-slate-300';
+        }
+      });
+
+      // Type notice text update
+      const typeNotice = document.getElementById('typeNotice');
+      if (typeNotice) {
+        if (tempSettings.problemType === 'integer') {
+          typeNotice.innerHTML = '✨ 答えがぴったり<span class="font-bold text-amber-600 dark:text-amber-400">整数</span>になる割り切れる問題（6/2 = 3 など）のみ出題されます。';
+        } else if (tempSettings.problemType === 'mixed') {
+          typeNotice.innerHTML = '✨ <span class="font-bold text-indigo-600 dark:text-indigo-400">帯分数問題</span>と<span class="font-bold text-amber-600 dark:text-amber-400">整数問題</span>が半々でランダムに出題されます。';
+        } else {
+          typeNotice.innerHTML = '✨ 出題される分数はすべて<span class="font-bold text-emerald-600 dark:text-emerald-400">既約分数</span>（約分できない分数）です。';
+        }
+      }
+
       // Whole number buttons
       document.querySelectorAll('.cfg-has-whole').forEach(btn => {
         const val = btn.getAttribute('data-value') === 'true';
@@ -916,6 +1177,13 @@
     }
 
     // Modal option click events
+    document.querySelectorAll('.cfg-problem-type').forEach(btn => {
+      btn.addEventListener('click', () => {
+        tempSettings.problemType = btn.getAttribute('data-value');
+        updateModalOptionButtons();
+      });
+    });
+
     document.querySelectorAll('.cfg-has-whole').forEach(btn => {
       btn.addEventListener('click', () => {
         tempSettings.hasWholeNumber = btn.getAttribute('data-value') === 'true';
@@ -939,11 +1207,42 @@
 
     // Apply settings
     applySettingsBtn.addEventListener('click', () => {
+      state.problemType = tempSettings.problemType;
       state.hasWholeNumber = tempSettings.hasWholeNumber;
       state.numDigits = tempSettings.numDigits;
       state.denDigits = tempSettings.denDigits;
+      try {
+        localStorage.setItem('taibunsu_problem_type', state.problemType);
+      } catch (e) {}
+      updateQuickTypeButtons();
       closeSettings();
       nextProblem();
+    });
+
+    // Quick Type Buttons (Card Header Inline Tabs)
+    function updateQuickTypeButtons() {
+      document.querySelectorAll('.quick-type-btn').forEach(btn => {
+        const type = btn.getAttribute('data-type');
+        if (type === state.problemType) {
+          btn.className = 'quick-type-btn px-2.5 py-1 rounded-lg text-xs font-bold transition-all shadow-sm bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 cursor-pointer';
+        } else {
+          btn.className = 'quick-type-btn px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer';
+        }
+      });
+    }
+
+    document.querySelectorAll('.quick-type-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.getAttribute('data-type');
+        if (type && type !== state.problemType) {
+          state.problemType = type;
+          try {
+            localStorage.setItem('taibunsu_problem_type', state.problemType);
+          } catch (e) {}
+          updateQuickTypeButtons();
+          nextProblem();
+        }
+      });
     });
 
     // Choice button click events
@@ -1031,6 +1330,15 @@
           document.documentElement.classList.add('dark');
         }
       } catch (e) {}
+
+      try {
+        const savedProblemType = localStorage.getItem('taibunsu_problem_type');
+        if (savedProblemType && ['fraction', 'integer', 'mixed'].includes(savedProblemType)) {
+          state.problemType = savedProblemType;
+        }
+      } catch (e) {}
+
+      updateQuickTypeButtons();
       nextProblem();
     });
   </script>
