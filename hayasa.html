@@ -1,0 +1,2222 @@
+<!DOCTYPE html>
+<html lang="ja" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>速さマスター | 算数・数学トレーニング</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- KaTeX for crisp mathematical typography -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <!-- Tone.js for sound effects -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+  <style>
+    .no-select {
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .katex-display {
+      margin: 0 !important;
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.95); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-pop {
+      animation: popIn 0.15s ease-out forwards;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.4); }
+      50% { box-shadow: 0 0 25px rgba(34, 197, 94, 0.8); }
+    }
+    .correct-glow {
+      animation: pulseGlow 0.5s ease-in-out;
+    }
+  </style>
+</head>
+<body class="h-full overflow-hidden bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200 no-select">
+  <div class="h-screen w-screen flex flex-col justify-between p-2 sm:p-4 max-w-6xl mx-auto">
+
+    <!-- TOP HEADER -->
+    <header class="flex flex-col md:flex-row items-center justify-between gap-2.5 bg-white dark:bg-slate-900 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 shrink-0">
+      
+      <!-- Title & Branding -->
+      <div class="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-start">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white font-black text-sm shadow-sm">
+            ⚡
+          </div>
+          <div>
+            <h1 class="font-black text-base sm:text-lg tracking-tight leading-none text-slate-900 dark:text-white flex items-center gap-2">
+              <span>速さマスター</span>
+              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">中1暗算特訓</span>
+            </h1>
+            <span class="text-[11px] text-slate-500 dark:text-slate-400">速さ・道のり・時間の関係を瞬時に見抜く</span>
+          </div>
+        </div>
+
+        <!-- Mobile Utility Controls -->
+        <div class="flex items-center gap-1 md:hidden">
+          <a href="index.html" class="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800" title="ポータルへ">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          </a>
+          <button onclick="toggleDarkMode()" class="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+            <svg class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Controls & Stats -->
+      <div class="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
+        <!-- Stats Pill -->
+        <div class="flex items-center gap-2 sm:gap-3 text-xs bg-slate-50 dark:bg-slate-800/80 px-2.5 sm:px-3 py-1 rounded-xl border border-slate-200 dark:border-slate-700/80">
+          <div>連続正解: <span id="streak-count" class="font-extrabold text-amber-500 text-sm">0</span></div>
+          <div class="w-px h-3 bg-slate-300 dark:bg-slate-700"></div>
+          <div>正答率: <span id="accuracy-rate" class="font-bold text-emerald-600 dark:text-emerald-400 text-sm">0%</span></div>
+          <div class="text-[11px] text-slate-400">(<span id="correct-count">0</span>/<span id="total-count">0</span>)</div>
+        </div>
+
+        <!-- Utility Buttons (Desktop) -->
+        <div class="hidden md:flex items-center gap-1.5">
+          <a href="index.html" title="ポータルへ戻る" class="p-1.5 px-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1 text-xs font-semibold">
+            <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span>ポータル</span>
+          </a>
+
+          <button id="sound-btn" onclick="toggleSound()" title="効果音切替" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <svg id="sound-icon-on" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+            <svg id="sound-icon-off" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+          </button>
+
+          <button id="theme-btn" onclick="toggleDarkMode()" title="ダークモード切替" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <svg id="theme-moon" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <svg id="theme-sun" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          </button>
+
+          <button id="fullscreen-btn" onclick="toggleFullscreen()" title="全画面表示 (F)" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- FILTER BAR (基本/標準, 時間/速さ/道のり, 整数/小数/分数) -->
+    <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-3 py-2 sm:py-2.5 rounded-2xl shadow-xs border border-slate-200 dark:border-slate-800 shrink-0 flex flex-wrap items-center justify-between gap-2 text-xs">
+      
+      <!-- Filter 1: Level (Basic / Standard) -->
+      <div class="flex items-center gap-1.5">
+        <span class="text-[11px] font-bold text-slate-400 dark:text-slate-500">問題形式:</span>
+        <div class="inline-flex bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl">
+          <button onclick="setFilter('level', 'all')" id="btn-level-all" class="filter-btn px-2.5 py-1 rounded-lg font-bold transition-all bg-white dark:bg-slate-700 shadow-xs text-emerald-600 dark:text-emerald-400">すべて</button>
+          <button onclick="setFilter('level', 'basic')" id="btn-level-basic" class="filter-btn px-2.5 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all">基本問題</button>
+          <button onclick="setFilter('level', 'standard')" id="btn-level-standard" class="filter-btn px-2.5 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all">標準問題</button>
+        </div>
+      </div>
+
+      <!-- Filter 2: Category (Speed / Distance / Time) -->
+      <div class="flex items-center gap-1.5">
+        <span class="text-[11px] font-bold text-slate-400 dark:text-slate-500">求めるもの:</span>
+        <div class="inline-flex bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl">
+          <button onclick="setFilter('category', 'all')" id="btn-cat-all" class="filter-btn px-2.5 py-1 rounded-lg font-bold transition-all bg-white dark:bg-slate-700 shadow-xs text-emerald-600 dark:text-emerald-400">すべて</button>
+          <button onclick="setFilter('category', 'speed')" id="btn-cat-speed" class="filter-btn px-2.5 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all">速さ</button>
+          <button onclick="setFilter('category', 'distance')" id="btn-cat-distance" class="filter-btn px-2.5 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all">道のり</button>
+          <button onclick="setFilter('category', 'time')" id="btn-cat-time" class="filter-btn px-2.5 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all">時間</button>
+        </div>
+      </div>
+
+      <!-- Filter 3: Answer Type (Integer / Decimal / Fraction) -->
+      <div class="flex items-center gap-1.5">
+        <span class="text-[11px] font-bold text-slate-400 dark:text-slate-500">答えの形:</span>
+        <div class="inline-flex bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl">
+          <button onclick="setFilter('ansType', 'all')" id="btn-ans-all" class="filter-btn px-2.5 py-1 rounded-lg font-bold transition-all bg-white dark:bg-slate-700 shadow-xs text-emerald-600 dark:text-emerald-400">すべて</button>
+          <button onclick="setFilter('ansType', 'integer')" id="btn-ans-integer" class="filter-btn px-2.5 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all">整数</button>
+          <button onclick="setFilter('ansType', 'decimal')" id="btn-ans-decimal" class="filter-btn px-2.5 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all">小数</button>
+          <button onclick="setFilter('ansType', 'fraction')" id="btn-ans-fraction" class="filter-btn px-2.5 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all">分数</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MAIN QUESTION & CHOICES AREA -->
+    <main class="flex-1 flex flex-col justify-center items-center my-2 sm:my-3 max-w-4xl w-full mx-auto gap-3 min-h-0">
+      
+      <!-- Question Card -->
+      <div class="w-full bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-7 shadow-md border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center relative overflow-hidden transition-all text-center">
+        
+        <!-- Category Badges -->
+        <div class="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3 flex-wrap justify-center">
+          <span id="badge-level" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+            基本問題
+          </span>
+          <span id="badge-category" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+            速さを求める
+          </span>
+          <span id="badge-anstype" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-purple-50 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+            答え: 整数
+          </span>
+        </div>
+
+        <!-- Question Text -->
+        <div class="min-h-[70px] sm:min-h-[85px] flex items-center justify-center px-2">
+          <h2 id="question-text" class="text-base sm:text-xl md:text-2xl font-bold leading-relaxed sm:leading-relaxed text-slate-800 dark:text-slate-100 max-w-3xl">
+            <!-- Dynamically populated -->
+          </h2>
+        </div>
+
+        <!-- Formula Guide / Hint Badge -->
+        <div class="mt-2 text-xs text-slate-400 dark:text-slate-500 font-medium flex items-center gap-1.5">
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span id="formula-hint">公式: 速さ ＝ 道のり ÷ 時間</span>
+        </div>
+
+        <!-- Step / Explanation Banner (Shown after answering) -->
+        <div id="explanation-banner" class="w-full mt-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium transition-all opacity-0 pointer-events-none scale-95 duration-200 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span id="result-status-badge" class="font-bold px-2 py-0.5 rounded-lg text-xs">正解！</span>
+            <span id="explanation-text" class="text-slate-700 dark:text-slate-200"></span>
+          </div>
+          <button id="next-btn-banner" onclick="nextQuestion()" class="shrink-0 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow transition active:scale-95 flex items-center gap-1 cursor-pointer">
+            <span>次の問題 (Enter)</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- 4 Choices Grid -->
+      <div class="w-full grid grid-cols-2 gap-2.5 sm:gap-4 max-w-4xl">
+        <button class="choice-btn group relative flex items-center justify-center p-3 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-md hover:border-emerald-500 dark:hover:border-emerald-500 hover:shadow-lg transition-all active:scale-98 cursor-pointer" onclick="handleAnswer(0)" data-index="0">
+          <span class="absolute top-2 left-2.5 sm:top-2.5 sm:left-3 text-xs font-bold text-slate-400 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">1</span>
+          <div class="choice-content text-base sm:text-xl font-bold text-slate-800 dark:text-slate-100 py-1"></div>
+        </button>
+
+        <button class="choice-btn group relative flex items-center justify-center p-3 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-md hover:border-emerald-500 dark:hover:border-emerald-500 hover:shadow-lg transition-all active:scale-98 cursor-pointer" onclick="handleAnswer(1)" data-index="1">
+          <span class="absolute top-2 left-2.5 sm:top-2.5 sm:left-3 text-xs font-bold text-slate-400 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">2</span>
+          <div class="choice-content text-base sm:text-xl font-bold text-slate-800 dark:text-slate-100 py-1"></div>
+        </button>
+
+        <button class="choice-btn group relative flex items-center justify-center p-3 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-md hover:border-emerald-500 dark:hover:border-emerald-500 hover:shadow-lg transition-all active:scale-98 cursor-pointer" onclick="handleAnswer(2)" data-index="2">
+          <span class="absolute top-2 left-2.5 sm:top-2.5 sm:left-3 text-xs font-bold text-slate-400 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">3</span>
+          <div class="choice-content text-base sm:text-xl font-bold text-slate-800 dark:text-slate-100 py-1"></div>
+        </button>
+
+        <button class="choice-btn group relative flex items-center justify-center p-3 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-md hover:border-emerald-500 dark:hover:border-emerald-500 hover:shadow-lg transition-all active:scale-98 cursor-pointer" onclick="handleAnswer(3)" data-index="3">
+          <span class="absolute top-2 left-2.5 sm:top-2.5 sm:left-3 text-xs font-bold text-slate-400 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">4</span>
+          <div class="choice-content text-base sm:text-xl font-bold text-slate-800 dark:text-slate-100 py-1"></div>
+        </button>
+      </div>
+
+      <!-- Bottom Keyboard / Skip Bar -->
+      <div class="w-full flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-2 max-w-4xl">
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>キーボード <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-mono text-[11px]">1</kbd>〜<kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-mono text-[11px]">4</kbd>、次へは <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-mono text-[11px]">Enter</kbd> / <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-mono text-[11px]">Space</kbd></span>
+        </div>
+
+        <button id="skipBtn" onclick="nextQuestion()" class="flex items-center gap-1 px-2.5 py-1 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition font-medium cursor-pointer">
+          <span>スキップ</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+    </main>
+
+    <!-- FOOTER (Formula Quick Reference) -->
+    <footer class="bg-white/60 dark:bg-slate-900/60 rounded-xl px-3 py-1.5 text-center text-[11px] text-slate-400 dark:text-slate-500 border border-slate-200/60 dark:border-slate-800/60 shrink-0">
+      <span class="font-bold text-slate-600 dark:text-slate-300">速さの公式（み・は・じ）:</span>
+      <span class="mx-1">速さ ＝ 道のり $\div$ 時間</span> |
+      <span class="mx-1">道のり ＝ 速さ $\times$ 時間</span> |
+      <span class="mx-1">時間 ＝ 道のり $\div$ 速さ</span>
+    </footer>
+
+  </div>
+
+  <!-- PASS MODAL (連続10問合格) -->
+  <div id="passModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200">
+    <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl border border-emerald-300 dark:border-emerald-500/50 text-center transform scale-95 transition-transform duration-200" id="passContent">
+      
+      <!-- Hononeko Celebration Character -->
+      <div class="relative w-44 sm:w-52 mx-auto mb-3">
+        <img src="hononeko.png" alt="ほのねこ 合格おめでとう！" class="w-full h-auto max-h-36 sm:max-h-44 object-contain rounded-2xl drop-shadow-xl animate-bounce mx-auto">
+        <span class="absolute -bottom-2 -right-1 text-3xl filter drop-shadow">🏆</span>
+      </div>
+
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 text-xs font-black mb-2.5">
+        <span>✨ 連続10問正解達成！ ✨</span>
+      </div>
+
+      <!-- Title & Message -->
+      <h3 class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white mb-1.5 tracking-tight">
+        速さマスター 合格！
+      </h3>
+      <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-5 leading-relaxed">
+        見事10問連続で正解しました！<br>
+        速さ・道のり・時間の関係と素早い暗算を完全にマスターできました。
+      </p>
+
+      <!-- Action Buttons -->
+      <div class="space-y-2.5">
+        <button onclick="closePassModal(true)" class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer">
+          <span>続けて挑戦する（連勝記録更新へ）</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </button>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="closePassModal(false)" class="py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-700/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs transition-all active:scale-98 cursor-pointer flex items-center justify-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            <span>最初から再挑戦</span>
+          </button>
+          <a href="index.html" class="py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-700/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs transition-all active:scale-98 cursor-pointer flex items-center justify-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span>ポータルへ</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    // ----------------------------------------------------
+    // Sound & Synthesizer Setup (Tone.js)
+    // ----------------------------------------------------
+    let soundEnabled = true;
+    let correctSynth = null;
+    let wrongSynth = null;
+
+    function initAudio() {
+      if (!correctSynth && window.Tone) {
+        try {
+          correctSynth = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: "triangle" },
+            envelope: { attack: 0.005, decay: 0.15, sustain: 0.05, release: 0.2 }
+          }).toDestination();
+          correctSynth.volume.value = -5;
+
+          wrongSynth = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: "triangle" },
+            envelope: { attack: 0.008, decay: 0.15, sustain: 0.1, release: 0.2 }
+          }).toDestination();
+          wrongSynth.volume.value = -5;
+        } catch (e) {
+          console.warn("Audio init failed", e);
+        }
+      }
+    }
+
+    function playSound(type) {
+      if (!soundEnabled) return;
+      initAudio();
+      try {
+        if (Tone.context.state !== 'running') {
+          Tone.context.resume();
+        }
+        const now = Tone.now();
+        if (type === 'correct') {
+          correctSynth.triggerAttackRelease(["C5"], "16n", now);
+          correctSynth.triggerAttackRelease(["E5"], "16n", now + 0.08);
+          correctSynth.triggerAttackRelease(["G5"], "8n", now + 0.16);
+        } else if (type === 'wrong') {
+          wrongSynth.triggerAttackRelease(["G4"], "16n", now);
+          wrongSynth.triggerAttackRelease(["Eb4"], "8n", now + 0.12);
+        } else if (type === 'fanfare') {
+          correctSynth.triggerAttackRelease(["C5", "G4"], "16n", now);
+          correctSynth.triggerAttackRelease(["E5", "C5"], "16n", now + 0.1);
+          correctSynth.triggerAttackRelease(["G5", "E5"], "16n", now + 0.2);
+          correctSynth.triggerAttackRelease(["C6", "G5", "E5"], "2n", now + 0.32);
+        }
+      } catch (e) {
+        console.warn("PlaySound error:", e);
+      }
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('sound-icon-on').classList.toggle('hidden', !soundEnabled);
+      document.getElementById('sound-icon-off').classList.toggle('hidden', soundEnabled);
+    }
+
+    // ----------------------------------------------------
+    // Dark Mode and Fullscreen Controls
+    // ----------------------------------------------------
+    function toggleDarkMode() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      try {
+        localStorage.setItem('hayasa_trainer_dark', isDark ? 'true' : 'false');
+      } catch (e) {}
+    }
+
+    if (localStorage.getItem('hayasa_trainer_dark') === 'true' || 
+        (!('hayasa_trainer_dark' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => console.warn(err));
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+
+    // ----------------------------------------------------
+    // PROBLEM DATABASE (180 QUESTIONS)
+    // ----------------------------------------------------
+    const PROBLEMS = [
+      // ==========================================
+      // BASIC (基本問題) - 90 QUESTIONS
+      // ==========================================
+
+      // --- SPEED (速さ) / INTEGER (整数) (10) ---
+      {
+        level: 'basic', category: 'speed', ansType: 'integer',
+        q: '2時間で80km走る自動車の時速を求めなさい。',
+        ans: '時速40km',
+        distractors: ['時速30km', '時速50km', '時速60km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 80km ÷ 2時間 ＝ 時速40km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'integer',
+        q: '3時間で150km走る電車の時速を求めなさい。',
+        ans: '時速50km',
+        distractors: ['時速45km', '時速55km', '時速60km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 150km ÷ 3時間 ＝ 時速50km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'integer',
+        q: '4時間で240km走る特急列車の時速を求めなさい。',
+        ans: '時速60km',
+        distractors: ['時速50km', '時速70km', '時速80km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 240km ÷ 4時間 ＝ 時速60km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'integer',
+        q: '2時間で30km走る自転車の時速を求めなさい。',
+        ans: '時速15km',
+        distractors: ['時速12km', '時速18km', '時速20km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 30km ÷ 2時間 ＝ 時速15km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'integer',
+        q: '5時間で350km走る高速バスの時速を求めなさい。',
+        ans: '時速70km',
+        distractors: ['時速60km', '時速65km', '時速80km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 350km ÷ 5時間 ＝ 時速70km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'integer',
+        q: '2時間で10km歩く人の時速を求めなさい。',
+        ans: '時速5km',
+        distractors: ['時速4km', '時速6km', '時速8km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 10km ÷ 2時間 ＝ 時速5km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'integer',
+        q: '3時間で210km走る自動車の時速を求めなさい。',
+        ans: '時速70km',
+        distractors: ['時速60km', '時速65km', '時速80km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 210km ÷ 3時間 ＝ 時速70km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'integer',
+        q: '4時間で360km走る新幹線の時速を求めなさい。',
+        ans: '時速90km',
+        distractors: ['時速80km', '時速85km', '時速100km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 360km ÷ 4時間 ＝ 時速90km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'integer',
+        q: '10秒間で60m走る人の秒速を求めなさい。',
+        ans: '秒速6m',
+        distractors: ['秒速5m', '秒速7m', '秒速8m'],
+        explanation: '秒速 ＝ 道のり ÷ 時間 ＝ 60m ÷ 10秒 ＝ 秒速6m',
+        formulaHint: '公式: 秒速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'integer',
+        q: '5分間で400m歩く人の分速を求めなさい。',
+        ans: '分速80m',
+        distractors: ['分速70m', '分速75m', '分速90m'],
+        explanation: '分速 ＝ 道のり ÷ 時間 ＝ 400m ÷ 5分 ＝ 分速80m',
+        formulaHint: '公式: 分速 ＝ 道のり ÷ 時間'
+      },
+
+      // --- SPEED (速さ) / DECIMAL (小数) (10) ---
+      {
+        level: 'basic', category: 'speed', ansType: 'decimal',
+        q: '2時間で9km歩く人の時速を求めなさい。',
+        ans: '時速4.5km',
+        distractors: ['時速3.5km', '時速4.0km', '時速5.5km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 9km ÷ 2時間 ＝ 時速4.5km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'decimal',
+        q: '2時間で7km歩く人の時速を求めなさい。',
+        ans: '時速3.5km',
+        distractors: ['時速2.5km', '時速3.0km', '時速4.5km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 7km ÷ 2時間 ＝ 時速3.5km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'decimal',
+        q: '4時間で10km歩く人の時速を求めなさい。',
+        ans: '時速2.5km',
+        distractors: ['時速2.0km', '時速3.0km', '時速3.5km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 10km ÷ 4時間 ＝ 時速2.5km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'decimal',
+        q: '2時間で5km散歩する人の時速を求めなさい。',
+        ans: '時速2.5km',
+        distractors: ['時速2.0km', '時速3.0km', '時速3.5km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 5km ÷ 2時間 ＝ 時速2.5km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'decimal',
+        q: '4時間で18km走る自転車の時速を求めなさい。',
+        ans: '時速4.5km',
+        distractors: ['時速4.0km', '時速5.0km', '時速5.5km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 18km ÷ 4時間 ＝ 時速4.5km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'decimal',
+        q: '2時間で25km走る自転車の時速を求めなさい。',
+        ans: '時速12.5km',
+        distractors: ['時速11.5km', '時速13.0km', '時速13.5km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 25km ÷ 2時間 ＝ 時速12.5km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'decimal',
+        q: '10秒間で15m進むカメの秒速を求めなさい。',
+        ans: '秒速1.5m',
+        distractors: ['秒速1.2m', '秒速1.8m', '秒速2.0m'],
+        explanation: '秒速 ＝ 道のり ÷ 時間 ＝ 15m ÷ 10秒 ＝ 秒速1.5m',
+        formulaHint: '公式: 秒速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'decimal',
+        q: '10秒間で24m歩く人の秒速を求めなさい。',
+        ans: '秒速2.4m',
+        distractors: ['秒速2.0m', '秒速2.5m', '秒速2.8m'],
+        explanation: '秒速 ＝ 道のり ÷ 時間 ＝ 24m ÷ 10秒 ＝ 秒速2.4m',
+        formulaHint: '公式: 秒速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'decimal',
+        q: '20秒間で70m走る人の秒速を求めなさい。',
+        ans: '秒速3.5m',
+        distractors: ['秒速3.0m', '秒速4.0m', '秒速4.5m'],
+        explanation: '秒速 ＝ 道のり ÷ 時間 ＝ 70m ÷ 20秒 ＝ 秒速3.5m',
+        formulaHint: '公式: 秒速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'decimal',
+        q: '20秒間で50m泳ぐ人の秒速を求めなさい。',
+        ans: '秒速2.5m',
+        distractors: ['秒速2.0m', '秒速3.0m', '秒速3.5m'],
+        explanation: '秒速 ＝ 道のり ÷ 時間 ＝ 50m ÷ 20秒 ＝ 秒速2.5m',
+        formulaHint: '公式: 秒速 ＝ 道のり ÷ 時間'
+      },
+
+      // --- SPEED (速さ) / FRACTION (分数) (10) ---
+      {
+        level: 'basic', category: 'speed', ansType: 'fraction',
+        q: '3時間で10km歩く人の時速を分数で求めなさい。',
+        ansLatex: '\\text{時速 } \\frac{10}{3}\\text{ km}',
+        distractorsLatex: ['\\text{時速 } \\frac{7}{3}\\text{ km}', '\\text{時速 } \\frac{11}{3}\\text{ km}', '\\text{時速 } \\frac{3}{10}\\text{ km}'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 10 ÷ 3 ＝ 時速 \\frac{10}{3}km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'fraction',
+        q: '3時間で20km走る自転車の時速を分数で求めなさい。',
+        ansLatex: '\\text{時速 } \\frac{20}{3}\\text{ km}',
+        distractorsLatex: ['\\text{時速 } \\frac{19}{3}\\text{ km}', '\\text{時速 } \\frac{22}{3}\\text{ km}', '\\text{時速 } \\frac{3}{20}\\text{ km}'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 20 ÷ 3 ＝ 時速 \\frac{20}{3}km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'fraction',
+        q: '6分間で5km走る自動車の分速を分数で求めなさい。',
+        ansLatex: '\\text{分速 } \\frac{5}{6}\\text{ km}',
+        distractorsLatex: ['\\text{分速 } \\frac{1}{6}\\text{ km}', '\\text{分速 } \\frac{5}{7}\\text{ km}', '\\text{分速 } \\frac{6}{5}\\text{ km}'],
+        explanation: '分速 ＝ 道のり ÷ 時間 ＝ 5 ÷ 6 ＝ 分速 \\frac{5}{6}km',
+        formulaHint: '公式: 分速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'fraction',
+        q: '3秒間で7m進む台車の秒速を分数で求めなさい。',
+        ansLatex: '\\text{秒速 } \\frac{7}{3}\\text{ m}',
+        distractorsLatex: ['\\text{秒速 } \\frac{5}{3}\\text{ m}', '\\text{秒速 } \\frac{8}{3}\\text{ m}', '\\text{秒速 } \\frac{3}{7}\\text{ m}'],
+        explanation: '秒速 ＝ 道のり ÷ 時間 ＝ 7 ÷ 3 ＝ 秒速 \\frac{7}{3}m',
+        formulaHint: '公式: 秒速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'fraction',
+        q: '3時間で40km走るバイクの時速を分数で求めなさい。',
+        ansLatex: '\\text{時速 } \\frac{40}{3}\\text{ km}',
+        distractorsLatex: ['\\text{時速 } \\frac{35}{3}\\text{ km}', '\\text{時速 } \\frac{41}{3}\\text{ km}', '\\text{時速 } \\frac{3}{40}\\text{ km}'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 40 ÷ 3 ＝ 時速 \\frac{40}{3}km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'fraction',
+        q: '6時間で25km歩く人の時速を分数で求めなさい。',
+        ansLatex: '\\text{時速 } \\frac{25}{6}\\text{ km}',
+        distractorsLatex: ['\\text{時速 } \\frac{23}{6}\\text{ km}', '\\text{時速 } \\frac{26}{6}\\text{ km}', '\\text{時速 } \\frac{6}{25}\\text{ km}'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 25 ÷ 6 ＝ 時速 \\frac{25}{6}km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'fraction',
+        q: '7秒間で10m進む人の秒速を分数で求めなさい。',
+        ansLatex: '\\text{秒速 } \\frac{10}{7}\\text{ m}',
+        distractorsLatex: ['\\text{秒速 } \\frac{9}{7}\\text{ m}', '\\text{秒速 } \\frac{11}{7}\\text{ m}', '\\text{秒速 } \\frac{7}{10}\\text{ m}'],
+        explanation: '秒速 ＝ 道のり ÷ 時間 ＝ 10 ÷ 7 ＝ 秒速 \\frac{10}{7}m',
+        formulaHint: '公式: 秒速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'fraction',
+        q: '3秒間で4m進むロボットの秒速を分数で求めなさい。',
+        ansLatex: '\\text{秒速 } \\frac{4}{3}\\text{ m}',
+        distractorsLatex: ['\\text{秒速 } \\frac{2}{3}\\text{ m}', '\\text{秒速 } \\frac{5}{3}\\text{ m}', '\\text{秒速 } \\frac{3}{4}\\text{ m}'],
+        explanation: '秒速 ＝ 道のり ÷ 時間 ＝ 4 ÷ 3 ＝ 秒速 \\frac{4}{3}m',
+        formulaHint: '公式: 秒速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'fraction',
+        q: '7分間で12km走る電車の分速を分数で求めなさい。',
+        ansLatex: '\\text{分速 } \\frac{12}{7}\\text{ km}',
+        distractorsLatex: ['\\text{分速 } \\frac{11}{7}\\text{ km}', '\\text{分速 } \\frac{13}{7}\\text{ km}', '\\text{分速 } \\frac{7}{12}\\text{ km}'],
+        explanation: '分速 ＝ 道のり ÷ 時間 ＝ 12 ÷ 7 ＝ 分速 \\frac{12}{7}km',
+        formulaHint: '公式: 分速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'basic', category: 'speed', ansType: 'fraction',
+        q: '3時間で8km散歩する人の時速を分数で求めなさい。',
+        ansLatex: '\\text{時速 } \\frac{8}{3}\\text{ km}',
+        distractorsLatex: ['\\text{時速 } \\frac{7}{3}\\text{ km}', '\\text{時速 } \\frac{10}{3}\\text{ km}', '\\text{時速 } \\frac{3}{8}\\text{ km}'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 8 ÷ 3 ＝ 時速 \\frac{8}{3}km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+
+      // --- DISTANCE (道のり) / INTEGER (整数) (10) ---
+      {
+        level: 'basic', category: 'distance', ansType: 'integer',
+        q: '分速70mで歩く人は、5分間に何m進みますか。',
+        ans: '350m',
+        distractors: ['300m', '320m', '380m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 70m/分 × 5分 ＝ 350m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'integer',
+        q: '分速80mで歩く人は、10分間に何m進みますか。',
+        ans: '800m',
+        distractors: ['700m', '750m', '900m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 80m/分 × 10分 ＝ 800m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'integer',
+        q: '秒速6mで走る人は、20秒間に何m進みますか。',
+        ans: '120m',
+        distractors: ['100m', '110m', '140m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 6m/秒 × 20秒 ＝ 120m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'integer',
+        q: '時速40kmで走る自動車は、3時間に何km進みますか。',
+        ans: '120km',
+        distractors: ['100km', '110km', '140km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 40km/h × 3時間 ＝ 120km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'integer',
+        q: '分速200mで走る自転車は、4分間に何m進みますか。',
+        ans: '800m',
+        distractors: ['600m', '700m', '900m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 200m/分 × 4分 ＝ 800m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'integer',
+        q: '秒速20mで走る電車は、10秒間に何m進みますか。',
+        ans: '200m',
+        distractors: ['180m', '220m', '250m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 20m/秒 × 10秒 ＝ 200m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'integer',
+        q: '時速60kmで走る列車は、2時間に何km進みますか。',
+        ans: '120km',
+        distractors: ['100km', '110km', '130km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 60km/h × 2時間 ＝ 120km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'integer',
+        q: '分速60mで歩く人は、30分間に何m進みますか。',
+        ans: '1800m',
+        distractors: ['1500m', '1600m', '2000m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 60m/分 × 30分 ＝ 1800m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'integer',
+        q: '秒速15mで飛ぶ鳥は、4秒間に何m進みますか。',
+        ans: '60m',
+        distractors: ['50m', '55m', '65m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 15m/秒 × 4秒 ＝ 60m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'integer',
+        q: '時速15kmで走る自転車は、3時間に何km進みますか。',
+        ans: '45km',
+        distractors: ['35km', '40km', '50km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 15km/h × 3時間 ＝ 45km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+
+      // --- DISTANCE (道のり) / DECIMAL (小数) (10) ---
+      {
+        level: 'basic', category: 'distance', ansType: 'decimal',
+        q: '時速3kmで歩く人は、0.5時間（30分）に何km進みますか。',
+        ans: '1.5km',
+        distractors: ['1.0km', '2.0km', '2.5km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 3 × 0.5 ＝ 1.5km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'decimal',
+        q: '時速5kmで歩く人は、0.5時間に何km進みますか。',
+        ans: '2.5km',
+        distractors: ['2.0km', '3.0km', '3.5km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 5 × 0.5 ＝ 2.5km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'decimal',
+        q: '時速7kmで走る人は、0.5時間に何km進みますか。',
+        ans: '3.5km',
+        distractors: ['3.0km', '4.0km', '4.5km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 7 × 0.5 ＝ 3.5km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'decimal',
+        q: '時速3kmで歩く人は、1.5時間に何km進みますか。',
+        ans: '4.5km',
+        distractors: ['4.0km', '5.0km', '5.5km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 3 × 1.5 ＝ 4.5km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'decimal',
+        q: '時速5kmで歩く人は、1.5時間に何km進みますか。',
+        ans: '7.5km',
+        distractors: ['6.5km', '7.0km', '8.5km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 5 × 1.5 ＝ 7.5km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'decimal',
+        q: '秒速0.5mで進むロボットは、7秒間に何m進みますか。',
+        ans: '3.5m',
+        distractors: ['2.5m', '3.0m', '4.0m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 0.5 × 7 ＝ 3.5m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'decimal',
+        q: '秒速1.5mで歩く人は、5秒間に何m進みますか。',
+        ans: '7.5m',
+        distractors: ['6.5m', '7.0m', '8.0m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 1.5 × 5 ＝ 7.5m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'decimal',
+        q: '秒速2.5mで走る犬は、3秒間に何m進みますか。',
+        ans: '7.5m',
+        distractors: ['6.5m', '7.0m', '8.0m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 2.5 × 3 ＝ 7.5m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'decimal',
+        q: '時速9kmで走る人は、0.5時間に何km進みますか。',
+        ans: '4.5km',
+        distractors: ['4.0km', '5.0km', '5.5km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 9 × 0.5 ＝ 4.5km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'decimal',
+        q: '秒速0.5mで進む台車は、9秒間に何m進みますか。',
+        ans: '4.5m',
+        distractors: ['3.5m', '4.0m', '5.0m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 0.5 × 9 ＝ 4.5m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+
+      // --- DISTANCE (道のり) / FRACTION (分数) (10) ---
+      {
+        level: 'basic', category: 'distance', ansType: 'fraction',
+        q: '時速40kmで走るバスは、\\frac{1}{3}時間で何km進みますか。',
+        ansLatex: '\\frac{40}{3}\\text{ km}',
+        distractorsLatex: ['\\frac{35}{3}\\text{ km}', '\\frac{41}{3}\\text{ km}', '\\frac{3}{40}\\text{ km}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 40 \\times \\frac{1}{3} ＝ \\frac{40}{3}km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'fraction',
+        q: '時速10kmで走る自転車は、\\frac{2}{3}時間で何km進みますか。',
+        ansLatex: '\\frac{20}{3}\\text{ km}',
+        distractorsLatex: ['\\frac{15}{3}\\text{ km}', '\\frac{22}{3}\\text{ km}', '\\frac{3}{20}\\text{ km}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 10 \\times \\frac{2}{3} ＝ \\frac{20}{3}km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'fraction',
+        q: '分速70mで歩く人は、\\frac{1}{3}分間に何m進みますか。',
+        ansLatex: '\\frac{70}{3}\\text{ m}',
+        distractorsLatex: ['\\frac{65}{3}\\text{ m}', '\\frac{71}{3}\\text{ m}', '\\frac{3}{70}\\text{ m}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 70 \\times \\frac{1}{3} ＝ \\frac{70}{3}m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'fraction',
+        q: '時速50kmで走る自動車は、\\frac{1}{3}時間で何km進みますか。',
+        ansLatex: '\\frac{50}{3}\\text{ km}',
+        distractorsLatex: ['\\frac{45}{3}\\text{ km}', '\\frac{52}{3}\\text{ km}', '\\frac{3}{50}\\text{ km}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 50 \\times \\frac{1}{3} ＝ \\frac{50}{3}km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'fraction',
+        q: '秒速4mで走る人は、\\frac{5}{3}秒間に何m進みますか。',
+        ansLatex: '\\frac{20}{3}\\text{ m}',
+        distractorsLatex: ['\\frac{18}{3}\\text{ m}', '\\frac{22}{3}\\text{ m}', '\\frac{3}{20}\\text{ m}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 4 \\times \\frac{5}{3} ＝ \\frac{20}{3}m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'fraction',
+        q: '時速8kmで走る人は、\\frac{2}{3}時間で何km進みますか。',
+        ansLatex: '\\frac{16}{3}\\text{ km}',
+        distractorsLatex: ['\\frac{14}{3}\\text{ km}', '\\frac{17}{3}\\text{ km}', '\\frac{3}{16}\\text{ km}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 8 \\times \\frac{2}{3} ＝ \\frac{16}{3}km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'fraction',
+        q: '時速25kmで走るバイクは、\\frac{1}{3}時間で何km進みますか。',
+        ansLatex: '\\frac{25}{3}\\text{ km}',
+        distractorsLatex: ['\\frac{22}{3}\\text{ km}', '\\frac{26}{3}\\text{ km}', '\\frac{3}{25}\\text{ km}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 25 \\times \\frac{1}{3} ＝ \\frac{25}{3}km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'fraction',
+        q: '分速80mで歩く人は、\\frac{2}{3}分間に何m進みますか。',
+        ansLatex: '\\frac{160}{3}\\text{ m}',
+        distractorsLatex: ['\\frac{150}{3}\\text{ m}', '\\frac{170}{3}\\text{ m}', '\\frac{3}{160}\\text{ m}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 80 \\times \\frac{2}{3} ＝ \\frac{160}{3}m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'fraction',
+        q: '時速4kmで歩く人は、\\frac{4}{3}時間で何km進みますか。',
+        ansLatex: '\\frac{16}{3}\\text{ km}',
+        distractorsLatex: ['\\frac{14}{3}\\text{ km}', '\\frac{17}{3}\\text{ km}', '\\frac{3}{16}\\text{ km}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 4 \\times \\frac{4}{3} ＝ \\frac{16}{3}km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'basic', category: 'distance', ansType: 'fraction',
+        q: '秒速7mで走る人は、\\frac{4}{3}秒間に何m進みますか。',
+        ansLatex: '\\frac{28}{3}\\text{ m}',
+        distractorsLatex: ['\\frac{26}{3}\\text{ m}', '\\frac{29}{3}\\text{ m}', '\\frac{3}{28}\\text{ m}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 7 \\times \\frac{4}{3} ＝ \\frac{28}{3}m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+
+      // --- TIME (時間) / INTEGER (整数) (10) ---
+      {
+        level: 'basic', category: 'time', ansType: 'integer',
+        q: '時速40kmで走る自動車は、120km進むのに何時間かかりますか。',
+        ans: '3時間',
+        distractors: ['2時間', '4時間', '5時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 120km ÷ 40km/h ＝ 3時間',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'integer',
+        q: '時速50kmで走るバスは、100km進むのに何時間かかりますか。',
+        ans: '2時間',
+        distractors: ['1時間', '3時間', '4時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 100km ÷ 50km/h ＝ 2時間',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'integer',
+        q: '時速60kmで走る電車は、240km進むのに何時間かかりますか。',
+        ans: '4時間',
+        distractors: ['3時間', '5時間', '6時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 240km ÷ 60km/h ＝ 4時間',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'integer',
+        q: '分速80mで歩く人は、400m進むのに何分かかりますか。',
+        ans: '5分',
+        distractors: ['4分', '6分', '8分'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 400m ÷ 80m/分 ＝ 5分',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'integer',
+        q: '分速200mで走る自転車は、600m進むのに何分かかりますか。',
+        ans: '3分',
+        distractors: ['2分', '4分', '5分'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 600m ÷ 200m/分 ＝ 3分',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'integer',
+        q: '秒速5mで走る人は、100m走るのに何秒かかりますか。',
+        ans: '20秒',
+        distractors: ['15秒', '25秒', '30秒'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 100m ÷ 5m/秒 ＝ 20秒',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'integer',
+        q: '秒速20mで走る車は、400m進むのに何秒かかりますか。',
+        ans: '20秒',
+        distractors: ['15秒', '25秒', '30秒'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 400m ÷ 20m/秒 ＝ 20秒',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'integer',
+        q: '時速15kmで走る自転車は、30km進むのに何時間かかりますか。',
+        ans: '2時間',
+        distractors: ['1時間', '3時間', '4時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 30km ÷ 15km/h ＝ 2時間',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'integer',
+        q: '分速70mで歩く人は、210m進むのに何分かかりますか。',
+        ans: '3分',
+        distractors: ['2分', '4分', '5分'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 210m ÷ 70m/分 ＝ 3分',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'integer',
+        q: '秒速4mで泳ぐ魚は、24m進むのに何秒かかりますか。',
+        ans: '6秒',
+        distractors: ['4秒', '5秒', '8秒'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 24m ÷ 4m/秒 ＝ 6秒',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+
+      // --- TIME (時間) / DECIMAL (小数) (10) ---
+      {
+        level: 'basic', category: 'time', ansType: 'decimal',
+        q: '時速40kmで走る自動車は、60km進むのに何時間かかりますか。',
+        ans: '1.5時間',
+        distractors: ['1.2時間', '1.8時間', '2.0時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 60 ÷ 40 ＝ 1.5時間（1時間30分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'decimal',
+        q: '時速50kmで走るバイクは、25km進むのに何時間かかりますか。',
+        ans: '0.5時間',
+        distractors: ['0.2時間', '0.4時間', '0.8時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 25 ÷ 50 ＝ 0.5時間（30分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'decimal',
+        q: '時速60kmで走る電車は、90km進むのに何時間かかりますか。',
+        ans: '1.5時間',
+        distractors: ['1.2時間', '1.8時間', '2.0時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 90 ÷ 60 ＝ 1.5時間（1時間30分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'decimal',
+        q: '時速40kmで走るバスは、100km進むのに何時間かかりますか。',
+        ans: '2.5時間',
+        distractors: ['2.0時間', '3.0時間', '3.5時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 100 ÷ 40 ＝ 2.5時間（2時間30分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'decimal',
+        q: '時速20kmで走る自転車は、70km進むのに何時間かかりますか。',
+        ans: '3.5時間',
+        distractors: ['3.0時間', '4.0時間', '4.5時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 70 ÷ 20 ＝ 3.5時間（3時間30分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'decimal',
+        q: '分速60mで歩く人は、150m進むのに何分かかりますか。',
+        ans: '2.5分',
+        distractors: ['2.0分', '3.0分', '3.5分'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 150 ÷ 60 ＝ 2.5分（2分30秒）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'decimal',
+        q: '分速80mで歩く人は、200m進むのに何分かかりますか。',
+        ans: '2.5分',
+        distractors: ['2.0分', '3.0分', '3.5分'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 200 ÷ 80 ＝ 2.5分（2分30秒）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'decimal',
+        q: '秒速20mで走る電車は、50m進むのに何秒かかりますか。',
+        ans: '2.5秒',
+        distractors: ['2.0秒', '3.0秒', '3.5秒'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 50 ÷ 20 ＝ 2.5秒',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'decimal',
+        q: '秒速4mで走る人は、18m進むのに何秒かかりますか。',
+        ans: '4.5秒',
+        distractors: ['4.0秒', '5.0秒', '5.5秒'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 18 ÷ 4 ＝ 4.5秒',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'decimal',
+        q: '時速60kmで走る自動車は、210km進むのに何時間かかりますか。',
+        ans: '3.5時間',
+        distractors: ['3.0時間', '4.0時間', '4.5時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 210 ÷ 60 ＝ 3.5時間（3時間30分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+
+      // --- TIME (時間) / FRACTION (分数) (10) ---
+      {
+        level: 'basic', category: 'time', ansType: 'fraction',
+        q: '時速60kmで走る自動車は、40km進むのに何時間かかりますか（分数で答えなさい）。',
+        ansLatex: '\\frac{2}{3}\\text{ 時間}',
+        distractorsLatex: ['\\frac{1}{3}\\text{ 時間}', '\\frac{3}{4}\\text{ 時間}', '\\frac{3}{2}\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 40 ÷ 60 ＝ \\frac{40}{60} ＝ \\frac{2}{3}時間（40分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'fraction',
+        q: '時速60kmで走る電車は、20km進むのに何時間かかりますか（分数で答えなさい）。',
+        ansLatex: '\\frac{1}{3}\\text{ 時間}',
+        distractorsLatex: ['\\frac{1}{2}\\text{ 時間}', '\\frac{2}{3}\\text{ 時間}', '3\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 20 ÷ 60 ＝ \\frac{20}{60} ＝ \\frac{1}{3}時間（20分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'fraction',
+        q: '時速60kmで走るバスは、45km進むのに何時間かかりますか（分数で答えなさい）。',
+        ansLatex: '\\frac{3}{4}\\text{ 時間}',
+        distractorsLatex: ['\\frac{2}{3}\\text{ 時間}', '\\frac{4}{5}\\text{ 時間}', '\\frac{4}{3}\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 45 ÷ 60 ＝ \\frac{45}{60} ＝ \\frac{3}{4}時間（45分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'fraction',
+        q: '時速60kmで走る列車は、50km進むのに何時間かかりますか（分数で答えなさい）。',
+        ansLatex: '\\frac{5}{6}\\text{ 時間}',
+        distractorsLatex: ['\\frac{4}{5}\\text{ 時間}', '\\frac{2}{3}\\text{ 時間}', '\\frac{6}{5}\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 50 ÷ 60 ＝ \\frac{50}{60} ＝ \\frac{5}{6}時間（50分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'fraction',
+        q: '時速60kmで走る車は、10km進むのに何時間かかりますか（分数で答えなさい）。',
+        ansLatex: '\\frac{1}{6}\\text{ 時間}',
+        distractorsLatex: ['\\frac{1}{5}\\text{ 時間}', '\\frac{1}{4}\\text{ 時間}', '6\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 10 ÷ 60 ＝ \\frac{10}{60} ＝ \\frac{1}{6}時間（10分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'fraction',
+        q: '時速45kmで走るトラックは、30km進むのに何時間かかりますか（分数で答えなさい）。',
+        ansLatex: '\\frac{2}{3}\\text{ 時間}',
+        distractorsLatex: ['\\frac{1}{3}\\text{ 時間}', '\\frac{3}{4}\\text{ 時間}', '\\frac{3}{2}\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 30 ÷ 45 ＝ \\frac{30}{45} ＝ \\frac{2}{3}時間',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'fraction',
+        q: '時速45kmで走るバイクは、15km進むのに何時間かかりますか（分数で答えなさい）。',
+        ansLatex: '\\frac{1}{3}\\text{ 時間}',
+        distractorsLatex: ['\\frac{1}{4}\\text{ 時間}', '\\frac{2}{3}\\text{ 時間}', '3\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 15 ÷ 45 ＝ \\frac{15}{45} ＝ \\frac{1}{3}時間',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'fraction',
+        q: '時速50kmで走る自動車は、20km進むのに何時間かかりますか（分数で答えなさい）。',
+        ansLatex: '\\frac{2}{5}\\text{ 時間}',
+        distractorsLatex: ['\\frac{1}{5}\\text{ 時間}', '\\frac{3}{5}\\text{ 時間}', '\\frac{5}{2}\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 20 ÷ 50 ＝ \\frac{20}{50} ＝ \\frac{2}{5}時間（24分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'fraction',
+        q: '時速50kmで走る車は、30km進むのに何時間かかりますか（分数で答えなさい）。',
+        ansLatex: '\\frac{3}{5}\\text{ 時間}',
+        distractorsLatex: ['\\frac{2}{5}\\text{ 時間}', '\\frac{4}{5}\\text{ 時間}', '\\frac{5}{3}\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 30 ÷ 50 ＝ \\frac{30}{50} ＝ \\frac{3}{5}時間（36分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'basic', category: 'time', ansType: 'fraction',
+        q: '時速40kmで走る自動車は、30km進むのに何時間かかりますか（分数で答えなさい）。',
+        ansLatex: '\\frac{3}{4}\\text{ 時間}',
+        distractorsLatex: ['\\frac{1}{2}\\text{ 時間}', '\\frac{2}{3}\\text{ 時間}', '\\frac{4}{3}\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 30 ÷ 40 ＝ \\frac{30}{40} ＝ \\frac{3}{4}時間（45分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+
+      // ==========================================
+      // STANDARD (標準問題) - 90 QUESTIONS
+      // ==========================================
+
+      // --- SPEED (速さ) / INTEGER (整数) (10) ---
+      {
+        level: 'standard', category: 'speed', ansType: 'integer',
+        q: 'A町から80km離れたB町まで、車で2時間かけて移動しました。この車の速さは時速何kmですか。',
+        ans: '時速40km',
+        distractors: ['時速30km', '時速50km', '時速60km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 80km ÷ 2時間 ＝ 時速40km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'integer',
+        q: 'ある電車が150kmの区間を休まず3時間で走り抜けました。この電車は1時間あたり平均何km進んだことになりますか。',
+        ans: '時速50km',
+        distractors: ['時速45km', '時速55km', '時速60km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 150km ÷ 3時間 ＝ 時速50km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'integer',
+        q: '特急列車が240km離れた終点駅まで4時間で運行しました。この列車の時速を答えなさい。',
+        ans: '時速60km',
+        distractors: ['時速50km', '時速70km', '時速80km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 240km ÷ 4時間 ＝ 時速60km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'integer',
+        q: '全長30kmのサイクリングコースを、自転車でちょうど2時間で完走しました。自転車の走る速さは毎時何kmですか。',
+        ans: '時速15km',
+        distractors: ['時速12km', '時速18km', '時速20km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 30km ÷ 2時間 ＝ 時速15km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'integer',
+        q: '高速バスに乗って350km先の観光地へ向かったところ、所要時間は5時間でした。このバスの平均の速さは時速何kmでしょう。',
+        ans: '時速70km',
+        distractors: ['時速60km', '時速65km', '時速80km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 350km ÷ 5時間 ＝ 時速70km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'integer',
+        q: 'ハイキングコース10kmの道のりを、2時間かけて歩き通しました。歩いたペースは時速何kmですか。',
+        ans: '時速5km',
+        distractors: ['時速4km', '時速6km', '時速8km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 10km ÷ 2時間 ＝ 時速5km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'integer',
+        q: '高速道路を走るトラックが、3時間で210km走行しました。このトラックは時速何kmで走っていたことになりますか。',
+        ans: '時速70km',
+        distractors: ['時速60km', '時速65km', '時速80km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 210km ÷ 3時間 ＝ 時速70km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'integer',
+        q: 'ある観光列車が360kmの旅程を4時間かけて進みます。この列車の運行速度は毎時何kmでしょうか。',
+        ans: '時速90km',
+        distractors: ['時速80km', '時速85km', '時速100km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 360km ÷ 4時間 ＝ 時速90km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'integer',
+        q: '体育の授業で、60mの直線を10秒フラットで走り抜けた陸上部員がいます。この生徒の速さは秒速何mですか。',
+        ans: '秒速6m',
+        distractors: ['秒速5m', '秒速7m', '秒速8m'],
+        explanation: '秒速 ＝ 道のり ÷ 時間 ＝ 60m ÷ 10秒 ＝ 秒速6m',
+        formulaHint: '公式: 秒速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'integer',
+        q: '自宅から400m離れたバス停まで歩いたら、ちょうど5分かかりました。歩いた速さは毎分何mですか。',
+        ans: '分速80m',
+        distractors: ['分速70m', '分速75m', '分速90m'],
+        explanation: '分速 ＝ 道のり ÷ 時間 ＝ 400m ÷ 5分 ＝ 分速80m',
+        formulaHint: '公式: 分速 ＝ 道のり ÷ 時間'
+      },
+
+      // --- SPEED (速さ) / DECIMAL (小数) (10) ---
+      {
+        level: 'standard', category: 'speed', ansType: 'decimal',
+        q: 'おじいさんが健康のために2時間散歩したところ、万歩計の記録で9km歩いていました。おじいさんの歩く速さは時速何kmですか。',
+        ans: '時速4.5km',
+        distractors: ['時速3.5km', '時速4.0km', '時速5.5km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 9km ÷ 2時間 ＝ 時速4.5km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'decimal',
+        q: '街歩きイベントで7kmのルートを2時間で歩きました。1時間あたりに進んだ距離は何km（時速何km）ですか。',
+        ans: '時速3.5km',
+        distractors: ['時速2.5km', '時速3.0km', '時速4.5km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 7km ÷ 2時間 ＝ 時速3.5km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'decimal',
+        q: '山のふもとから山頂までの10kmを、4時間かけて登山しました。このときの登る速さは時速何kmですか。',
+        ans: '時速2.5km',
+        distractors: ['時速2.0km', '時速3.0km', '時速3.5km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 10km ÷ 4時間 ＝ 時速2.5km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'decimal',
+        q: '公園の周囲5kmを、犬と一緒に2時間かけてのんびり歩きました。歩いた速さは毎時何kmですか。',
+        ans: '時速2.5km',
+        distractors: ['時速2.0km', '時速3.0km', '時速3.5km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 5km ÷ 2時間 ＝ 時速2.5km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'decimal',
+        q: '18km離れた隣町まで自転車で行くのに4時間かかりました。この自転車の速さは時速何kmでしょうか。',
+        ans: '時速4.5km',
+        distractors: ['時速4.0km', '時速5.0km', '時速5.5km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 18km ÷ 4時間 ＝ 時速4.5km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'decimal',
+        q: 'ロードバイクで湖の周り25kmを2時間で1周しました。走った平均の速さは時速何kmですか。',
+        ans: '時速12.5km',
+        distractors: ['時速11.5km', '時速13.0km', '時速13.5km'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 25km ÷ 2時間 ＝ 時速12.5km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'decimal',
+        q: '庭を歩くカメを観察したところ、10秒間に15m進みました。カメの歩く速さは秒速何mですか。',
+        ans: '秒速1.5m',
+        distractors: ['秒速1.2m', '秒速1.8m', '秒速2.0m'],
+        explanation: '秒速 ＝ 道のり ÷ 時間 ＝ 15m ÷ 10秒 ＝ 秒速1.5m',
+        formulaHint: '公式: 秒速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'decimal',
+        q: '横断歩道を含む24mの通路を10秒かけて渡りました。このときの歩行速度は秒速何mですか。',
+        ans: '秒速2.4m',
+        distractors: ['秒速2.0m', '秒速2.5m', '秒速2.8m'],
+        explanation: '秒速 ＝ 道のり ÷ 時間 ＝ 24m ÷ 10秒 ＝ 秒速2.4m',
+        formulaHint: '公式: 秒速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'decimal',
+        q: '校庭の70mの直線を走るのに20秒かかりました。この走りの速さは毎秒何mですか。',
+        ans: '秒速3.5m',
+        distractors: ['秒速3.0m', '秒速4.0m', '秒速4.5m'],
+        explanation: '秒速 ＝ 道のり ÷ 時間 ＝ 70m ÷ 20秒 ＝ 秒速3.5m',
+        formulaHint: '公式: 秒速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'decimal',
+        q: 'プールで50m泳いだときのタイムがちょうど20秒でした。泳いだ速さは秒速何mですか。',
+        ans: '秒速2.5m',
+        distractors: ['秒速2.0m', '秒速3.0m', '秒速3.5m'],
+        explanation: '秒速 ＝ 道のり ÷ 時間 ＝ 50m ÷ 20秒 ＝ 秒速2.5m',
+        formulaHint: '公式: 秒速 ＝ 道のり ÷ 時間'
+      },
+
+      // --- SPEED (速さ) / FRACTION (分数) (10) ---
+      {
+        level: 'standard', category: 'speed', ansType: 'fraction',
+        q: 'ハイキングで10kmの山道を3時間かけて登りきりました。登ったペースは毎時何kmですか（分数で答えなさい）。',
+        ansLatex: '\\text{時速 } \\frac{10}{3}\\text{ km}',
+        distractorsLatex: ['\\text{時速 } \\frac{7}{3}\\text{ km}', '\\text{時速 } \\frac{11}{3}\\text{ km}', '\\text{時速 } \\frac{3}{10}\\text{ km}'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 10 ÷ 3 ＝ 時速 \\frac{10}{3}km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'fraction',
+        q: 'サイクリングで20km離れた展望台まで3時間で到着しました。この自転車の速さは時速何kmですか（分数で答えなさい）。',
+        ansLatex: '\\text{時速 } \\frac{20}{3}\\text{ km}',
+        distractorsLatex: ['\\text{時速 } \\frac{19}{3}\\text{ km}', '\\text{時速 } \\frac{22}{3}\\text{ km}', '\\text{時速 } \\frac{3}{20}\\text{ km}'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 20 ÷ 3 ＝ 時速 \\frac{20}{3}km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'fraction',
+        q: '自動車で5kmの有料道路を6分間で走行しました。この車の速さは分速何kmですか（分数で答えなさい）。',
+        ansLatex: '\\text{分速 } \\frac{5}{6}\\text{ km}',
+        distractorsLatex: ['\\text{分速 } \\frac{1}{6}\\text{ km}', '\\text{分速 } \\frac{5}{7}\\text{ km}', '\\text{分速 } \\frac{6}{5}\\text{ km}'],
+        explanation: '分速 ＝ 道のり ÷ 時間 ＝ 5 ÷ 6 ＝ 分速 \\frac{5}{6}km',
+        formulaHint: '公式: 分速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'fraction',
+        q: '実験用の模型カーが、7mのレールを3秒で走り抜けました。この模型カーの秒速は何mですか（分数で答えなさい）。',
+        ansLatex: '\\text{秒速 } \\frac{7}{3}\\text{ m}',
+        distractorsLatex: ['\\text{秒速 } \\frac{5}{3}\\text{ m}', '\\text{秒速 } \\frac{8}{3}\\text{ m}', '\\text{秒速 } \\frac{3}{7}\\text{ m}'],
+        explanation: '秒速 ＝ 道のり ÷ 時間 ＝ 7 ÷ 3 ＝ 秒速 \\frac{7}{3}m',
+        formulaHint: '公式: 秒速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'fraction',
+        q: '郵便配達のバイクが40kmの担当エリアを3時間で巡回しました。バイクの平均速度は時速何kmですか（分数で答えなさい）。',
+        ansLatex: '\\text{時速 } \\frac{40}{3}\\text{ km}',
+        distractorsLatex: ['\\text{時速 } \\frac{35}{3}\\text{ km}', '\\text{時速 } \\frac{41}{3}\\text{ km}', '\\text{時速 } \\frac{3}{40}\\text{ km}'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 40 ÷ 3 ＝ 時速 \\frac{40}{3}km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'fraction',
+        q: 'ウォーキング大会で25kmのコースを6時間かけて完歩しました。歩行速度は時速何kmですか（分数で答えなさい）。',
+        ansLatex: '\\text{時速 } \\frac{25}{6}\\text{ km}',
+        distractorsLatex: ['\\text{時速 } \\frac{23}{6}\\text{ km}', '\\text{時速 } \\frac{26}{6}\\text{ km}', '\\text{時速 } \\frac{6}{25}\\text{ km}'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 25 ÷ 6 ＝ 時速 \\frac{25}{6}km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'fraction',
+        q: '小走りで10mの渡り廊下を7秒で移動しました。このときの走る速さは秒速何mですか（分数で答えなさい）。',
+        ansLatex: '\\text{秒速 } \\frac{10}{7}\\text{ m}',
+        distractorsLatex: ['\\text{秒速 } \\frac{9}{7}\\text{ m}', '\\text{秒速 } \\frac{11}{7}\\text{ m}', '\\text{秒速 } \\frac{7}{10}\\text{ m}'],
+        explanation: '秒速 ＝ 道のり ÷ 時間 ＝ 10 ÷ 7 ＝ 秒速 \\frac{10}{7}m',
+        formulaHint: '公式: 秒速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'fraction',
+        q: '配膳ロボットが4m離れたテーブルまで3秒で料理を運びました。ロボットの進む速さは秒速何mですか（分数で答えなさい）。',
+        ansLatex: '\\text{秒速 } \\frac{4}{3}\\text{ m}',
+        distractorsLatex: ['\\text{秒速 } \\frac{2}{3}\\text{ m}', '\\text{秒速 } \\frac{5}{3}\\text{ m}', '\\text{秒速 } \\frac{3}{4}\\text{ m}'],
+        explanation: '秒速 ＝ 道のり ÷ 時間 ＝ 4 ÷ 3 ＝ 秒速 \\frac{4}{3}m',
+        formulaHint: '公式: 秒速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'fraction',
+        q: '快速列車が12km離れた隣の停車駅まで7分で到着しました。この列車の速さは分速何kmですか（分数で答えなさい）。',
+        ansLatex: '\\text{分速 } \\frac{12}{7}\\text{ km}',
+        distractorsLatex: ['\\text{分速 } \\frac{11}{7}\\text{ km}', '\\text{分速 } \\frac{13}{7}\\text{ km}', '\\text{分速 } \\frac{7}{12}\\text{ km}'],
+        explanation: '分速 ＝ 道のり ÷ 時間 ＝ 12 ÷ 7 ＝ 分速 \\frac{12}{7}km',
+        formulaHint: '公式: 分速 ＝ 道のり ÷ 時間'
+      },
+      {
+        level: 'standard', category: 'speed', ansType: 'fraction',
+        q: '湖の遊歩道8kmを3時間かけてのんびり散策しました。この散策での速さは時速何kmですか（分数で答えなさい）。',
+        ansLatex: '\\text{時速 } \\frac{8}{3}\\text{ km}',
+        distractorsLatex: ['\\text{時速 } \\frac{7}{3}\\text{ km}', '\\text{時速 } \\frac{10}{3}\\text{ km}', '\\text{時速 } \\frac{3}{8}\\text{ km}'],
+        explanation: '時速 ＝ 道のり ÷ 時間 ＝ 8 ÷ 3 ＝ 時速 \\frac{8}{3}km',
+        formulaHint: '公式: 時速 ＝ 道のり ÷ 時間'
+      },
+
+      // --- DISTANCE (道のり) / INTEGER (整数) (10) ---
+      {
+        level: 'standard', category: 'distance', ansType: 'integer',
+        q: '毎分70mの速さで休まず歩き続けると、5分後には何m先まで進むことができますか。',
+        ans: '350m',
+        distractors: ['300m', '320m', '380m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 70m/分 × 5分 ＝ 350m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'integer',
+        q: '不動産の案内図に「駅から徒歩10分（分速80mで計算）」と記載されています。駅からその物件までの道のりは何mですか。',
+        ans: '800m',
+        distractors: ['700m', '750m', '900m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 80m/分 × 10分 ＝ 800m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'integer',
+        q: '秒速6mのペースを崩さずに20秒間全力で走り続けました。走った距離は何mになりますか。',
+        ans: '120m',
+        distractors: ['100m', '110m', '140m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 6m/秒 × 20秒 ＝ 120m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'integer',
+        q: '時速40kmで走る路線バスに3時間乗り続けました。このバスが進んだ道のりは何kmですか。',
+        ans: '120km',
+        distractors: ['100km', '110km', '140km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 40km/h × 3時間 ＝ 120km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'integer',
+        q: '自転車に乗って分速200mの速さで友人の家へ向かいました。出発から4分間で進んだ距離は何mですか。',
+        ans: '800m',
+        distractors: ['600m', '700m', '900m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 200m/分 × 4分 ＝ 800m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'integer',
+        q: '秒速20mで走行中の普通電車があります。この電車が10秒間に進む距離は何mでしょうか。',
+        ans: '200m',
+        distractors: ['180m', '220m', '250m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 20m/秒 × 10秒 ＝ 200m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'integer',
+        q: '高速道路を制限速度ピッタリの時速60kmで2時間ドライブしました。走行した距離は何kmですか。',
+        ans: '120km',
+        distractors: ['100km', '110km', '130km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 60km/h × 2時間 ＝ 120km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'integer',
+        q: '分速60mでのんびりお散歩を30分間楽しみました。歩いた総距離は何mになりますか。',
+        ans: '1800m',
+        distractors: ['1500m', '1600m', '2000m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 60m/分 × 30分 ＝ 1800m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'integer',
+        q: 'ツバメが秒速15mのスピードで空を飛んでいます。このツバメが4秒間で進む道のりは何mですか。',
+        ans: '60m',
+        distractors: ['50m', '55m', '65m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 15m/秒 × 4秒 ＝ 60m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'integer',
+        q: 'レンタサイクルを借りて時速15kmで3時間観光しました。自転車で移動した道のりは何kmですか。',
+        ans: '45km',
+        distractors: ['35km', '40km', '50km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 15km/h × 3時間 ＝ 45km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+
+      // --- DISTANCE (道のり) / DECIMAL (小数) (10) ---
+      {
+        level: 'standard', category: 'distance', ansType: 'decimal',
+        q: '時速3kmの速さで歩く人が、0.5時間（30分）歩いたとき、進んだ道のりは何kmですか。',
+        ans: '1.5km',
+        distractors: ['1.0km', '2.0km', '2.5km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 3 × 0.5 ＝ 1.5km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'decimal',
+        q: 'ウォーキングマシンを時速5kmに設定し、0.5時間運動しました。画面に表示される走行距離は何kmですか。',
+        ans: '2.5km',
+        distractors: ['2.0km', '3.0km', '3.5km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 5 × 0.5 ＝ 2.5km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'decimal',
+        q: '時速7kmの速さで朝のランニングを0.5時間行いました。走った道のりは何kmでしょうか。',
+        ans: '3.5km',
+        distractors: ['3.0km', '4.0km', '4.5km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 7 × 0.5 ＝ 3.5km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'decimal',
+        q: '山道を時速3kmのペースで1.5時間歩き続けました。歩いた道のりは何kmになりますか。',
+        ans: '4.5km',
+        distractors: ['4.0km', '5.0km', '5.5km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 3 × 1.5 ＝ 4.5km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'decimal',
+        q: '時速5kmで早歩きする人は、1.5時間で何km先まで行くことができますか。',
+        ans: '7.5km',
+        distractors: ['6.5km', '7.0km', '8.5km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 5 × 1.5 ＝ 7.5km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'decimal',
+        q: '毎秒0.5mの速さでゆっくり進む配膳ロボットがあります。このロボットが7秒間に進む距離は何mですか。',
+        ans: '3.5m',
+        distractors: ['2.5m', '3.0m', '4.0m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 0.5 × 7 ＝ 3.5m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'decimal',
+        q: '秒速1.5mで歩いている人がいます。この人が歩くペースを変えずに5秒間進むと、何m移動しますか。',
+        ans: '7.5m',
+        distractors: ['6.5m', '7.0m', '8.0m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 1.5 × 5 ＝ 7.5m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'decimal',
+        q: '公園で飼い犬が秒速2.5mでボールを追いかけて3秒間走りました。犬が走った距離は何mですか。',
+        ans: '7.5m',
+        distractors: ['6.5m', '7.0m', '8.0m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 2.5 × 3 ＝ 7.5m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'decimal',
+        q: '時速9kmのスピードを保ったまま、0.5時間ジョギングを続けました。進んだ道のりは何kmですか。',
+        ans: '4.5km',
+        distractors: ['4.0km', '5.0km', '5.5km'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 9 × 0.5 ＝ 4.5km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'decimal',
+        q: '秒速0.5mで動くベルトコンベアの上を流れる荷物は、9秒間に何m移動しますか。',
+        ans: '4.5m',
+        distractors: ['3.5m', '4.0m', '5.0m'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 0.5 × 9 ＝ 4.5m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+
+      // --- DISTANCE (道のり) / FRACTION (分数) (10) ---
+      {
+        level: 'standard', category: 'distance', ansType: 'fraction',
+        q: '時速40kmで運行する観光バスに\\frac{1}{3}時間乗車しました。バスが進んだ距離は何kmですか（分数で答えなさい）。',
+        ansLatex: '\\frac{40}{3}\\text{ km}',
+        distractorsLatex: ['\\frac{35}{3}\\text{ km}', '\\frac{41}{3}\\text{ km}', '\\frac{3}{40}\\text{ km}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 40 \\times \\frac{1}{3} ＝ \\frac{40}{3}km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'fraction',
+        q: '時速10kmのペースで走る自転車で\\frac{2}{3}時間走行しました。進んだ道のりは何kmですか（分数で答えなさい）。',
+        ansLatex: '\\frac{20}{3}\\text{ km}',
+        distractorsLatex: ['\\frac{15}{3}\\text{ km}', '\\frac{22}{3}\\text{ km}', '\\frac{3}{20}\\text{ km}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 10 \\times \\frac{2}{3} ＝ \\frac{20}{3}km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'fraction',
+        q: '毎分70mの速さで休まず\\frac{1}{3}分間歩きました。歩いた道のりは何mですか（分数で答えなさい）。',
+        ansLatex: '\\frac{70}{3}\\text{ m}',
+        distractorsLatex: ['\\frac{65}{3}\\text{ m}', '\\frac{71}{3}\\text{ m}', '\\frac{3}{70}\\text{ m}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 70 \\times \\frac{1}{3} ＝ \\frac{70}{3}m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'fraction',
+        q: '時速50kmで道路を走る車が\\frac{1}{3}時間に進む道のりは何kmですか（分数で答えなさい）。',
+        ansLatex: '\\frac{50}{3}\\text{ km}',
+        distractorsLatex: ['\\frac{45}{3}\\text{ km}', '\\frac{52}{3}\\text{ km}', '\\frac{3}{50}\\text{ km}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 50 \\times \\frac{1}{3} ＝ \\frac{50}{3}km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'fraction',
+        q: '秒速4mでグラウンドを走る生徒が、\\frac{5}{3}秒間に走る距離は何mですか（分数で答えなさい）。',
+        ansLatex: '\\frac{20}{3}\\text{ m}',
+        distractorsLatex: ['\\frac{18}{3}\\text{ m}', '\\frac{22}{3}\\text{ m}', '\\frac{3}{20}\\text{ m}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 4 \\times \\frac{5}{3} ＝ \\frac{20}{3}m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'fraction',
+        q: '時速8kmのジョギングペースで\\frac{2}{3}時間走ったとき、走った総距離は何kmですか（分数で答えなさい）。',
+        ansLatex: '\\frac{16}{3}\\text{ km}',
+        distractorsLatex: ['\\frac{14}{3}\\text{ km}', '\\frac{17}{3}\\text{ km}', '\\frac{3}{16}\\text{ km}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 8 \\times \\frac{2}{3} ＝ \\frac{16}{3}km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'fraction',
+        q: '時速25kmで進む小型ボートが\\frac{1}{3}時間に進む海の道のりは何kmですか（分数で答えなさい）。',
+        ansLatex: '\\frac{25}{3}\\text{ km}',
+        distractorsLatex: ['\\frac{22}{3}\\text{ km}', '\\frac{26}{3}\\text{ km}', '\\frac{3}{25}\\text{ km}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 25 \\times \\frac{1}{3} ＝ \\frac{25}{3}km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'fraction',
+        q: '分速80mで商店街を\\frac{2}{3}分間歩いたとき、移動した距離は何mですか（分数で答えなさい）。',
+        ansLatex: '\\frac{160}{3}\\text{ m}',
+        distractorsLatex: ['\\frac{150}{3}\\text{ m}', '\\frac{170}{3}\\text{ m}', '\\frac{3}{160}\\text{ m}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 80 \\times \\frac{2}{3} ＝ \\frac{160}{3}m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'fraction',
+        q: '時速4kmで散歩する人が\\frac{4}{3}時間歩き続けたとき、進んだ距離は何kmですか（分数で答えなさい）。',
+        ansLatex: '\\frac{16}{3}\\text{ km}',
+        distractorsLatex: ['\\frac{14}{3}\\text{ km}', '\\frac{17}{3}\\text{ km}', '\\frac{3}{16}\\text{ km}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 4 \\times \\frac{4}{3} ＝ \\frac{16}{3}km',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+      {
+        level: 'standard', category: 'distance', ansType: 'fraction',
+        q: '秒速7mのスピードで疾走する犬が\\frac{4}{3}秒間に進む道のりは何mですか（分数で答えなさい）。',
+        ansLatex: '\\frac{28}{3}\\text{ m}',
+        distractorsLatex: ['\\frac{26}{3}\\text{ m}', '\\frac{29}{3}\\text{ m}', '\\frac{3}{28}\\text{ m}'],
+        explanation: '道のり ＝ 速さ × 時間 ＝ 7 \\times \\frac{4}{3} ＝ \\frac{28}{3}m',
+        formulaHint: '公式: 道のり ＝ 速さ × 時間'
+      },
+
+      // --- TIME (時間) / INTEGER (整数) (10) ---
+      {
+        level: 'standard', category: 'time', ansType: 'integer',
+        q: '120km離れた目的地まで、平均時速40kmの自動車で行く場合、到着までに何時間かかりますか。',
+        ans: '3時間',
+        distractors: ['2時間', '4時間', '5時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 120km ÷ 40km/h ＝ 3時間',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'integer',
+        q: '時速50kmで走る高速バスが100kmの道のりを走破するには、何時間の所要時間が必要ですか。',
+        ans: '2時間',
+        distractors: ['1時間', '3時間', '4時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 100km ÷ 50km/h ＝ 2時間',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'integer',
+        q: '路線距離が240kmある線路を、時速60kmで走行する急行列車は何時間で端から端まで行けますか。',
+        ans: '4時間',
+        distractors: ['3時間', '5時間', '6時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 240km ÷ 60km/h ＝ 4時間',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'integer',
+        q: '家から400m離れたコンビニまで、分速80mで歩いて行くと何分かかりますか。',
+        ans: '5分',
+        distractors: ['4分', '6分', '8分'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 400m ÷ 80m/分 ＝ 5分',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'integer',
+        q: '学校まであと600mの地点から、自転車で毎分200mの速さで走ると、何分で到着しますか。',
+        ans: '3分',
+        distractors: ['2分', '4分', '5分'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 600m ÷ 200m/分 ＝ 3分',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'integer',
+        q: '秒速5mの速さで走る陸上選手が、100mのトラックを走り切るタイムは何秒ですか。',
+        ans: '20秒',
+        distractors: ['15秒', '25秒', '30秒'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 100m ÷ 5m/秒 ＝ 20秒',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'integer',
+        q: 'テストコースを秒速20mで走る自動車が、400m区間を通過するのにかかる時間は何秒ですか。',
+        ans: '20秒',
+        distractors: ['15秒', '25秒', '30秒'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 400m ÷ 20m/秒 ＝ 20秒',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'integer',
+        q: '時速15kmのスピードで自転車をこぎ続け、30km離れた湖へ行きます。かかる時間は何時間ですか。',
+        ans: '2時間',
+        distractors: ['1時間', '3時間', '4時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 30km ÷ 15km/h ＝ 2時間',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'integer',
+        q: '駅から210mの距離にある図書館まで、分速70mで歩いたときにかかる時間は何分ですか。',
+        ans: '3分',
+        distractors: ['2分', '4分', '5分'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 210m ÷ 70m/分 ＝ 3分',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'integer',
+        q: '水槽の中を秒速4mのスピードで泳ぐ魚が、24m泳ぐのにかかる時間は何秒でしょうか。',
+        ans: '6秒',
+        distractors: ['4秒', '5秒', '8秒'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 24m ÷ 4m/秒 ＝ 6秒',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+
+      // --- TIME (時間) / DECIMAL (小数) (10) ---
+      {
+        level: 'standard', category: 'time', ansType: 'decimal',
+        q: '60km先の隣町まで、時速40kmのペースを保ってドライブします。かかる時間は何時間ですか（小数で答えなさい）。',
+        ans: '1.5時間',
+        distractors: ['1.2時間', '1.8時間', '2.0時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 60 ÷ 40 ＝ 1.5時間（1時間30分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'decimal',
+        q: '時速50kmで走る配達バイクが、25km先の営業所へ向かいます。到着までにかかる時間は何時間ですか。',
+        ans: '0.5時間',
+        distractors: ['0.2時間', '0.4時間', '0.8時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 25 ÷ 50 ＝ 0.5時間（30分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'decimal',
+        q: 'A駅から90km離れたB駅まで、時速60kmの列車に乗って移動すると、何時間かかりますか。',
+        ans: '1.5時間',
+        distractors: ['1.2時間', '1.8時間', '2.0時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 90 ÷ 60 ＝ 1.5時間（1時間30分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'decimal',
+        q: '観光地まで100kmの道のりを、時速40kmで運行する観光バスは何時間で到着しますか。',
+        ans: '2.5時間',
+        distractors: ['2.0時間', '3.0時間', '3.5時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 100 ÷ 40 ＝ 2.5時間（2時間30分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'decimal',
+        q: '時速20kmのペースで走るロードバイクで、70kmのロングライドに挑戦しました。ゴールまで何時間かかりますか。',
+        ans: '3.5時間',
+        distractors: ['3.0時間', '4.0時間', '4.5時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 70 ÷ 20 ＝ 3.5時間（3時間30分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'decimal',
+        q: '150m先にある郵便ポストまで、分速60mで歩いて手紙を投函しに行きます。ポストに着くまでに何分かかりますか。',
+        ans: '2.5分',
+        distractors: ['2.0分', '3.0分', '3.5分'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 150 ÷ 60 ＝ 2.5分（2分30秒）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'decimal',
+        q: '200m離れたバス停に向かって分速80mで早歩きしました。バス停に着くまでに何分かかりますか。',
+        ans: '2.5分',
+        distractors: ['2.0分', '3.0分', '3.5分'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 200 ÷ 80 ＝ 2.5分（2分30秒）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'decimal',
+        q: '秒速20mで走る電車が、50mの鉄橋を先頭が渡りきるのに何秒かかりますか。',
+        ans: '2.5秒',
+        distractors: ['2.0秒', '3.0秒', '3.5秒'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 50 ÷ 20 ＝ 2.5秒',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'decimal',
+        q: '秒速4mで走る子が、18m離れたゴールテープを切るまでにかかる時間は何秒ですか。',
+        ans: '4.5秒',
+        distractors: ['4.0秒', '5.0秒', '5.5秒'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 18 ÷ 4 ＝ 4.5秒',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'decimal',
+        q: '高速道路で210km先のサービスエリアへ向かいます。時速60kmで走り続けた場合、何時間で着きますか。',
+        ans: '3.5時間',
+        distractors: ['3.0時間', '4.0時間', '4.5時間'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 210 ÷ 60 ＝ 3.5時間（3時間30分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+
+      // --- TIME (時間) / FRACTION (分数) (10) ---
+      {
+        level: 'standard', category: 'time', ansType: 'fraction',
+        q: '40km離れた空港まで、時速60kmのリムジンバスに乗って向かいます。到着までにかかる時間は何時間ですか（分数で答えなさい）。',
+        ansLatex: '\\frac{2}{3}\\text{ 時間}',
+        distractorsLatex: ['\\frac{1}{3}\\text{ 時間}', '\\frac{3}{4}\\text{ 時間}', '\\frac{3}{2}\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 40 ÷ 60 ＝ \\frac{40}{60} ＝ \\frac{2}{3}時間（40分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'fraction',
+        q: '家から20km先のスタジアムまで時速60kmで走る急行電車で行く場合、乗車時間は何時間ですか（分数で答えなさい）。',
+        ansLatex: '\\frac{1}{3}\\text{ 時間}',
+        distractorsLatex: ['\\frac{1}{2}\\text{ 時間}', '\\frac{2}{3}\\text{ 時間}', '3\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 20 ÷ 60 ＝ \\frac{20}{60} ＝ \\frac{1}{3}時間（20分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'fraction',
+        q: '観光地まで45kmの山道を、時速60kmで走る観光列車で行くと何時間かかりますか（分数で答えなさい）。',
+        ansLatex: '\\frac{3}{4}\\text{ 時間}',
+        distractorsLatex: ['\\frac{2}{3}\\text{ 時間}', '\\frac{4}{5}\\text{ 時間}', '\\frac{4}{3}\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 45 ÷ 60 ＝ \\frac{45}{60} ＝ \\frac{3}{4}時間（45分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'fraction',
+        q: '50km離れた港まで、時速60kmで走るトラックは何時間で荷物を届けることができますか（分数で答えなさい）。',
+        ansLatex: '\\frac{5}{6}\\text{ 時間}',
+        distractorsLatex: ['\\frac{4}{5}\\text{ 時間}', '\\frac{2}{3}\\text{ 時間}', '\\frac{6}{5}\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 50 ÷ 60 ＝ \\frac{50}{60} ＝ \\frac{5}{6}時間（50分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'fraction',
+        q: '隣のインターチェンジまで10kmの区間を、時速60kmで走る車は何時間で通過しますか（分数で答えなさい）。',
+        ansLatex: '\\frac{1}{6}\\text{ 時間}',
+        distractorsLatex: ['\\frac{1}{5}\\text{ 時間}', '\\frac{1}{4}\\text{ 時間}', '6\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 10 ÷ 60 ＝ \\frac{10}{60} ＝ \\frac{1}{6}時間（10分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'fraction',
+        q: '30km離れた実家まで、時速45kmの一般道を車で走ります。かかる時間は何時間ですか（分数で答えなさい）。',
+        ansLatex: '\\frac{2}{3}\\text{ 時間}',
+        distractorsLatex: ['\\frac{1}{3}\\text{ 時間}', '\\frac{3}{4}\\text{ 時間}', '\\frac{3}{2}\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 30 ÷ 45 ＝ \\frac{30}{45} ＝ \\frac{2}{3}時間',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'fraction',
+        q: '15km離れた海岸まで、時速45kmで走る原付バイクで向かうとき、何時間かかりますか（分数で答えなさい）。',
+        ansLatex: '\\frac{1}{3}\\text{ 時間}',
+        distractorsLatex: ['\\frac{1}{4}\\text{ 時間}', '\\frac{2}{3}\\text{ 時間}', '3\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 15 ÷ 45 ＝ \\frac{15}{45} ＝ \\frac{1}{3}時間',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'fraction',
+        q: '20km先のショッピングモールへ、時速50kmの車で向かいます。到着までに何時間かかりますか（分数で答えなさい）。',
+        ansLatex: '\\frac{2}{5}\\text{ 時間}',
+        distractorsLatex: ['\\frac{1}{5}\\text{ 時間}', '\\frac{3}{5}\\text{ 時間}', '\\frac{5}{2}\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 20 ÷ 50 ＝ \\frac{20}{50} ＝ \\frac{2}{5}時間（24分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'fraction',
+        q: '30km離れた温泉街まで、時速50kmの直通バスで行く場合、所要時間は何時間ですか（分数で答えなさい）。',
+        ansLatex: '\\frac{3}{5}\\text{ 時間}',
+        distractorsLatex: ['\\frac{2}{5}\\text{ 時間}', '\\frac{4}{5}\\text{ 時間}', '\\frac{5}{3}\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 30 ÷ 50 ＝ \\frac{30}{50} ＝ \\frac{3}{5}時間（36分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      },
+      {
+        level: 'standard', category: 'time', ansType: 'fraction',
+        q: '30km離れた湖へ、時速40kmの安全運転で車を走らせます。到着までにかかる時間は何時間ですか（分数で答えなさい）。',
+        ansLatex: '\\frac{3}{4}\\text{ 時間}',
+        distractorsLatex: ['\\frac{1}{2}\\text{ 時間}', '\\frac{2}{3}\\text{ 時間}', '\\frac{4}{3}\\text{ 時間}'],
+        explanation: '時間 ＝ 道のり ÷ 速さ ＝ 30 ÷ 40 ＝ \\frac{30}{40} ＝ \\frac{3}{4}時間（45分）',
+        formulaHint: '公式: 時間 ＝ 道のり ÷ 速さ'
+      }
+    ];
+
+    // ----------------------------------------------------
+    // APP STATE
+    // ----------------------------------------------------
+    const state = {
+      level: 'all',      // 'all', 'basic', 'standard'
+      category: 'all',   // 'all', 'speed', 'distance', 'time'
+      ansType: 'all',    // 'all', 'integer', 'decimal', 'fraction'
+      streak: 0,
+      totalCount: 0,
+      correctCount: 0,
+      currentProblem: null,
+      currentChoices: [],
+      correctIndex: -1,
+      isAnswered: false,
+      isLocked: false
+    };
+
+    // ----------------------------------------------------
+    // FILTER CONTROLS
+    // ----------------------------------------------------
+    function setFilter(type, value) {
+      state[type] = value;
+      updateFilterButtons();
+      nextQuestion();
+    }
+
+    function updateFilterButtons() {
+      // Level
+      ['all', 'basic', 'standard'].forEach(val => {
+        const btn = document.getElementById(`btn-level-${val}`);
+        const isActive = state.level === val;
+        btn.className = `filter-btn px-2.5 py-1 rounded-lg transition-all ${
+          isActive 
+            ? 'font-bold bg-white dark:bg-slate-700 shadow-xs text-emerald-600 dark:text-emerald-400' 
+            : 'font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+        }`;
+      });
+
+      // Category
+      ['all', 'speed', 'distance', 'time'].forEach(val => {
+        const btn = document.getElementById(`btn-cat-${val}`);
+        const isActive = state.category === val;
+        btn.className = `filter-btn px-2.5 py-1 rounded-lg transition-all ${
+          isActive 
+            ? 'font-bold bg-white dark:bg-slate-700 shadow-xs text-emerald-600 dark:text-emerald-400' 
+            : 'font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+        }`;
+      });
+
+      // Answer Type
+      ['all', 'integer', 'decimal', 'fraction'].forEach(val => {
+        const btn = document.getElementById(`btn-ans-${val}`);
+        const isActive = state.ansType === val;
+        btn.className = `filter-btn px-2.5 py-1 rounded-lg transition-all ${
+          isActive 
+            ? 'font-bold bg-white dark:bg-slate-700 shadow-xs text-emerald-600 dark:text-emerald-400' 
+            : 'font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+        }`;
+      });
+    }
+
+    // ----------------------------------------------------
+    // QUESTION GENERATOR & SELECTION
+    // ----------------------------------------------------
+    function getFilteredProblems() {
+      return PROBLEMS.filter(p => {
+        if (state.level !== 'all' && p.level !== state.level) return false;
+        if (state.category !== 'all' && p.category !== state.category) return false;
+        if (state.ansType !== 'all' && p.ansType !== state.ansType) return false;
+        return true;
+      });
+    }
+
+    function getRandomProblem() {
+      const candidates = getFilteredProblems();
+      if (candidates.length === 0) {
+        // Fallback: return any problem if filter is empty
+        return PROBLEMS[Math.floor(Math.random() * PROBLEMS.length)];
+      }
+      return candidates[Math.floor(Math.random() * candidates.length)];
+    }
+
+    function renderMathText(text, container) {
+      if (!text) return;
+      // Replace LaTeX markers if any, or render with KaTeX
+      if (text.includes('\\frac') || text.includes('\\times') || text.includes('\\div') || text.includes('\\text')) {
+        try {
+          katex.render(text, container, { throwOnError: false, displayMode: false });
+          return;
+        } catch (e) {
+          console.warn("KaTeX error:", e);
+        }
+      }
+      container.textContent = text;
+    }
+
+    function loadQuestion() {
+      state.isAnswered = false;
+      state.isLocked = false;
+
+      // Hide explanation banner
+      const banner = document.getElementById('explanation-banner');
+      banner.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
+
+      // Pick problem
+      const prob = getRandomProblem();
+      state.currentProblem = prob;
+
+      // Badges
+      const badgeLevel = document.getElementById('badge-level');
+      badgeLevel.textContent = prob.level === 'basic' ? '基本問題' : '標準問題';
+      badgeLevel.className = `text-xs font-bold px-2.5 py-0.5 rounded-full border ${
+        prob.level === 'basic'
+          ? 'bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+          : 'bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
+      }`;
+
+      const badgeCategory = document.getElementById('badge-category');
+      const catMap = { speed: '速さを求める', distance: '道のりを求める', time: '時間を求める' };
+      badgeCategory.textContent = catMap[prob.category];
+
+      const badgeAnsType = document.getElementById('badge-anstype');
+      const ansTypeMap = { integer: '答え: 整数', decimal: '答え: 小数', fraction: '答え: 分数' };
+      badgeAnsType.textContent = ansTypeMap[prob.ansType];
+
+      // Question Text
+      const qText = document.getElementById('question-text');
+      qText.innerHTML = '';
+      if (prob.q.includes('\\frac')) {
+        // Render mixed text + LaTeX
+        const parts = prob.q.split(/(\\\([^\)]+\\\)|\\\[[^\]]+\\\]|\\frac\{[^\}]+\}\{[^\}]+\})/g);
+        parts.forEach(part => {
+          if (part.startsWith('\\frac')) {
+            const span = document.createElement('span');
+            katex.render(part, span, { throwOnError: false });
+            qText.appendChild(span);
+          } else {
+            const span = document.createElement('span');
+            span.textContent = part;
+            qText.appendChild(span);
+          }
+        });
+      } else {
+        qText.textContent = prob.q;
+      }
+
+      // Formula Hint
+      document.getElementById('formula-hint').textContent = prob.formulaHint;
+
+      // Setup 4 Choices
+      const choices = [];
+      const isLatex = prob.ansType === 'fraction';
+      
+      const correctVal = isLatex ? prob.ansLatex : prob.ans;
+      const distractors = isLatex ? prob.distractorsLatex : prob.distractors;
+      
+      choices.push({ text: correctVal, isCorrect: true, isLatex });
+      distractors.slice(0, 3).forEach(d => {
+        choices.push({ text: d, isCorrect: false, isLatex });
+      });
+
+      // Shuffle choices
+      for (let i = choices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [choices[i], choices[j]] = [choices[j], choices[i]];
+      }
+
+      state.currentChoices = choices;
+      state.correctIndex = choices.findIndex(c => c.isCorrect);
+
+      // Render choice buttons
+      const choiceBtns = document.querySelectorAll('.choice-btn');
+      choiceBtns.forEach((btn, idx) => {
+        btn.classList.remove(
+          'border-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'dark:border-emerald-500',
+          'border-rose-500', 'bg-rose-50', 'dark:bg-rose-950/40', 'dark:border-rose-500',
+          'opacity-50'
+        );
+        btn.classList.add('border-slate-200', 'dark:border-slate-800');
+
+        const contentDiv = btn.querySelector('.choice-content');
+        contentDiv.innerHTML = '';
+        const choice = choices[idx];
+        if (choice.isLatex) {
+          katex.render(choice.text, contentDiv, { throwOnError: false, displayMode: false });
+        } else {
+          contentDiv.textContent = choice.text;
+        }
+      });
+    }
+
+    // ----------------------------------------------------
+    // ANSWER HANDLING & ANIMATION
+    // ----------------------------------------------------
+    function handleAnswer(index) {
+      if (state.isAnswered || state.isLocked) return;
+      state.isAnswered = true;
+      state.totalCount++;
+
+      const isCorrect = (index === state.correctIndex);
+      const choiceBtns = document.querySelectorAll('.choice-btn');
+
+      if (isCorrect) {
+        state.streak++;
+        state.correctCount++;
+        playSound('correct');
+
+        // Style the clicked correct button
+        const btn = choiceBtns[index];
+        btn.classList.remove('border-slate-200', 'dark:border-slate-800');
+        btn.classList.add('border-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'dark:border-emerald-500', 'correct-glow');
+
+        showExplanation(true);
+
+        // Check for 10 consecutive wins
+        if (state.streak > 0 && state.streak % 10 === 0) {
+          setTimeout(() => showPassModal(), 600);
+        }
+      } else {
+        state.streak = 0;
+        playSound('wrong');
+
+        // Style clicked wrong button
+        const wrongBtn = choiceBtns[index];
+        wrongBtn.classList.remove('border-slate-200', 'dark:border-slate-800');
+        wrongBtn.classList.add('border-rose-500', 'bg-rose-50', 'dark:bg-rose-950/40', 'dark:border-rose-500');
+
+        // Highlight the correct button
+        const correctBtn = choiceBtns[state.correctIndex];
+        correctBtn.classList.remove('border-slate-200', 'dark:border-slate-800');
+        correctBtn.classList.add('border-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'dark:border-emerald-500');
+
+        showExplanation(false);
+      }
+
+      updateStats();
+    }
+
+    function showExplanation(isCorrect) {
+      const banner = document.getElementById('explanation-banner');
+      const badge = document.getElementById('result-status-badge');
+      const text = document.getElementById('explanation-text');
+
+      if (isCorrect) {
+        badge.textContent = '正解！⭕';
+        badge.className = 'font-bold px-2 py-0.5 rounded-lg text-xs bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700';
+      } else {
+        badge.textContent = 'ざんねん！✕';
+        badge.className = 'font-bold px-2 py-0.5 rounded-lg text-xs bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-700';
+      }
+
+      text.innerHTML = '';
+      if (state.currentProblem.explanation.includes('\\frac')) {
+        const parts = state.currentProblem.explanation.split(/(\\frac\{[^\}]+\}\{[^\}]+\})/g);
+        parts.forEach(p => {
+          if (p.startsWith('\\frac')) {
+            const s = document.createElement('span');
+            katex.render(p, s, { throwOnError: false });
+            text.appendChild(s);
+          } else {
+            const s = document.createElement('span');
+            s.textContent = p;
+            text.appendChild(s);
+          }
+        });
+      } else {
+        text.textContent = state.currentProblem.explanation;
+      }
+
+      banner.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
+    }
+
+    function nextQuestion() {
+      loadQuestion();
+    }
+
+    function updateStats() {
+      document.getElementById('streak-count').textContent = state.streak;
+      document.getElementById('correct-count').textContent = state.correctCount;
+      document.getElementById('total-count').textContent = state.totalCount;
+
+      const acc = state.totalCount > 0 ? Math.round((state.correctCount / state.totalCount) * 100) : 0;
+      document.getElementById('accuracy-rate').textContent = `${acc}%`;
+    }
+
+    // ----------------------------------------------------
+    // PASS MODAL (10 CONSECUTIVE WINS)
+    // ----------------------------------------------------
+    function showPassModal() {
+      playSound('fanfare');
+      const modal = document.getElementById('passModal');
+      const content = document.getElementById('passContent');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      content.classList.remove('scale-95');
+      content.classList.add('scale-100');
+    }
+
+    function closePassModal(continueStreak) {
+      const modal = document.getElementById('passModal');
+      const content = document.getElementById('passContent');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      content.classList.remove('scale-100');
+      content.classList.add('scale-95');
+
+      if (!continueStreak) {
+        state.streak = 0;
+        state.totalCount = 0;
+        state.correctCount = 0;
+        updateStats();
+      }
+      nextQuestion();
+    }
+
+    // ----------------------------------------------------
+    // KEYBOARD NAVIGATION
+    // ----------------------------------------------------
+    window.addEventListener('keydown', (e) => {
+      // 1 to 4 keys for choice selection
+      if (['1', '2', '3', '4'].includes(e.key) && !state.isAnswered) {
+        const idx = parseInt(e.key, 10) - 1;
+        handleAnswer(idx);
+      }
+      // Enter or Space for next question
+      else if ((e.key === 'Enter' || e.key === ' ') && state.isAnswered) {
+        e.preventDefault();
+        nextQuestion();
+      }
+      // F key for fullscreen
+      else if (e.key === 'f' || e.key === 'F') {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+          toggleFullscreen();
+        }
+      }
+    });
+
+    // ----------------------------------------------------
+    // INITIALIZATION
+    // ----------------------------------------------------
+    document.addEventListener('DOMContentLoaded', () => {
+      updateFilterButtons();
+      loadQuestion();
+    });
+  </script>
+</body>
+</html>
