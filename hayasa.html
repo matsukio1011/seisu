@@ -167,6 +167,15 @@
         </div>
       </div>
 
+      <!-- Filter 5: Unit Style Toggle (時速km / km/時) -->
+      <div class="flex items-center gap-1.5">
+        <span class="text-[11px] font-bold text-slate-400 dark:text-slate-500">単位表記:</span>
+        <div class="inline-flex bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl">
+          <button onclick="setUnitStyle('kanji')" id="btn-unit-kanji" class="filter-btn px-2.5 py-1 rounded-lg font-bold transition-all bg-white dark:bg-slate-700 shadow-xs text-emerald-600 dark:text-emerald-400">時速km</button>
+          <button onclick="setUnitStyle('slash')" id="btn-unit-slash" class="filter-btn px-2.5 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all">km/時</button>
+        </div>
+      </div>
+
     </div>
 
     <!-- MAIN QUESTION & CHOICES AREA -->
@@ -1888,11 +1897,13 @@
     // APP STATE
     // ----------------------------------------------------
     const savedFormula = localStorage.getItem('hayasa_show_formula');
+    const savedUnitStyle = localStorage.getItem('hayasa_unit_style');
     const state = {
       level: 'all',      // 'all', 'basic', 'standard'
       category: 'all',   // 'all', 'speed', 'distance', 'time'
       ansType: 'all',    // 'all', 'integer', 'decimal', 'fraction'
       showFormula: savedFormula !== null ? savedFormula === 'true' : true,
+      unitStyle: savedUnitStyle === 'slash' ? 'slash' : 'kanji', // 'kanji' (時速km) or 'slash' (km/時)
       streak: 0,
       totalCount: 0,
       correctCount: 0,
@@ -1905,7 +1916,7 @@
     };
 
     // ----------------------------------------------------
-    // FILTER & FORMULA CONTROLS
+    // FILTER & UNIT & FORMULA CONTROLS
     // ----------------------------------------------------
     function setFilter(type, value) {
       state[type] = value;
@@ -1919,6 +1930,56 @@
         localStorage.setItem('hayasa_show_formula', show ? 'true' : 'false');
       } catch (e) {}
       updateFormulaUI();
+    }
+
+    function setUnitStyle(style) {
+      state.unitStyle = style;
+      try {
+        localStorage.setItem('hayasa_unit_style', style);
+      } catch (e) {}
+      updateUnitButtons();
+      if (state.currentProblem) {
+        renderCurrentQuestion();
+      }
+    }
+
+    function updateUnitButtons() {
+      const btnKanji = document.getElementById('btn-unit-kanji');
+      const btnSlash = document.getElementById('btn-unit-slash');
+      if (btnKanji && btnSlash) {
+        if (state.unitStyle === 'kanji') {
+          btnKanji.className = 'filter-btn px-2.5 py-1 rounded-lg font-bold transition-all bg-white dark:bg-slate-700 shadow-xs text-emerald-600 dark:text-emerald-400';
+          btnSlash.className = 'filter-btn px-2.5 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all';
+        } else {
+          btnSlash.className = 'filter-btn px-2.5 py-1 rounded-lg font-bold transition-all bg-white dark:bg-slate-700 shadow-xs text-emerald-600 dark:text-emerald-400';
+          btnKanji.className = 'filter-btn px-2.5 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all';
+        }
+      }
+    }
+
+    function formatByUnitStyle(text) {
+      if (!text) return text;
+      if (state.unitStyle === 'slash') {
+        return text
+          .replace(/\\text\{時速\s*\}\s*\\frac\{([^}]+)\}\{([^}]+)\}\\text\{\s*km\}/g, '\\frac{$1}{$2}\\text{ km/時}')
+          .replace(/\\text\{分速\s*\}\s*\\frac\{([^}]+)\}\{([^}]+)\}\\text\{\s*km\}/g, '\\frac{$1}{$2}\\text{ km/分}')
+          .replace(/\\text\{分速\s*\}\s*\\frac\{([^}]+)\}\{([^}]+)\}\\text\{\s*m\}/g, '\\frac{$1}{$2}\\text{ m/分}')
+          .replace(/\\text\{秒速\s*\}\s*\\frac\{([^}]+)\}\{([^}]+)\}\\text\{\s*m\}/g, '\\frac{$1}{$2}\\text{ m/秒}')
+          .replace(/時速\s*([0-9\.]+)\s*km/g, '$1km/時')
+          .replace(/分速\s*([0-9\.]+)\s*km/g, '$1km/分')
+          .replace(/分速\s*([0-9\.]+)\s*m/g, '$1m/分')
+          .replace(/秒速\s*([0-9\.]+)\s*m/g, '$1m/秒')
+          .replace(/の時速を求めなさい/g, 'の速さ（km/時）を求めなさい')
+          .replace(/の秒速を求めなさい/g, 'の速さ（m/秒）を求めなさい')
+          .replace(/の分速を求めなさい/g, 'の速さ（m/分）を求めなさい')
+          .replace(/時速何km/g, '何km/時')
+          .replace(/秒速何m/g, '何m/秒')
+          .replace(/分速何m/g, '何m/分')
+          .replace(/毎時何km/g, '何km/時')
+          .replace(/毎分何m/g, '何m/分')
+          .replace(/毎秒何m/g, '何m/秒');
+      }
+      return text;
     }
 
     function updateFormulaUI() {
@@ -1990,6 +2051,7 @@
       });
 
       updateFormulaUI();
+      updateUnitButtons();
     }
 
     // ----------------------------------------------------
@@ -2039,6 +2101,34 @@
       const prob = getRandomProblem();
       state.currentProblem = prob;
 
+      // Setup 4 Choices (raw text stored for dynamic unit formatting)
+      const choices = [];
+      const isLatex = prob.ansType === 'fraction';
+      
+      const correctVal = isLatex ? prob.ansLatex : prob.ans;
+      const distractors = isLatex ? prob.distractorsLatex : prob.distractors;
+      
+      choices.push({ rawText: correctVal, isCorrect: true, isLatex });
+      distractors.slice(0, 3).forEach(d => {
+        choices.push({ rawText: d, isCorrect: false, isLatex });
+      });
+
+      // Shuffle choices
+      for (let i = choices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [choices[i], choices[j]] = [choices[j], choices[i]];
+      }
+
+      state.currentChoices = choices;
+      state.correctIndex = choices.findIndex(c => c.isCorrect);
+
+      renderCurrentQuestion(true);
+    }
+
+    function renderCurrentQuestion(resetStyles = false) {
+      const prob = state.currentProblem;
+      if (!prob) return;
+
       // Badges
       const badgeLevel = document.getElementById('badge-level');
       badgeLevel.textContent = prob.level === 'basic' ? '基本問題' : '標準問題';
@@ -2056,12 +2146,13 @@
       const ansTypeMap = { integer: '答え: 整数', decimal: '答え: 小数', fraction: '答え: 分数' };
       badgeAnsType.textContent = ansTypeMap[prob.ansType];
 
-      // Question Text
+      // Question Text with unit formatting
       const qText = document.getElementById('question-text');
       qText.innerHTML = '';
-      if (prob.q.includes('\\frac')) {
-        // Render mixed text + LaTeX
-        const parts = prob.q.split(/(\\\([^\)]+\\\)|\\\[[^\]]+\\\]|\\frac\{[^\}]+\}\{[^\}]+\})/g);
+      const formattedQ = formatByUnitStyle(prob.q);
+
+      if (formattedQ.includes('\\frac')) {
+        const parts = formattedQ.split(/(\\\([^\)]+\\\)|\\\[[^\]]+\\\]|\\frac\{[^\}]+\}\{[^\}]+\})/g);
         parts.forEach(part => {
           if (part.startsWith('\\frac')) {
             const span = document.createElement('span');
@@ -2074,53 +2165,41 @@
           }
         });
       } else {
-        qText.textContent = prob.q;
+        qText.textContent = formattedQ;
       }
 
       // Formula Hint
-      document.getElementById('formula-hint').textContent = prob.formulaHint;
+      document.getElementById('formula-hint').textContent = formatByUnitStyle(prob.formulaHint);
       updateFormulaUI();
-
-      // Setup 4 Choices
-      const choices = [];
-      const isLatex = prob.ansType === 'fraction';
-      
-      const correctVal = isLatex ? prob.ansLatex : prob.ans;
-      const distractors = isLatex ? prob.distractorsLatex : prob.distractors;
-      
-      choices.push({ text: correctVal, isCorrect: true, isLatex });
-      distractors.slice(0, 3).forEach(d => {
-        choices.push({ text: d, isCorrect: false, isLatex });
-      });
-
-      // Shuffle choices
-      for (let i = choices.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [choices[i], choices[j]] = [choices[j], choices[i]];
-      }
-
-      state.currentChoices = choices;
-      state.correctIndex = choices.findIndex(c => c.isCorrect);
 
       // Render choice buttons
       const choiceBtns = document.querySelectorAll('.choice-btn');
       choiceBtns.forEach((btn, idx) => {
-        btn.classList.remove(
-          'border-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'dark:border-emerald-500',
-          'border-rose-500', 'bg-rose-50', 'dark:bg-rose-950/40', 'dark:border-rose-500',
-          'opacity-50'
-        );
-        btn.classList.add('border-slate-200', 'dark:border-slate-800');
+        if (resetStyles) {
+          btn.classList.remove(
+            'border-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'dark:border-emerald-500',
+            'border-rose-500', 'bg-rose-50', 'dark:bg-rose-950/40', 'dark:border-rose-500',
+            'opacity-50'
+          );
+          btn.classList.add('border-slate-200', 'dark:border-slate-800');
+        }
 
         const contentDiv = btn.querySelector('.choice-content');
         contentDiv.innerHTML = '';
-        const choice = choices[idx];
+        const choice = state.currentChoices[idx];
+        const formattedChoiceText = formatByUnitStyle(choice.rawText);
+
         if (choice.isLatex) {
-          katex.render(choice.text, contentDiv, { throwOnError: false, displayMode: false });
+          katex.render(formattedChoiceText, contentDiv, { throwOnError: false, displayMode: false });
         } else {
-          contentDiv.textContent = choice.text;
+          contentDiv.textContent = formattedChoiceText;
         }
       });
+
+      // If already answered, re-render explanation text too
+      if (state.isAnswered) {
+        renderExplanationText();
+      }
     }
 
     // ----------------------------------------------------
@@ -2180,7 +2259,6 @@
     function showExplanation(isCorrect) {
       const banner = document.getElementById('explanation-banner');
       const badge = document.getElementById('result-status-badge');
-      const text = document.getElementById('explanation-text');
 
       if (isCorrect) {
         badge.textContent = '正解！⭕';
@@ -2190,9 +2268,18 @@
         badge.className = 'font-bold px-2 py-0.5 rounded-lg text-xs bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-700';
       }
 
+      renderExplanationText();
+      banner.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
+    }
+
+    function renderExplanationText() {
+      const text = document.getElementById('explanation-text');
+      if (!text || !state.currentProblem) return;
       text.innerHTML = '';
-      if (state.currentProblem.explanation.includes('\\frac')) {
-        const parts = state.currentProblem.explanation.split(/(\\frac\{[^\}]+\}\{[^\}]+\})/g);
+      const expFormatted = formatByUnitStyle(state.currentProblem.explanation);
+
+      if (expFormatted.includes('\\frac')) {
+        const parts = expFormatted.split(/(\\frac\{[^\}]+\}\{[^\}]+\})/g);
         parts.forEach(p => {
           if (p.startsWith('\\frac')) {
             const s = document.createElement('span');
@@ -2205,10 +2292,8 @@
           }
         });
       } else {
-        text.textContent = state.currentProblem.explanation;
+        text.textContent = expFormatted;
       }
-
-      banner.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
     }
 
     function nextQuestion() {
