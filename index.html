@@ -109,7 +109,7 @@
   </header>
 
   <!-- ==================== MAIN CONTENT: APP SELECTION ==================== -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-3 sm:py-4 flex flex-col justify-center items-center min-h-0">
+  <main class="flex-1 max-w-[1500px] w-full mx-auto px-4 sm:px-6 py-3 sm:py-4 flex flex-col justify-center items-center min-h-0">
 
     <!-- Title & Instruction -->
     <div class="text-center mb-3 sm:mb-4 shrink-0">
@@ -117,12 +117,12 @@
         <span>どのトレーニングを始めますか？</span>
       </h2>
       <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
-        カードをクリックするか、キーボードの <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">1</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">2</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">3</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">4</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">5</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">6</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">7</kbd> を押してスタートできます
+        カードをクリックするか、キーボードの <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">1</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">2</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">3</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">4</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">5</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">6</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">7</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">8</kbd> を押してスタートできます
       </p>
     </div>
 
-    <!-- App Cards Container (7 Columns on large screens) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3 sm:gap-3 w-full shrink-0 animate-pop">
+    <!-- App Cards Container (8 Columns on large screens) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-3 sm:gap-2.5 w-full shrink-0 animate-pop">
 
       <!-- APP 1: 分数 約分マスター -->
       <a href="bunsu.html" id="cardBunsu" class="app-card group glass-card rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-brand-500 dark:hover:border-brand-500 shadow-md hover:shadow-xl hover:shadow-brand-500/10 p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-200 relative overflow-hidden cursor-pointer">
@@ -411,6 +411,47 @@
         </div>
       </a>
 
+      <!-- APP 8: ドパ倍数 -->
+      <a href="dopabaisuu.html" id="cardDopaBaisuu" class="app-card group glass-card rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-pink-500 dark:hover:border-pink-500 shadow-md hover:shadow-xl hover:shadow-pink-500/10 p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-200 relative overflow-hidden cursor-pointer">
+        <!-- Top Badge & Number -->
+        <div class="flex items-center justify-between mb-2">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-pink-100 dark:bg-pink-950 text-pink-600 dark:text-pink-400 flex items-center justify-center text-base sm:text-lg font-bold shadow-inner group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-pink-50 dark:bg-pink-950/80 text-pink-600 dark:text-pink-300 border border-pink-200 dark:border-pink-800">
+              ドパドリル仕様
+            </span>
+            <span class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 group-hover:bg-pink-600 group-hover:text-white text-slate-500 dark:text-slate-300 font-mono font-black text-xs flex items-center justify-center border border-slate-200 dark:border-slate-700 transition-colors shadow-xs">
+              8
+            </span>
+          </div>
+        </div>
+
+        <!-- Title & Description -->
+        <div class="space-y-1 mb-2.5">
+          <h3 class="text-sm sm:text-base font-black tracking-tight group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors flex items-center gap-1.5">
+            <span>ドパ倍数</span>
+          </h3>
+          <p class="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2">
+            爽快演出＆BGM・効果音付き！2択・4択や60秒アタックで倍数を極めるドパ特訓。
+          </p>
+        </div>
+
+        <!-- Feature Tags -->
+        <div class="flex flex-wrap gap-1 mb-3">
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-pink-50 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-800">演出ハデ</span>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">60秒アタック</span>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">早見表付き</span>
+        </div>
+
+        <!-- Launch Button -->
+        <div class="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 group-hover:from-pink-600 group-hover:to-rose-600 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
+          <span>ドパ倍数</span>
+          <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+        </div>
+      </a>
+
     </div>
 
   </main>
@@ -427,6 +468,7 @@
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">5</kbd> 帯分数</span>
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">6</kbd> 方程式</span>
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">7</kbd> 速さ</span>
+        <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">8</kbd> ドパ倍数</span>
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">← / →</kbd> 選択</span>
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">Enter</kbd> 決定</span>
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">F</kbd> 全画面</span>
@@ -444,6 +486,7 @@
       cardTaibunsu: document.getElementById('cardTaibunsu'),
       cardHouteishiki: document.getElementById('cardHouteishiki'),
       cardHayasa: document.getElementById('cardHayasa'),
+      cardDopaBaisuu: document.getElementById('cardDopaBaisuu'),
       themeToggleBtn: document.getElementById('themeToggleBtn'),
       themeIcon: document.getElementById('themeIcon'),
       fullscreenToggleBtn: document.getElementById('fullscreenToggleBtn'),
@@ -451,7 +494,7 @@
     };
 
     let selectedIndex = 0;
-    const cards = [el.cardBunsu, el.cardBaisuu, el.cardSeisu, el.cardTenkai, el.cardTaibunsu, el.cardHouteishiki, el.cardHayasa];
+    const cards = [el.cardBunsu, el.cardBaisuu, el.cardSeisu, el.cardTenkai, el.cardTaibunsu, el.cardHouteishiki, el.cardHayasa, el.cardDopaBaisuu];
 
     function updateCardFocus() {
       cards.forEach((c, idx) => {
@@ -538,6 +581,9 @@
       } else if (e.key === '7') {
         e.preventDefault();
         window.location.href = 'hayasa.html';
+      } else if (e.key === '8') {
+        e.preventDefault();
+        window.location.href = 'dopabaisuu.html';
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
         selectedIndex = (selectedIndex - 1 + cards.length) % cards.length;

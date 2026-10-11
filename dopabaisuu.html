@@ -1,0 +1,2570 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>倍数マスター ドパ | 2, 3, 4, 5, 6, 9の倍数判定トレーニング</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Maru+Gothic:wght@700;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================================================
+       ドパドリル風スタイル（紙 + インクの輪郭 + ポップな配色）
+       ========================================================================= */
+    :root {
+      --ink: #1b1d4d;
+      --paper: #fff8ec;
+      --blue: #3b6bff;
+      --pink: #ff7ab6;
+      --pink-soft: #ffd0e4;
+      --blue-soft: #d9e4ff;
+      --yellow: #ffd23f;
+      --mint: #3fdcb0;
+      --violet: #a77bff;
+      --red: #ff4f6d;
+      --kick: 0;
+      --round: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+      --chunky: "Dela Gothic One", "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
+      --outline: 2.5px 0 0 var(--ink), -2.5px 0 0 var(--ink), 0 2.5px 0 var(--ink), 0 -2.5px 0 var(--ink),
+                 2px 2px 0 var(--ink), -2px 2px 0 var(--ink), 2px -2px 0 var(--ink), -2px -2px 0 var(--ink);
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; max-height: 100vh; overflow: hidden; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--round);
+      font-weight: 700;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    button { font: inherit; color: inherit; cursor: pointer; }
+    button:focus-visible, a:focus-visible { outline: 4px solid var(--yellow); outline-offset: 3px; }
+    button:disabled { cursor: default; }
+
+    /* ---------- background layers ---------- */
+    #paper {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255, 122, 182, .16) 0 140px, transparent 141px),
+        radial-gradient(circle at 88% 78%, rgba(59, 107, 255, .12) 0 180px, transparent 181px),
+        linear-gradient(rgba(59, 107, 255, .11) 1.5px, transparent 1.5px) 0 0 / 26px 26px,
+        linear-gradient(90deg, rgba(59, 107, 255, .11) 1.5px, transparent 1.5px) 0 0 / 26px 26px,
+        var(--paper);
+    }
+    #rays-fallback {
+      display: none; position: fixed; inset: -50vmax; z-index: 1; opacity: 0; pointer-events: none;
+      background: repeating-conic-gradient(from 0deg at 50% 50%, #3b6bff 0 9deg, #ff7ab6 9deg 18deg);
+    }
+    #bg { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+    #fx { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
+    #cutins { position: fixed; inset: 0; z-index: 6; pointer-events: none; overflow: hidden; }
+    #flash { position: fixed; inset: 0; z-index: 7; pointer-events: none; background: #fff; opacity: 0; }
+
+    /* ---------- app shell ---------- */
+    #app {
+      position: relative; z-index: 2;
+      width: 100%; max-width: 1040px; height: 100vh; height: 100dvh;
+      margin: 0 auto; padding: 8px 14px 6px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+
+    /* ---------- header ---------- */
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex: none; }
+    .brand { display: flex; align-items: center; gap: 8px; }
+    .brand-logo { display: flex; align-items: flex-end; font-family: var(--chunky); line-height: 1; }
+    .brand-logo i {
+      font-style: normal; display: inline-block; position: relative; font-family: var(--round); font-weight: 900; font-size: 34px; color: #fff;
+      text-shadow: 2px 0 0 var(--ink), -2px 0 0 var(--ink), 0 2px 0 var(--ink), 0 -2px 0 var(--ink), 1.5px 1.5px 0 var(--ink), -1.5px 1.5px 0 var(--ink), 1.5px -1.5px 0 var(--ink), -1.5px -1.5px 0 var(--ink), 3px 4px 0 var(--pink), 4px 5px 0 var(--ink);
+      transform: rotate(var(--r, -7deg)) translateY(var(--dy, 0));
+      animation: logo-hop 1.6s cubic-bezier(.3, 1.6, .5, 1) infinite;
+    }
+    .brand-logo i::after { content: attr(data-c); position: absolute; inset: 0; color: var(--blue); clip-path: polygon(0 62%, 100% 50%, 100% 100%, 0 100%); text-shadow: none; }
+    .brand-logo i:nth-child(2) { --r: 7deg; --dy: -3px; animation-delay: -.8s; }
+    .brand-logo i:nth-child(2)::after { color: var(--pink); }
+    .brand-ribbon {
+      margin-left: 8px; padding: 4px 12px 5px; background: var(--blue); color: #fff; font-family: var(--chunky);
+      font-size: 16px; letter-spacing: .06em; border: 2.5px solid var(--ink); border-radius: 9px;
+      box-shadow: 0 3px 0 var(--ink); transform: rotate(-3deg); text-shadow: 0 2px 0 rgba(27, 29, 77, .5); white-space: nowrap;
+    }
+    .brand-tag { font-size: 11px; padding: 2px 9px; border-radius: 999px; background: var(--yellow); border: 2px solid var(--ink); white-space: nowrap; }
+    @keyframes logo-hop {
+      0%, 100% { transform: rotate(var(--r)) translateY(var(--dy, 0)) scale(1); }
+      12% { transform: rotate(var(--r)) translateY(calc(var(--dy, 0px) + 3px)) scale(1.08, .9); }
+      30% { transform: rotate(calc(var(--r) * -0.4)) translateY(calc(var(--dy, 0px) - 7px)) scale(.96, 1.06); }
+      55% { transform: rotate(var(--r)) translateY(var(--dy, 0)) scale(1); }
+    }
+    .actions-bar { display: flex; align-items: center; gap: 6px; }
+    .tb-btn {
+      display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 12px;
+      border: 2.5px solid var(--ink); border-radius: 999px; background: #fff; color: var(--ink);
+      box-shadow: 0 3px 0 var(--ink); font-size: 13px; font-weight: 900; text-decoration: none; white-space: nowrap;
+      transition: transform .08s, box-shadow .08s;
+    }
+    .tb-btn.hl { background: var(--yellow); }
+    .tb-btn:hover { transform: translateY(-1px); }
+    .tb-btn:active { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); }
+    .icon-btn { width: 38px; padding: 0; justify-content: center; font-size: 17px; }
+    .icon-btn[aria-pressed="false"] { background: #e9e7f2; }
+
+    /* ---------- controls ---------- */
+    .controls { display: flex; flex-direction: column; gap: 7px; flex: none; }
+    .ctrl-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+    .seg {
+      display: inline-flex; align-items: center; gap: 3px; padding: 3px; border: 2.5px solid var(--ink);
+      border-radius: 15px; background: #fff; box-shadow: 0 3px 0 var(--ink);
+    }
+    .seg .lbl { font-size: 11px; padding: 0 5px 0 7px; opacity: .7; white-space: nowrap; }
+    .seg button {
+      border: 0; background: transparent; border-radius: 11px; padding: 5px 10px; font-weight: 900; font-size: 13px;
+      white-space: nowrap; transition: transform .12s cubic-bezier(.3, 1.6, .5, 1), background .12s;
+    }
+    .seg button:hover { background: #f3f1fa; }
+    .seg button[aria-pressed="true"] { background: var(--yellow); box-shadow: inset 0 0 0 2.5px var(--ink); transform: rotate(-2deg) scale(1.04); }
+    .divbar {
+      display: flex; align-items: center; gap: 6px; padding: 4px 8px; border: 2.5px solid var(--ink);
+      border-radius: 15px; background: rgba(255, 255, 255, .92); box-shadow: 0 3px 0 var(--ink);
+    }
+    .divbar .lbl { font-size: 12px; margin-right: 4px; white-space: nowrap; }
+    .divbar .btns { display: flex; gap: 6px; flex-wrap: wrap; }
+    .divbar button {
+      min-width: 40px; height: 34px; padding: 0 8px; border: 2.5px solid var(--ink); border-radius: 11px; background: #fff;
+      font-family: var(--chunky); font-size: 18px; box-shadow: 0 3px 0 var(--ink);
+      transition: transform .12s cubic-bezier(.3, 1.6, .5, 1), background .12s;
+    }
+    .divbar button.rnd { font-family: var(--round); font-weight: 900; font-size: 13px; }
+    .divbar button[aria-pressed="true"] { background: var(--yellow); transform: translateY(-3px) rotate(-4deg); }
+    .divbar button:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+    .divbar.hidden { display: none; }
+
+    /* ---------- HUD ---------- */
+    .hud { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; flex: none; }
+    .stat {
+      display: flex; align-items: baseline; gap: 6px; padding: 2px 12px; border: 2.5px solid var(--ink);
+      border-radius: 999px; background: #fff; font-size: 12px; white-space: nowrap;
+    }
+    .stat b { font-family: var(--chunky); font-weight: 400; font-size: 20px; font-variant-numeric: tabular-nums; }
+    .stat.s1 b { color: var(--blue); }
+    .stat.s2 b { color: var(--pink); }
+    .stat.s3 b { color: #0fae84; }
+    .stat.hurry b { color: var(--red); animation: hurry .5s steps(2) infinite; }
+    @keyframes hurry { 50% { color: var(--ink); } }
+    .combo {
+      display: flex; align-items: baseline; gap: 4px; padding: 2px 12px; border: 2.5px solid var(--ink); border-radius: 12px;
+      background: #fff; box-shadow: 0 3px 0 var(--ink); opacity: 0; transform: scale(.6); transition: opacity .15s, transform .2s cubic-bezier(.3, 1.6, .5, 1);
+    }
+    .combo.on { opacity: 1; transform: scale(1); }
+    .combo b { font-family: var(--chunky); font-weight: 400; font-size: 20px; color: var(--pink); }
+    .combo small { font-size: 11px; font-weight: 900; }
+    .combo.hot { background: #fff4c4; }
+    .combo.hot b { color: var(--red); }
+    .combo.pop { animation: combo-pop .3s cubic-bezier(.3, 1.8, .5, 1); }
+    @keyframes combo-pop { 0% { transform: scale(1.45) rotate(-6deg); } 100% { transform: scale(1); } }
+    .lv { display: flex; align-items: center; gap: 7px; padding: 3px 10px; border: 2.5px solid var(--ink); border-radius: 12px; background: #fff; }
+    .lv .tag { font-family: var(--chunky); font-size: 13px; color: var(--blue); }
+    .lv .pips { display: flex; gap: 3px; }
+    .lv .pip { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--ink); background: #fff; transition: background .2s, transform .2s; }
+    .lv .pip.on { background: var(--c); transform: scale(1.12); }
+    .lv .name { font-size: 11px; font-weight: 900; white-space: nowrap; min-width: 4em; }
+    body.lv9 .lv .pip.on { background: conic-gradient(#ff7ab6, #ffd23f, #3fdcb0, #3b6bff, #a77bff, #ff7ab6); }
+    .dopa {
+      margin-left: auto; display: flex; align-items: baseline; gap: 6px; padding: 2px 12px 3px;
+      border: 2.5px solid var(--ink); border-radius: 12px; background: var(--yellow); box-shadow: 0 3px 0 var(--ink);
+      white-space: nowrap; transform-origin: right center;
+    }
+    .dopa small { font-size: 11px; }
+    .dopa b { font-family: var(--chunky); font-weight: 400; font-size: 20px; font-variant-numeric: tabular-nums; }
+    .dopa.pop { animation: combo-pop .3s cubic-bezier(.3, 1.8, .5, 1); }
+    body.lv6 .dopa { background: linear-gradient(90deg, #ffd23f, #ff9ccc, #9fd0ff, #ffd23f); background-size: 300% 100%; animation: dopa-sheen 2s linear infinite; }
+    @keyframes dopa-sheen { to { background-position: 300% 0; } }
+    .timer { flex-basis: 100%; height: 16px; border: 2.5px solid var(--ink); border-radius: 999px; background: #fff; overflow: hidden; display: none; }
+    .timer.on { display: block; }
+    .timer i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--pink), var(--yellow), var(--mint)); border-right: 2.5px solid var(--ink); transition: width 1s linear; }
+    .timer.hurry i { background: repeating-linear-gradient(-45deg, var(--red) 0 10px, #ff8aa0 10px 20px); }
+
+    /* ---------- stage ---------- */
+    .stage { flex: 1 1 auto; min-height: 0; display: flex; gap: 14px; position: relative; }
+    .side { flex: none; width: clamp(128px, 17vw, 190px); display: flex; flex-direction: column; justify-content: flex-end; align-items: center; position: relative; padding-bottom: 4px; z-index: 3; }
+    .bubble {
+      position: relative; margin-bottom: 14px; padding: 8px 12px; background: #fff; border: 3px solid var(--ink);
+      border-radius: 16px; box-shadow: 0 4px 0 var(--ink); font-size: 13px; line-height: 1.45; text-align: center;
+      width: 100%; min-height: 3.6em; display: grid; place-items: center; transform-origin: 50% 100%;
+    }
+    .bubble::after {
+      content: ""; position: absolute; left: 50%; bottom: -11px; width: 16px; height: 16px; background: #fff;
+      border-right: 3px solid var(--ink); border-bottom: 3px solid var(--ink); transform: translateX(-50%) rotate(45deg);
+    }
+    .bubble b { color: var(--blue); }
+    .bubble.hint { background: #fff8d6; }
+    .bubble.hint::after { background: #fff8d6; }
+    .bubble.pop { animation: bubble-pop .35s cubic-bezier(.3, 1.6, .5, 1); }
+    @keyframes bubble-pop { 0% { transform: scale(.5); } 100% { transform: scale(1); } }
+    .mascot {
+      width: 100%; aspect-ratio: 1214 / 880; transform-origin: 50% 100%;
+      transform: translateY(calc(var(--kick) * -5px)) scale(calc(1 + var(--kick) * .035), calc(1 - var(--kick) * .035));
+    }
+    .mascot .inner { width: 100%; height: 100%; transform-origin: 50% 100%; }
+    .mascot svg { width: 100%; height: 100%; overflow: visible; display: block; }
+    .mascot.jump .inner { animation: dk-jump .65s cubic-bezier(.3, 1.4, .5, 1); }
+    .mascot.sad .inner { animation: dk-sad .7s ease-in-out; }
+    .mascot.spin .inner { animation: dk-spin .9s cubic-bezier(.3, 1.3, .5, 1); }
+    @keyframes dk-jump { 0% { transform: scale(1.1, .88); } 35% { transform: translateY(-38%) scale(.94, 1.08) rotate(-4deg); } 70% { transform: translateY(0) scale(1.08, .92); } 100% { transform: none; } }
+    @keyframes dk-sad { 0%, 100% { transform: none; } 20% { transform: translateX(-6%) rotate(-5deg); } 45% { transform: translateX(5%) rotate(4deg); } 70% { transform: translateX(-3%) rotate(-2deg) scale(1, .96); } }
+    @keyframes dk-spin { 0% { transform: scale(1); } 40% { transform: translateY(-30%) rotate(200deg) scale(1.1); } 100% { transform: rotate(360deg); } }
+    .dk-eyes-happy, .dk-mouth-happy, .dk-mouth-sad { display: none; }
+    .mascot.happy .dk-eyes, .mascot.happy .dk-mouth { display: none; }
+    .mascot.happy .dk-eyes-happy, .mascot.happy .dk-mouth-happy { display: inline; }
+    .mascot.sad .dk-mouth { display: none; }
+    .mascot.sad .dk-mouth-sad { display: inline; }
+    .mascot.sad .dk-pupil { transform: translateY(16px); }
+    .dk-arm-l { transform-box: fill-box; transform-origin: 92% 6%; transition: transform .25s cubic-bezier(.3, 1.6, .5, 1); }
+    .dk-arm-r { transform-box: fill-box; transform-origin: 8% 6%; transition: transform .25s cubic-bezier(.3, 1.6, .5, 1); }
+    .dk-ear-l { transform-box: fill-box; transform-origin: 90% 55%; }
+    .dk-ear-r { transform-box: fill-box; transform-origin: 10% 55%; }
+    body.lv2 .dk-ear-l { transform: rotate(calc(var(--kick) * -10deg)); }
+    body.lv2 .dk-ear-r { transform: rotate(calc(var(--kick) * 10deg)); }
+    body.lv4 .dk-arm-l { transform: rotate(calc(var(--kick) * 40deg)); }
+    body.lv4 .dk-arm-r { transform: rotate(calc(var(--kick) * -40deg)); }
+    .mascot.happy .dk-arm-l { transform: rotate(118deg); }
+    .mascot.happy .dk-arm-r { transform: rotate(-118deg); }
+
+    /* ---------- card ---------- */
+    .card {
+      flex: 1; min-width: 0; position: relative; background: #fff; border: 3px solid var(--ink); border-radius: 26px;
+      box-shadow: 0 7px 0 var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 12px 18px 14px; margin-bottom: 7px; transition: box-shadow .3s;
+    }
+    body.lv8 .card { box-shadow: 0 7px 0 var(--ink), 0 0 0 5px var(--pink), 0 0 40px 10px rgba(255, 210, 63, calc(.35 + var(--kick) * .6)); }
+    .marquee {
+      position: absolute; inset: -10px; border-radius: 32px; pointer-events: none; opacity: 0; transition: opacity .6s; padding: 5px;
+      background: radial-gradient(circle, #fff 0 2.5px, var(--yellow) 3px 4.5px, transparent 5px) 0 0 / 16px 16px;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+      animation: marquee .5s linear infinite;
+    }
+    body.lv5 .marquee { opacity: 1; }
+    body.lv7 .marquee { background: radial-gradient(circle, #fff 0 2.5px, var(--pink) 3px 4.5px, transparent 5px) 0 0 / 16px 16px, radial-gradient(circle, #fff 0 2.5px, var(--yellow) 3px 4.5px, transparent 5px) 8px 8px / 16px 16px; }
+    @keyframes marquee { to { background-position: 16px 0, 24px 8px; } }
+    .bunting { position: absolute; left: 2%; top: -14px; width: 96%; height: 34px; opacity: 0; transform: translateY(-20px); transition: opacity .5s, transform .5s cubic-bezier(.3, 1.6, .5, 1); pointer-events: none; z-index: 2; }
+    body.lv3 .bunting { opacity: 1; transform: none; }
+    .spot {
+      position: absolute; top: -40px; width: 160px; height: 105%; opacity: 0; transition: opacity .6s; mix-blend-mode: screen; filter: blur(2px); pointer-events: none;
+      background: linear-gradient(to bottom, rgba(255, 246, 200, .95), rgba(255, 246, 200, 0)); clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%);
+    }
+    .spot-l { left: 4%; transform-origin: 50% 0; animation: spot-l 3s ease-in-out infinite; }
+    .spot-r { right: 4%; transform-origin: 50% 0; animation: spot-r 3.4s ease-in-out infinite; }
+    body.lv6 .spot { opacity: .75; }
+    @keyframes spot-l { 0%, 100% { transform: rotate(-24deg); } 50% { transform: rotate(10deg); } }
+    @keyframes spot-r { 0%, 100% { transform: rotate(24deg); } 50% { transform: rotate(-12deg); } }
+    .card.shake { animation: shake .4s ease-in-out; }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-8px) rotate(-.6deg); } 40%, 80% { transform: translateX(8px) rotate(.6deg); } }
+
+    .card-top { position: absolute; left: 16px; top: 12px; display: flex; gap: 8px; align-items: center; z-index: 3; }
+    .chip { display: inline-block; padding: 3px 12px; border-radius: 999px; background: var(--blue); color: #fff; font-size: 12px; letter-spacing: .06em; }
+    .qno { font-family: var(--chunky); font-size: 15px; color: var(--pink); }
+    .qno.hidden { display: none; }
+
+    .stamp {
+      position: absolute; right: 18px; top: 14px; width: 96px; height: 96px; border-radius: 50%; display: grid; place-items: center;
+      font-family: var(--chunky); font-size: 24px; border: 7px solid var(--red); color: var(--red); background: rgba(255, 255, 255, .7);
+      box-shadow: inset 0 0 0 3px rgba(255, 79, 109, .3); opacity: 0; pointer-events: none; transform: rotate(-14deg); z-index: 4;
+    }
+    .stamp.ng { border-color: var(--violet); color: var(--violet); font-size: 18px; box-shadow: inset 0 0 0 3px rgba(167, 123, 255, .3); }
+    .stamp.show { animation: stamp-in .32s cubic-bezier(.2, 1.4, .4, 1) forwards; }
+    @keyframes stamp-in { 0% { transform: scale(2.6) rotate(-35deg); opacity: 0; } 60% { opacity: 1; } 100% { transform: scale(1) rotate(-14deg); opacity: .95; } }
+
+    .qarea { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .qarea.hidden { display: none; }
+    .num {
+      display: flex; justify-content: center; gap: .03em; margin: 4px 0 2px; font-family: var(--chunky); font-weight: 400;
+      font-size: clamp(52px, min(13vh, 15vw), 128px); line-height: 1.12; letter-spacing: .02em;
+    }
+    .num.bounce { animation: num-bounce .45s cubic-bezier(.3, 1.6, .5, 1); }
+    @keyframes num-bounce { 0% { transform: scale(1.18, .86); } 50% { transform: scale(.96, 1.06) translateY(-6px); } 100% { transform: none; } }
+    .num .d {
+      position: relative; display: inline-block; isolation: isolate; color: #fff; padding: 0 .04em;
+      text-shadow: 4px 0 0 var(--ink), -4px 0 0 var(--ink), 0 4px 0 var(--ink), 0 -4px 0 var(--ink), 3px 3px 0 var(--ink), -3px 3px 0 var(--ink), 3px -3px 0 var(--ink), -3px -3px 0 var(--ink), 0 9px 0 var(--ink);
+      animation: digit-in .5s cubic-bezier(.3, 1.6, .5, 1) both; animation-delay: calc(var(--i) * 55ms);
+      transition: transform .25s cubic-bezier(.3, 1.6, .5, 1);
+    }
+    .num .d::after { content: attr(data-c); position: absolute; inset: 0; padding: 0 .04em; color: var(--blue); clip-path: polygon(0 60%, 100% 48%, 100% 100%, 0 100%); text-shadow: none; }
+    .num .d:nth-child(even)::after { color: var(--pink); }
+    .num .d::before { content: ""; position: absolute; inset: 10% -4% 2%; border-radius: 16px; z-index: -1; border: 3px solid transparent; transition: background .2s; }
+    .num .d.hl { transform: translateY(-6px) rotate(-4deg); }
+    .num .d.hl::before { background: var(--yellow); border-color: var(--ink); box-shadow: 0 4px 0 var(--ink); }
+    .num .d.hls { transform: translateY(-4px); }
+    .num .d.hls::before { background: var(--pink-soft); border-color: var(--ink); box-shadow: 0 4px 0 var(--ink); }
+    @keyframes digit-in { 0% { transform: translateY(-60px) scale(.4) rotate(-20deg); opacity: 0; } 60% { opacity: 1; } 100% { transform: none; } }
+
+    .prompt { margin: 6px 0 12px; font-size: clamp(14px, 2.2vh, 18px); font-weight: 900; text-align: center; }
+    .prompt .dv {
+      display: inline-grid; place-items: center; min-width: 1.9em; height: 1.75em; margin: 0 4px; padding: 0 6px; vertical-align: middle;
+      border: 2.5px solid var(--ink); border-radius: 10px; background: var(--yellow); box-shadow: 0 3px 0 var(--ink);
+      font-family: var(--chunky); font-weight: 400; font-size: 1.3em; transform: rotate(-4deg);
+    }
+
+    .bin-area { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: min(100%, 580px); }
+    .bin-area.hidden { display: none; }
+    .bin-btn {
+      position: relative; height: clamp(64px, 12vh, 104px); border: 3.5px solid var(--ink); border-radius: 24px; color: #fff;
+      font-family: var(--chunky); font-size: clamp(22px, 3.6vh, 34px); letter-spacing: .06em; box-shadow: 0 7px 0 var(--ink);
+      text-shadow: 0 3px 0 rgba(27, 29, 77, .55); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0;
+      transition: transform .08s, box-shadow .08s, opacity .2s, background .2s;
+      transform: translateY(calc(var(--kick) * -3px * var(--bounce, 0)));
+    }
+    body.lv4 .bin-btn, body.lv4 .choice { --bounce: 1; }
+    .bin-btn .mk { margin-right: .25em; }
+    .bin-btn small { font-family: var(--round); font-size: 12px; opacity: .9; text-shadow: none; letter-spacing: 0; }
+    .bin-no { background: var(--pink); }
+    .bin-yes { background: var(--blue); }
+    .bin-btn:hover:not(:disabled) { filter: brightness(1.07); }
+    .bin-btn:active:not(:disabled) { transform: translateY(5px); box-shadow: 0 2px 0 var(--ink); }
+    .bin-btn.is-correct { background: var(--mint); animation: pick-pop .45s cubic-bezier(.3, 1.6, .5, 1); box-shadow: 0 7px 0 var(--ink), 0 0 0 6px var(--yellow); }
+    .bin-btn.is-wrong { background: #c4b0ff; opacity: .7; }
+    .bin-btn.is-dim { opacity: .35; }
+    .bin-btn.is-reveal { background: var(--mint); animation: reveal 0.5s ease-in-out 3; }
+    @keyframes pick-pop { 0% { transform: scale(.92); } 50% { transform: scale(1.08) rotate(-2deg); } 100% { transform: scale(1); } }
+    @keyframes reveal { 50% { box-shadow: 0 7px 0 var(--ink), 0 0 0 8px var(--yellow); transform: scale(1.04); } }
+
+    .multi-area { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: min(100%, 780px); }
+    .multi-area.hidden { display: none; }
+    .choice {
+      position: relative; display: flex; align-items: center; gap: 10px; min-height: clamp(52px, 9vh, 76px); padding: 8px 14px;
+      border: 3px solid var(--ink); border-radius: 18px; background: #fff; box-shadow: 0 5px 0 var(--ink); text-align: left;
+      transition: transform .08s, box-shadow .08s, background .2s, opacity .2s;
+      transform: translateY(calc(var(--kick) * -2px * var(--bounce, 0)));
+    }
+    .choice:hover:not(:disabled) { background: #f6f4ff; }
+    .choice:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+    .choice .no { flex: none; width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid var(--ink); background: var(--yellow); font-family: var(--chunky); display: grid; place-items: center; font-size: 15px; }
+    .choice .ct { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; font-size: clamp(13px, 2vh, 17px); font-weight: 900; }
+    .choice .ct b { display: inline-grid; place-items: center; min-width: 28px; height: 28px; padding: 0 4px; border-radius: 9px; background: var(--blue-soft); border: 2px solid var(--ink); font-family: var(--chunky); font-weight: 400; font-size: 16px; }
+    .choice .ct .none { font-family: var(--chunky); font-weight: 400; color: var(--violet); font-size: 1.1em; }
+    .choice .res { margin-left: auto; font-family: var(--chunky); font-size: 24px; }
+    .choice.is-correct { background: #d3fff0; animation: pick-pop .45s cubic-bezier(.3, 1.6, .5, 1); box-shadow: 0 5px 0 var(--ink), 0 0 0 5px var(--yellow); }
+    .choice.is-correct .res { color: #0fae84; }
+    .choice.is-wrong { background: #efe8ff; }
+    .choice.is-wrong .res { color: var(--violet); }
+    .choice.is-dim { opacity: .4; }
+
+    .next-row { margin-top: 12px; }
+    .next-row.hidden { display: none; }
+    .next-btn {
+      display: inline-flex; align-items: center; gap: 10px; height: 46px; padding: 0 26px; border: 3px solid var(--ink); border-radius: 16px;
+      background: var(--ink); color: var(--yellow); font-family: var(--chunky); font-size: 18px; letter-spacing: .06em; box-shadow: 0 5px 0 #000;
+      animation: next-in .3s cubic-bezier(.3, 1.6, .5, 1);
+    }
+    .next-btn small { font-family: var(--round); color: #fff; opacity: .7; font-size: 11px; letter-spacing: 0; }
+    .next-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #000; }
+    @keyframes next-in { 0% { transform: scale(.6); opacity: 0; } 100% { transform: none; opacity: 1; } }
+
+    .bd { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: min(100%, 780px); margin-top: 12px; }
+    .bd.hidden { display: none; }
+    .bd-box { padding: 5px 6px 6px; border: 2.5px solid var(--ink); border-radius: 14px; background: var(--paper); text-align: center; animation: bd-in .35s cubic-bezier(.3, 1.6, .5, 1) both; transition: transform .2s; }
+    .bd-box:nth-child(2) { animation-delay: .05s; }
+    .bd-box:nth-child(3) { animation-delay: .1s; }
+    .bd-box:nth-child(4) { animation-delay: .15s; }
+    .bd-box .t { font-size: 11px; opacity: .75; }
+    .bd-box .v { font-family: var(--chunky); font-size: 17px; color: var(--blue); margin: 1px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bd-box .j { font-size: 12px; font-weight: 900; }
+    .bd-box.focus { background: #fff3b8; box-shadow: 0 0 0 4px var(--yellow), 0 4px 0 var(--ink); transform: translateY(-3px) rotate(-1deg); }
+    .o { color: #0fae84; font-weight: 900; }
+    .x { color: #9aa0c0; }
+    @keyframes bd-in { 0% { transform: translateY(14px) scale(.8); opacity: 0; } 100% { opacity: 1; } }
+
+    /* ---------- start / result ---------- */
+    .start, .result { display: none; flex-direction: column; align-items: center; text-align: center; gap: 10px; width: 100%; }
+    .start.on, .result.on { display: flex; }
+    .burst-wrap { position: relative; width: 120px; height: 120px; display: grid; place-items: center; }
+    .burst { position: absolute; inset: -22%; width: 144%; height: 144%; animation: spin 9s linear infinite; filter: drop-shadow(0 5px 0 var(--ink)); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .burst-wrap .ico { position: relative; font-size: 50px; filter: drop-shadow(0 3px 0 var(--ink)); }
+    .ttl { margin: 6px 0 0; font-family: var(--chunky); font-weight: 400; font-size: clamp(26px, 4.6vh, 42px); color: #fff; letter-spacing: .04em; text-shadow: var(--outline), 4px 6px 0 var(--pink), 6px 8px 0 var(--ink); }
+    .desc { margin: 0; font-size: 14px; max-width: 460px; line-height: 1.6; }
+    .big-btn {
+      min-width: 240px; height: 64px; padding: 0 28px; border: 3.5px solid var(--ink); border-radius: 22px; background: var(--blue); color: #fff;
+      font-family: var(--chunky); font-size: 26px; letter-spacing: .06em; box-shadow: 0 7px 0 var(--ink); text-shadow: 0 3px 0 rgba(27, 29, 77, .55);
+      animation: big-pulse 1.2s ease-in-out infinite;
+    }
+    .big-btn small { font-family: var(--round); font-size: 12px; opacity: .85; margin-left: 6px; letter-spacing: 0; }
+    .big-btn:active { transform: translateY(5px); box-shadow: 0 2px 0 var(--ink); animation: none; }
+    @keyframes big-pulse { 50% { transform: scale(1.04) rotate(-1deg); } }
+    .sub-btn { min-width: 160px; height: 50px; padding: 0 18px; border: 3px solid var(--ink); border-radius: 18px; background: #fff; font-size: 16px; font-weight: 900; box-shadow: 0 5px 0 var(--ink); }
+    .sub-btn.blue { background: var(--blue); color: #fff; font-family: var(--chunky); font-weight: 400; letter-spacing: .04em; }
+    .sub-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+    .rank { position: relative; width: 130px; height: 130px; display: grid; place-items: center; }
+    .rank b { position: relative; font-family: var(--chunky); font-weight: 400; font-size: 66px; color: #fff; text-shadow: 4px 0 0 var(--ink), -4px 0 0 var(--ink), 0 4px 0 var(--ink), 0 -4px 0 var(--ink), 3px 3px 0 var(--ink), -3px 3px 0 var(--ink), 3px -3px 0 var(--ink), -3px -3px 0 var(--ink), 0 9px 0 var(--ink); }
+    .rank.show b { animation: rank-slam .7s cubic-bezier(.2, 1.5, .4, 1) both; }
+    .rank.show .burst { animation: rank-burst .5s cubic-bezier(.3, 1.6, .5, 1) both, spin 9s linear .5s infinite; }
+    @keyframes rank-slam { 0% { transform: scale(4) rotate(-30deg); opacity: 0; } 60% { opacity: 1; } 100% { transform: none; } }
+    @keyframes rank-burst { 0% { transform: scale(0) rotate(-90deg); } 100% { transform: scale(1); } }
+    .res-sub { margin: 0; font-size: 15px; }
+    .res-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: min(100%, 560px); margin: 4px 0; }
+    .res-stats div { padding: 6px 4px; border: 2.5px solid var(--ink); border-radius: 14px; background: var(--paper); }
+    .res-stats dt { font-size: 11px; opacity: .7; }
+    .res-stats dd { margin: 2px 0 0; font-family: var(--chunky); font-size: 20px; }
+    .res-stats div:nth-child(1) dd { color: var(--blue); }
+    .res-stats div:nth-child(2) dd { color: #0fae84; }
+    .res-stats div:nth-child(3) dd { color: var(--pink); }
+    .res-stats div:nth-child(4) dd { color: #c98a00; }
+    .best { display: none; padding: 3px 16px; border-radius: 999px; background: var(--ink); color: var(--yellow); font-family: var(--chunky); font-size: 16px; letter-spacing: .08em; border: 3px solid var(--yellow); animation: best-blink .4s steps(2) infinite; }
+    .best.on { display: inline-block; }
+    .best-note { font-size: 12px; opacity: .7; }
+    @keyframes best-blink { 50% { color: #fff; border-color: var(--pink); } }
+    .res-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 4px; }
+
+    /* ---------- footer ---------- */
+    .foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12px; flex: none; }
+    .chk { display: inline-flex; align-items: center; gap: 8px; padding: 3px 12px 3px 5px; border: 2.5px solid var(--ink); border-radius: 999px; background: #fff; cursor: pointer; }
+    .chk input { appearance: none; -webkit-appearance: none; width: 34px; height: 20px; border-radius: 999px; border: 2.5px solid var(--ink); background: #e3e1ec; position: relative; margin: 0; cursor: pointer; transition: background .2s; }
+    .chk input::after { content: ""; position: absolute; top: 1px; left: 1px; width: 13px; height: 13px; border-radius: 50%; background: #fff; border: 2px solid var(--ink); transition: left .2s; box-sizing: border-box; }
+    .chk input:checked { background: var(--mint); }
+    .chk input:checked::after { left: 15px; }
+    .hints { display: flex; gap: 10px; align-items: center; }
+    .hints kbd { display: inline-block; padding: 1px 7px; border: 2px solid var(--ink); border-radius: 7px; background: #fff; font-family: var(--round); font-weight: 900; font-size: 11px; box-shadow: 0 2px 0 var(--ink); margin-right: 3px; }
+
+    /* ---------- cut-ins ---------- */
+    .cutin-band { position: absolute; left: -20%; width: 140%; display: flex; align-items: center; justify-content: center; transform-origin: center; }
+    .cutin-band .band-bg { position: absolute; inset: 0; border-top: 4px solid var(--ink); border-bottom: 4px solid var(--ink); background: repeating-linear-gradient(-45deg, var(--c1) 0 22px, var(--c2) 22px 44px); }
+    .cutin-band .band-text { position: relative; font-family: var(--chunky); color: #fff; letter-spacing: .08em; white-space: nowrap; text-shadow: 3px 0 0 var(--ink), -3px 0 0 var(--ink), 0 3px 0 var(--ink), 0 -3px 0 var(--ink), 0 7px 0 var(--ink); }
+    .slam { position: absolute; font-family: var(--chunky); color: var(--yellow); white-space: nowrap; transform-origin: center; line-height: 1;
+      text-shadow: 5px 0 0 var(--ink), -5px 0 0 var(--ink), 0 5px 0 var(--ink), 0 -5px 0 var(--ink), 4px 4px 0 var(--ink), -4px 4px 0 var(--ink), 4px -4px 0 var(--ink), -4px -4px 0 var(--ink), 0 12px 0 var(--pink), 0 15px 0 var(--ink); }
+
+    /* ---------- modals ---------- */
+    .modal { position: fixed; inset: 0; z-index: 9; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(27, 29, 77, .5); }
+    .modal.on { display: flex; }
+    .modal-card {
+      width: min(100%, 560px); max-height: 90vh; display: flex; flex-direction: column; border: 3.5px solid var(--ink); border-radius: 26px;
+      background: var(--paper); box-shadow: 0 9px 0 var(--ink); overflow: hidden; animation: modal-in .3s cubic-bezier(.3, 1.6, .5, 1);
+    }
+    @keyframes modal-in { 0% { transform: scale(.7) rotate(-3deg); opacity: 0; } 100% { transform: none; opacity: 1; } }
+    .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 3px solid var(--ink); background: var(--yellow); }
+    .modal-head h3 { margin: 0; font-family: var(--chunky); font-weight: 400; font-size: 18px; letter-spacing: .04em; }
+    .close-btn { width: 36px; height: 36px; border: 2.5px solid var(--ink); border-radius: 50%; background: #fff; font-size: 16px; font-weight: 900; box-shadow: 0 3px 0 var(--ink); }
+    .modal-body { padding: 14px 16px 18px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; user-select: text; }
+    .rule { display: flex; gap: 10px; align-items: flex-start; padding: 9px 12px; border: 2.5px solid var(--ink); border-radius: 16px; background: #fff; box-shadow: 0 3px 0 var(--ink); }
+    .rule .n { flex: none; width: 38px; height: 38px; border-radius: 12px; border: 2.5px solid var(--ink); display: grid; place-items: center; font-family: var(--chunky); font-size: 20px; color: #fff; text-shadow: 0 2px 0 rgba(27, 29, 77, .5); }
+    .rule h4 { margin: 0 0 2px; font-size: 14px; font-weight: 900; }
+    .rule p { margin: 0; line-height: 1.55; opacity: .85; }
+    .rule strong { color: var(--blue); }
+    .h-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+    .h-stats div { padding: 8px; border: 2.5px solid var(--ink); border-radius: 14px; background: #fff; }
+    .h-stats dt { font-size: 11px; opacity: .7; }
+    .h-stats dd { margin: 2px 0 0; font-family: var(--chunky); font-size: 20px; }
+    .h-head { display: flex; justify-content: space-between; align-items: center; }
+    .h-head h4 { margin: 0; font-size: 12px; opacity: .7; }
+    .clear-btn { border: 0; background: none; color: var(--red); font-size: 12px; font-weight: 900; text-decoration: underline; }
+    .h-list { display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; padding-right: 2px; }
+    .h-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; border: 2px solid var(--ink); border-radius: 12px; background: #fff; }
+    .h-item .l { display: flex; align-items: center; gap: 8px; }
+    .h-item .m { font-family: var(--chunky); font-size: 16px; width: 1.4em; text-align: center; }
+    .h-item .m.ok { color: #0fae84; }
+    .h-item .m.ng { color: var(--violet); }
+    .h-item .num2 { font-family: var(--chunky); color: var(--blue); font-size: 15px; }
+    .h-item .ans { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: var(--blue-soft); }
+    .h-item .tm { font-size: 11px; opacity: .6; }
+    .h-empty { text-align: center; padding: 22px 0; opacity: .6; }
+
+    /* ---------- reduced motion ---------- */
+    body.reduced .brand-logo i, body.reduced .spot, body.reduced .marquee, body.reduced .burst, body.reduced .big-btn, body.reduced .best { animation: none !important; }
+    body.reduced .mascot { transform: none; }
+
+    /* ---------- responsive ---------- */
+    @media (max-height: 760px) {
+      .bd-box .v { font-size: 15px; }
+      .stamp { width: 80px; height: 80px; font-size: 20px; border-width: 6px; }
+      .prompt { margin: 2px 0 8px; }
+      .bd { margin-top: 8px; }
+      .next-row { margin-top: 8px; }
+      .next-btn { height: 40px; }
+    }
+    @media (max-width: 900px) {
+      .brand-tag, .tb-btn .tx { display: none; }
+    }
+    @media (max-width: 760px) {
+      html, body { overflow: auto; height: auto; max-height: none; }
+      #app { height: auto; min-height: 100dvh; }
+      .stage { display: block; }
+      .card { min-height: 64vh; padding-top: 44px; }
+      .side { position: fixed; right: 4px; bottom: 4px; width: 92px; z-index: 5; pointer-events: none; padding: 0; }
+      .bubble { position: absolute; bottom: calc(100% + 6px); right: 0; width: 200px; font-size: 11px; min-height: 0; }
+      .bd { grid-template-columns: repeat(2, 1fr); }
+      .res-stats { grid-template-columns: repeat(2, 1fr); }
+      .hints { display: none; }
+      .stamp { width: 70px; height: 70px; font-size: 17px; border-width: 5px; top: 8px; right: 10px; }
+      .dopa { margin-left: 0; }
+      .spot { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="paper"></div>
+  <div id="rays-fallback"></div>
+  <canvas id="bg"></canvas>
+  <canvas id="fx"></canvas>
+  <div id="cutins"></div>
+  <div id="flash"></div>
+
+  <div id="app">
+    <!-- ==================== HEADER ==================== -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo" aria-label="倍数マスター">
+          <i data-c="倍">倍</i><i data-c="数">数</i>
+          <span class="brand-ribbon">マスター</span>
+        </div>
+        <span class="brand-tag">2・3・4・5・6・9</span>
+      </div>
+      <div class="actions-bar">
+        <button id="cheatsheetBtn" class="tb-btn hl" title="判定法のコツ・早見表">💡<span class="tx">見分け方のコツ</span></button>
+        <a href="index.html" class="tb-btn" title="アプリ選択画面へ戻る">🏠<span class="tx">アプリ選択</span></a>
+        <a href="bunsu.html" class="tb-btn" title="分数約分マスターへ移動">➗<span class="tx">分数マスター</span></a>
+        <button id="soundToggleBtn" class="tb-btn icon-btn" title="音：BGM＋効果音">🔊</button>
+        <button id="historyModalBtn" class="tb-btn icon-btn" title="成績・ログ">📊</button>
+        <button id="motionToggleBtn" class="tb-btn icon-btn" aria-pressed="true" title="演出：ハデ">✨</button>
+        <button id="fullscreenToggleBtn" class="tb-btn icon-btn" title="全画面表示 (ON/OFF) [F]">⛶</button>
+      </div>
+    </header>
+
+    <!-- ==================== CONTROLS ==================== -->
+    <section class="controls">
+      <div class="ctrl-row">
+        <div class="seg" role="group" aria-label="問題形式">
+          <button id="typeBinaryBtn" data-type="binary">✔ 初級 (2択)</button>
+          <button id="typeMultiBtn" data-type="multi">☰ 総合 (4択)</button>
+        </div>
+        <div class="seg" role="group" aria-label="桁数">
+          <span class="lbl"># 桁数</span>
+          <button class="digit-btn" data-digits="2">2桁</button>
+          <button class="digit-btn" data-digits="3">3桁</button>
+          <button class="digit-btn" data-digits="4">4桁</button>
+          <button class="digit-btn" data-digits="5">5桁</button>
+          <button class="digit-btn" data-digits="all">2〜5桁</button>
+        </div>
+        <div class="seg" role="group" aria-label="モード">
+          <button id="modePracticeBtn" class="mode-tab" data-mode="practice">📖 練習</button>
+          <button id="modeTimeAttackBtn" class="mode-tab" data-mode="timeattack">⏱ 60秒</button>
+          <button id="modeTest10Btn" class="mode-tab" data-mode="test10">📝 10問</button>
+        </div>
+      </div>
+      <div id="targetDivisorBar" class="divbar">
+        <span class="lbl">🎯 判定する数</span>
+        <div class="btns">
+          <button class="divisor-btn" data-divisor="2">2</button>
+          <button class="divisor-btn" data-divisor="3">3</button>
+          <button class="divisor-btn" data-divisor="4">4</button>
+          <button class="divisor-btn" data-divisor="5">5</button>
+          <button class="divisor-btn" data-divisor="6">6</button>
+          <button class="divisor-btn" data-divisor="9">9</button>
+          <button class="divisor-btn rnd" data-divisor="random">🎲 ランダム</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== HUD ==================== -->
+    <section class="hud">
+      <div class="stat s1"><span id="statLabel1">正解数</span><b id="statVal1">0</b></div>
+      <div class="stat s2"><span id="statLabel2">連続正解</span><b id="statVal2">0</b></div>
+      <div class="stat s3" id="stat3"><span id="statLabel3">総解答数</span><b id="statVal3">0</b></div>
+      <div id="comboBadge" class="combo"><b id="comboNum">0</b><small>COMBO</small></div>
+      <div class="lv" title="正解するほど演出と音楽がもりあがる！">
+        <span class="tag">LV</span>
+        <span class="pips" id="lvPips"></span>
+        <span class="name" id="lvName">スタンバイ</span>
+      </div>
+      <div class="dopa" id="dopaBox"><small>ドパ</small><b id="dopaPts">0</b><small>pt</small></div>
+      <div id="timerBarContainer" class="timer"><i id="timerBarFill"></i></div>
+    </section>
+
+    <!-- ==================== STAGE ==================== -->
+    <main class="stage">
+      <div class="side">
+        <div id="bubble" class="bubble">倍数のなぞ、<br>いっしょに解こう！</div>
+        <div id="mascot" class="mascot"><div class="inner" id="mascotInner"></div></div>
+      </div>
+
+      <div id="gameCard" class="card">
+        <div class="marquee"></div>
+        <svg class="bunting" id="bunting" viewBox="0 0 280 34" preserveAspectRatio="none"></svg>
+        <div class="spot spot-l"></div><div class="spot spot-r"></div>
+
+        <div class="card-top">
+          <span id="currentDigitBadge" class="chip">3桁</span>
+          <span id="questionCounterBadge" class="qno hidden">#1 / 10</span>
+        </div>
+        <div id="stamp" class="stamp"></div>
+
+        <!-- START SCREEN -->
+        <div id="startScreen" class="start">
+          <div class="burst-wrap"><svg class="burst" viewBox="-100 -100 200 200"><polygon class="burst-poly" fill="#ffd23f" stroke="#1b1d4d" stroke-width="5" stroke-linejoin="round"/></svg><span id="startScreenIcon" class="ico">⚡</span></div>
+          <h2 id="startScreenTitle" class="ttl">60秒タイムアタック</h2>
+          <p id="startScreenDesc" class="desc">60秒間でできるだけ多くの倍数を正確に見極めよう！</p>
+          <button id="startChallengeBtn" class="big-btn">スタート！<small>[Enter]</small></button>
+        </div>
+
+        <!-- QUESTION AREA -->
+        <div id="questionArea" class="qarea">
+          <div id="numberDisplay" class="num" aria-live="polite"></div>
+          <p id="questionPrompt" class="prompt"></p>
+
+          <div id="binaryChoicesArea" class="bin-area">
+            <button id="btnBinaryFalse" class="bin-btn bin-no"><span><span class="mk">✕</span>割れない</span><small>[← / 1]</small></button>
+            <button id="btnBinaryTrue" class="bin-btn bin-yes"><span><span class="mk">○</span>割れる</span><small>[→ / 2]</small></button>
+          </div>
+
+          <div id="multiChoicesArea" class="multi-area hidden">
+            <button class="choice choice-btn" data-index="0"><span class="no">1</span><span class="ct"></span><span class="res"></span></button>
+            <button class="choice choice-btn" data-index="1"><span class="no">2</span><span class="ct"></span><span class="res"></span></button>
+            <button class="choice choice-btn" data-index="2"><span class="no">3</span><span class="ct"></span><span class="res"></span></button>
+            <button class="choice choice-btn" data-index="3"><span class="no">4</span><span class="ct"></span><span class="res"></span></button>
+          </div>
+
+          <div id="nextControls" class="next-row hidden">
+            <button id="btnNext" class="next-btn">つぎの問題へ ▶ <small>[Space / Enter]</small></button>
+          </div>
+
+          <div id="breakdownDrawer" class="bd hidden">
+            <div id="bdBox25" class="bd-box"><div class="t">一の位 (2・5?)</div><div id="bdLastDigit" class="v">-</div><div id="bdLastDigitVerdict" class="j">-</div></div>
+            <div id="bdBox4" class="bd-box"><div class="t">下2桁 (4?)</div><div id="bdLast2Digits" class="v">-</div><div id="bdLast2DigitsVerdict" class="j">-</div></div>
+            <div id="bdBox39" class="bd-box"><div class="t">各位の合計 (3・9?)</div><div id="bdSumDigits" class="v">-</div><div id="bdSumDigitsVerdict" class="j">-</div></div>
+            <div id="bdBox6" class="bd-box"><div class="t">6の倍数 (2かつ3?)</div><div id="bd6Result" class="v">-</div><div id="bd6Verdict" class="j">-</div></div>
+          </div>
+        </div>
+
+        <!-- RESULT SCREEN -->
+        <div id="resultScreen" class="result">
+          <div id="resultRankBadge" class="rank"><svg class="burst" viewBox="-100 -100 200 200"><polygon class="burst-poly" id="rankBurst" fill="#ffd23f" stroke="#1b1d4d" stroke-width="5" stroke-linejoin="round"/></svg><b id="resultRank">S</b></div>
+          <h2 id="resultTitle" class="ttl">テスト終了！</h2>
+          <p id="resultSubtitle" class="res-sub">今回のスコアはこちら</p>
+          <span id="bestTag" class="best">ベスト更新！</span>
+          <span id="bestNote" class="best-note"></span>
+          <dl class="res-stats">
+            <div><dt>正解数</dt><dd id="resultCorrectCount">0</dd></div>
+            <div><dt>正解率</dt><dd id="resultAccuracy">0%</dd></div>
+            <div><dt>最大コンボ</dt><dd id="resultMaxStreak">0</dd></div>
+            <div><dt>ドパpt</dt><dd id="resultPoints">0</dd></div>
+          </dl>
+          <div class="res-actions">
+            <button id="btnRetry" class="sub-btn blue">↻ もう一度挑戦</button>
+            <button id="btnBackToPractice" class="sub-btn">練習に戻る</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="foot">
+      <label class="chk"><input type="checkbox" id="autoAdvanceCheck" checked><span>正解時に自動で次へ進む</span></label>
+      <div id="shortcutHints" class="hints"></div>
+    </footer>
+  </div>
+
+  <!-- ==================== CHEATSHEET MODAL ==================== -->
+  <div id="cheatsheetModal" class="modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>📘 倍数の見分け方 早見表</h3>
+        <button id="closeCheatsheetBtn" class="close-btn" aria-label="閉じる">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="rule"><span class="n" style="background:#3fdcb0">2</span><div><h4>2の倍数：一の位（下一桁）が偶数</h4><p>一の位が <strong>0, 2, 4, 6, 8</strong> なら必ず2で割り切れます。</p></div></div>
+        <div class="rule"><span class="n" style="background:#3b9bff">3</span><div><h4>3の倍数：各位の数字の合計が3の倍数</h4><p>例: 243 → 2 + 4 + 3 = <strong>9</strong>（3の倍数）なので3で割り切れます。</p></div></div>
+        <div class="rule"><span class="n" style="background:#3b6bff">4</span><div><h4>4の倍数：下2桁が4の倍数（または00）</h4><p>百の位以上は無視して、最後の2桁（例: 5<strong>16</strong> → 16は4×4）だけを見ます。</p></div></div>
+        <div class="rule"><span class="n" style="background:#ffb000">5</span><div><h4>5の倍数：一の位（下一桁）が 0 または 5</h4><p>一の位を見るだけで瞬時に判定できます。</p></div></div>
+        <div class="rule"><span class="n" style="background:#ff7ab6">6</span><div><h4>6の倍数：2の倍数（偶数） かつ 3の倍数</h4><p>「下一桁が偶数」であり、さらに「各位の和が3の倍数」なら6の倍数です。</p></div></div>
+        <div class="rule"><span class="n" style="background:#a77bff">9</span><div><h4>9の倍数：各位の数字の合計が9の倍数</h4><p>例: 1485 → 1 + 4 + 8 + 5 = <strong>18</strong>（9×2）なので9の倍数です。</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== HISTORY MODAL ==================== -->
+  <div id="historyModal" class="modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>📊 学習データ ＆ 解答履歴</h3>
+        <button id="closeHistoryBtn" class="close-btn" aria-label="閉じる">✕</button>
+      </div>
+      <div class="modal-body">
+        <dl class="h-stats">
+          <div><dt>総解答数</dt><dd id="totalLifetimeQuestions" style="color:var(--blue)">0</dd></div>
+          <div><dt>通算正解率</dt><dd id="lifetimeAccuracy" style="color:#0fae84">0%</dd></div>
+          <div><dt>最高コンボ</dt><dd id="lifetimeBestStreak" style="color:var(--pink)">0</dd></div>
+        </dl>
+        <div class="h-head">
+          <h4>最近の解答ログ</h4>
+          <button id="clearHistoryBtn" class="clear-btn">履歴クリア</button>
+        </div>
+        <div id="historyList" class="h-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+    /* =========================================================================
+       UTILITIES
+       ========================================================================= */
+    const rand = (a, b) => a + Math.random() * (b - a);
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+    const $ = (id) => document.getElementById(id);
+    const INK = '#1b1d4d';
+
+    /* =========================================================================
+       ドパキチ（SVG）— docs/dopakichi.svg の造形を元に表情差分を追加
+       ========================================================================= */
+    function dopaSVG(c = '#FF97BF', sw = 16, expr = false) {
+      const L = `stroke="${INK}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"`;
+      const foot = 'M810 1267 C779 1267 761 1281 735 1307 C713 1329 701 1343 718 1357 C742 1378 783 1376 816 1359 C850 1343 870 1319 850 1288 C840 1272 827 1267 810 1267Z';
+      const bodyD = 'M709 1005 C752 1031 777 1069 777 1110 C777 1145 757 1174 757 1212 C757 1268 802 1295 857 1295 L977 1295 C1032 1295 1077 1268 1077 1212 C1077 1174 1057 1145 1057 1110 C1057 1069 1082 1031 1125 1005';
+      const headD = 'M709 1005 C641 964 604 914 604 823 C604 650 734 541 917 541 C1100 541 1230 650 1230 823 C1230 914 1193 964 1125 1005';
+      const exprParts = expr ? `
+        <g class="dk-eyes-happy" fill="none" ${L} stroke-width="${sw * 1.6}">
+          <path d="M735 868 C755 812 819 812 839 868"/><path d="M995 868 C1015 812 1079 812 1099 868"/>
+        </g>
+        <path class="dk-mouth-happy" ${L} fill="#ff4f6d" d="M858 912 C870 1000 964 1000 976 912 Z"/>
+        <path class="dk-mouth-sad" ${L} fill="none" d="M872 950 C890 920 944 920 962 950"/>` : '';
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="310 520 1214 880">
+        <path ${L} fill="#2F79F7" d="${foot}"/>
+        <path ${L} fill="#2F79F7" d="${foot}" transform="translate(1834 0) scale(-1 1)"/>
+        <g class="dk-arm-l"><path ${L} fill="${c}" d="M774 1083 C750 1097 728 1115 711 1135 L734 1153 C750 1134 767 1119 784 1110Z"/><ellipse ${L} fill="${c}" cx="707" cy="1177" rx="54" ry="55"/></g>
+        <g class="dk-arm-r"><path ${L} fill="${c}" d="M1060 1083 C1084 1097 1106 1115 1123 1135 L1100 1153 C1084 1134 1067 1119 1050 1110Z"/><ellipse ${L} fill="${c}" cx="1127" cy="1177" rx="54" ry="55"/></g>
+        <path fill="${c}" d="${bodyD} L1125 952 L709 952Z"/>
+        <path ${L} fill="none" d="${bodyD}"/>
+        <ellipse ${L} fill="#FFF3E4" cx="917" cy="1192" rx="99" ry="75"/>
+        <g class="dk-ear-l"><ellipse ${L} fill="${c}" cx="505" cy="785" rx="172" ry="174"/><ellipse ${L} fill="#FFE6F0" cx="505" cy="785" rx="117" ry="122"/></g>
+        <g class="dk-ear-r"><ellipse ${L} fill="${c}" cx="1329" cy="785" rx="172" ry="174"/><ellipse ${L} fill="#FFE6F0" cx="1329" cy="785" rx="117" ry="122"/></g>
+        <path fill="${c}" d="${headD} L917 980Z"/>
+        <path ${L} fill="none" d="${headD}"/>
+        <path ${L} fill="#FFF3E4" d="M917 631 C1082 631 1185 694 1185 834 C1185 974 1060 1030 917 1030 C774 1030 649 974 649 834 C649 694 752 631 917 631Z"/>
+        <g class="dk-eyes">
+          <ellipse ${L} fill="#FFF" cx="787" cy="849" rx="62" ry="62"/><ellipse class="dk-pupil" ${L} fill="${c}" cx="787" cy="849" rx="48" ry="48"/>
+          <ellipse ${L} fill="#FFF" cx="1047" cy="849" rx="62" ry="62"/><ellipse class="dk-pupil" ${L} fill="${c}" cx="1047" cy="849" rx="48" ry="48"/>
+        </g>
+        <ellipse ${L} fill="${c}" cx="842" cy="752" rx="17" ry="10"/><ellipse ${L} fill="${c}" cx="992" cy="752" rx="17" ry="10"/>
+        <ellipse fill="#ffb3cf" cx="747" cy="934" rx="26" ry="16"/><ellipse fill="#ffb3cf" cx="1087" cy="934" rx="26" ry="16"/>
+        <path class="dk-mouth" ${L} fill="none" d="M872 924 C890 948 944 948 962 924"/>
+        ${exprParts}
+      </svg>`;
+    }
+    function dopaSprite(color) {
+      const img = new Image();
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(dopaSVG(color, 26, false));
+      return img;
+    }
+
+    /* =========================================================================
+       FX: Canvas 2D パーティクル（紙吹雪・星・火花・コイン・花火・ストリーマー・ミニドパキチ）
+       ========================================================================= */
+    const COLORS = ['#ff7ab6', '#3b6bff', '#ffd23f', '#3fdcb0', '#a77bff', '#ff5a4f', '#ffffff'];
+    const PAPER = ['#ff7ab6', '#3b6bff', '#ffd23f', '#ffffff', '#3fdcb0'];
+    const SPRITES = new Map();
+
+    class FX {
+      constructor(canvas, max = 520) {
+        this.max = max; this.canvas = canvas; this.ctx = canvas.getContext('2d');
+        this.parts = []; this.reduced = false; this.motion = 1; this.dpr = 1;
+        this.sprites = ['#FF97BF', '#8fb4ff', '#ffd23f', '#3fdcb0', '#b99bff'].map(dopaSprite);
+      }
+      resize() {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        const w = Math.round(innerWidth * dpr); const h = Math.round(innerHeight * dpr);
+        if (this.canvas.width !== w || this.canvas.height !== h) { this.canvas.width = w; this.canvas.height = h; }
+        this.dpr = dpr;
+      }
+      add(p) { if (this.parts.length >= this.max) this.parts.splice(0, 1 + Math.floor(this.max * 0.02)); p.age = 0; this.parts.push(p); return p; }
+      scale(n) { return this.reduced ? Math.min(4, Math.ceil(n * 0.1)) : Math.round(n * (0.15 + 0.85 * this.motion)); }
+      burst(x, y, { count = 20, speed = 420, kinds = ['confetti'], up = 0, spread = Math.PI * 2, angle = -Math.PI / 2, colors = PAPER, size = 1, gravity = 1 } = {}) {
+        const n = this.scale(count);
+        for (let i = 0; i < n; i++) {
+          const kind = pick(kinds);
+          const a = angle + (Math.random() - 0.5) * spread; const v = speed * rand(0.35, 1);
+          const p = { kind, x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - up, rot: rand(0, 6.28), vr: rand(-12, 12), flip: rand(0, 6.28), vf: rand(6, 16), color: pick(colors), size: size * rand(0.7, 1.3), life: rand(1.4, 2.6), g: 900 * gravity, drag: 0.8 };
+          if (kind === 'spark') { p.life = rand(0.35, 0.7); p.g = 300 * gravity; p.drag = 2.4; p.color = pick(['#fff', '#ffe98a', '#ffd23f', '#ff9ccc']); }
+          if (kind === 'star') { p.life = rand(0.8, 1.4); p.g = 500 * gravity; p.drag = 1.6; p.color = pick(['#ffd23f', '#fff', '#ff9ccc', '#8fd3ff']); }
+          if (kind === 'coin') { p.life = rand(1.4, 2.2); p.g = 1300 * gravity; p.drag = 0.4; }
+          if (kind === 'mini') { p.life = rand(1.6, 2.4); p.g = 900 * gravity; p.drag = 0.5; p.sprite = pick(this.sprites); p.vr = rand(-6, 6); p.size = size * rand(0.8, 1.2); }
+          if (kind === 'heart') { p.life = rand(1, 1.6); p.g = -80; p.drag = 1.8; p.color = pick(['#ff3f8e', '#ff7ab6']); }
+          if (kind === 'digit') { p.str = pick(['2', '3', '4', '5', '6', '9']); p.vr = rand(-5, 5); p.color = pick(['#ff7ab6', '#3b6bff', '#ffd23f', '#3fdcb0', '#a77bff']); }
+          this.add(p);
+        }
+      }
+      ring(x, y, { color = '#fff', radius = 90, width = 8, life = 0.45 } = {}) { this.add({ kind: 'ring', x, y, vx: 0, vy: 0, color, radius, width, life, g: 0, drag: 0 }); }
+      text(x, y, str, { color = '#fff', size = 22, life = 1.1, vy = -90 } = {}) { this.add({ kind: 'text', x, y, vx: 0, vy, str, color, size, life, g: 0, drag: 1.2 }); }
+      puff(x, y, n = 6) {
+        for (let i = 0; i < this.scale(n); i++) this.add({ kind: 'puff', x: x + rand(-14, 14), y: y - rand(0, 6), vx: rand(-140, 140), vy: rand(-60, -10), size: rand(6, 12), life: rand(0.35, 0.6), g: 0, drag: 5, color: '#fff' });
+      }
+      fireworks(W, H, n = 3, top = 0.1, bottom = 0.45) {
+        for (let i = 0; i < this.scale(n); i++) {
+          const tx = rand(W * 0.12, W * 0.88); const ty = rand(H * top, H * bottom);
+          this.add({ kind: 'shell', x: tx + rand(-30, 30), y: H + 20, vx: 0, vy: 0, tx, ty, t0: i * 0.14, life: 3, g: 0, drag: 0, color: pick(COLORS.slice(0, 6)) });
+        }
+      }
+      streamers(W, H, n = 6) {
+        for (let i = 0; i < this.scale(n); i++) {
+          const left = i % 2 === 0;
+          const x = left ? -10 : W + 10; const y = rand(H * 0.05, H * 0.4);
+          const a = left ? rand(-1.1, -0.35) : Math.PI - rand(-1.1, -0.35);
+          const v = rand(700, 1100);
+          this.add({ kind: 'streamer', x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(2.2, 3), g: 700, drag: 1.1, color: pick(COLORS.slice(0, 5)), trail: [], w: rand(6, 10), phase: rand(0, 6) });
+        }
+      }
+      rain(W, n = 60, { kinds = ['confetti'] } = {}) {
+        for (let i = 0; i < this.scale(n); i++) {
+          const kind = pick(kinds);
+          const p = { kind, x: rand(0, W), y: rand(-160, -10), vx: rand(-60, 60), vy: rand(60, 260), rot: rand(0, 6), vr: rand(-8, 8), flip: rand(0, 6), vf: rand(5, 12), color: pick(PAPER), size: rand(0.8, 1.3), life: rand(2.5, 4), g: 120, drag: 0.6 };
+          if (kind === 'mini') { p.sprite = pick(this.sprites); p.size = rand(0.6, 1.1); p.g = 260; }
+          if (kind === 'digit') { p.str = pick(['2', '3', '4', '5', '6', '9']); p.color = pick(['#ff7ab6', '#3b6bff', '#ffd23f', '#3fdcb0', '#a77bff']); }
+          this.add(p);
+        }
+      }
+      update(dt) {
+        const H = innerHeight + 200;
+        for (const p of this.parts) {
+          p.age += dt;
+          if (p.kind === 'shell') {
+            if (p.age < p.t0) continue;
+            const k = clamp((p.age - p.t0) / 0.55); const ease = 1 - (1 - k) ** 3;
+            p.x = p.x + (p.tx - p.x) * Math.min(1, dt * 8);
+            p.y = innerHeight + 20 + (p.ty - innerHeight - 20) * ease;
+            if (k >= 1 && !p.done) {
+              p.done = true; p.life = 0;
+              const col = p.color; const n = 46;
+              for (let i = 0; i < this.scale(n); i++) {
+                const a = (i / n) * Math.PI * 2; const v = rand(260, 330);
+                this.add({ kind: 'spark', x: p.tx, y: p.ty, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.9, 1.3), g: 160, drag: 1.3, color: i % 3 ? col : '#fff', size: 1.3 });
+              }
+              this.ring(p.tx, p.ty, { color: col, radius: 120, width: 6, life: 0.5 });
+              if (this.onPop) this.onPop(p.tx, p.ty);
+            }
+            continue;
+          }
+          const drag = Math.exp(-p.drag * dt);
+          p.vx *= drag; p.vy = p.vy * drag + p.g * dt;
+          p.x += p.vx * dt; p.y += p.vy * dt;
+          if (p.rot !== undefined) p.rot += (p.vr || 0) * dt;
+          if (p.flip !== undefined) p.flip += (p.vf || 0) * dt;
+          if (p.trail) { p.trail.push({ x: p.x, y: p.y }); if (p.trail.length > 18) p.trail.shift(); }
+          if (p.y > H) p.life = 0;
+        }
+        this.parts = this.parts.filter((p) => p.age < p.life || (p.kind === 'shell' && !p.done));
+      }
+      sprite(key, w, h, paint) {
+        let spr = SPRITES.get(key);
+        if (!spr) {
+          const cv = document.createElement('canvas'); const pad = 4; const k = 2;
+          cv.width = Math.ceil((w + pad * 2) * k); cv.height = Math.ceil((h + pad * 2) * k);
+          const c = cv.getContext('2d'); c.scale(k, k); c.translate(pad + w / 2, pad + h / 2); paint(c);
+          spr = { cv, w: w + pad * 2, h: h + pad * 2 }; SPRITES.set(key, spr);
+        }
+        return spr;
+      }
+      stamp(spr, x, y, rot, sx, sy, alpha) {
+        const c = this.ctx; const d = this.dpr; const cos = Math.cos(rot); const sin = Math.sin(rot);
+        c.globalAlpha = alpha;
+        c.setTransform(cos * sx * d, sin * sx * d, -sin * sy * d, cos * sy * d, x * d, y * d);
+        c.drawImage(spr.cv, -spr.w / 2, -spr.h / 2, spr.w, spr.h);
+      }
+      draw() {
+        this.resize();
+        const c = this.ctx; const dpr = this.dpr;
+        c.setTransform(1, 0, 0, 1, 0, 0);
+        c.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        if (!this.parts.length) return;
+        const sparks = [];
+        for (const p of this.parts) {
+          if (p.kind === 'shell') continue;
+          const k = p.age / p.life;
+          const fade = Math.max(0, k > 0.75 ? 1 - (k - 0.75) / 0.25 : 1);
+          switch (p.kind) {
+            case 'confetti': {
+              const spr = this.sprite(`cf${p.color}`, 11, 7, (g) => { g.fillStyle = p.color; g.fillRect(-5.5, -3.5, 11, 7); g.strokeStyle = INK; g.lineWidth = 1.4; g.strokeRect(-5.5, -3.5, 11, 7); });
+              this.stamp(spr, p.x, p.y, p.rot, p.size, p.size * Math.cos(p.flip), fade); break;
+            }
+            case 'spark': sparks.push(p); break;
+            case 'star': {
+              const spr = this.sprite(`st${p.color}`, 20, 20, (g) => {
+                g.beginPath();
+                for (let i = 0; i < 10; i++) { const r = i % 2 ? 4.5 : 10; const a = (i / 10) * Math.PI * 2 - Math.PI / 2; g.lineTo(Math.cos(a) * r, Math.sin(a) * r); }
+                g.closePath(); g.fillStyle = p.color; g.fill(); g.strokeStyle = INK; g.lineWidth = 2; g.lineJoin = 'round'; g.stroke();
+              });
+              const s = 0.9 * p.size * (k < 0.15 ? k / 0.15 : 1);
+              this.stamp(spr, p.x, p.y, p.rot, s, s, fade); break;
+            }
+            case 'coin': {
+              const spr = this.sprite('coin', 24, 24, (g) => {
+                g.beginPath(); g.arc(0, 0, 11, 0, 7); g.fillStyle = '#ffd23f'; g.fill(); g.lineWidth = 2.4; g.strokeStyle = INK; g.stroke();
+                g.beginPath(); g.arc(0, 0, 6.8, 0, 7); g.strokeStyle = '#e59b00'; g.lineWidth = 2; g.stroke();
+              });
+              this.stamp(spr, p.x, p.y, 0, p.size * Math.cos(p.flip), p.size, fade); break;
+            }
+            case 'heart': {
+              const spr = this.sprite(`ht${p.color}`, 28, 24, (g) => {
+                const s = 10; g.beginPath(); g.moveTo(0, s * 0.8);
+                g.bezierCurveTo(-s * 1.4, -s * 0.1, -s * 0.8, -s * 1.2, 0, -s * 0.45);
+                g.bezierCurveTo(s * 0.8, -s * 1.2, s * 1.4, -s * 0.1, 0, s * 0.8);
+                g.fillStyle = p.color; g.fill(); g.strokeStyle = INK; g.lineWidth = 2; g.stroke();
+              });
+              this.stamp(spr, p.x, p.y, Math.sin(p.age * 5) * 0.3, p.size, p.size, fade); break;
+            }
+            case 'digit': {
+              const spr = this.sprite(`dg${p.color}${p.str}`, 22, 26, (g) => {
+                g.font = '400 24px "Dela Gothic One", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+                g.lineWidth = 4.5; g.lineJoin = 'round'; g.strokeStyle = INK; g.strokeText(p.str, 0, 1); g.fillStyle = p.color; g.fillText(p.str, 0, 1);
+              });
+              this.stamp(spr, p.x, p.y, p.rot, p.size, p.size, fade); break;
+            }
+            case 'mini': {
+              if (!p.sprite.complete || !p.sprite.naturalWidth) break;
+              const idx = this.sprites.indexOf(p.sprite);
+              const spr = this.sprite(`mini${idx}`, 66, 48, (g) => { g.drawImage(p.sprite, -33, -24, 66, 48); });
+              this.stamp(spr, p.x, p.y, p.rot, p.size, p.size, fade); break;
+            }
+            case 'ring': {
+              const r = p.radius * (1 - (1 - k) ** 3);
+              c.setTransform(dpr, 0, 0, dpr, 0, 0); c.globalAlpha = 1 - k;
+              c.beginPath(); c.arc(p.x, p.y, Math.max(0.1, r), 0, 7); c.strokeStyle = p.color; c.lineWidth = p.width * (1 - k) + 1; c.stroke();
+              break;
+            }
+            case 'text': {
+              const pop = k < 0.12 ? 0.6 + (k / 0.12) * 0.5 : k < 0.2 ? 1.1 - ((k - 0.12) / 0.08) * 0.1 : 1;
+              c.setTransform(dpr * pop, 0, 0, dpr * pop, p.x * dpr, p.y * dpr); c.globalAlpha = fade;
+              c.font = `400 ${p.size}px "Dela Gothic One", "Zen Maru Gothic", sans-serif`;
+              c.textAlign = 'center'; c.textBaseline = 'middle';
+              c.lineWidth = p.size * 0.28; c.lineJoin = 'round'; c.strokeStyle = INK; c.strokeText(p.str, 0, 0);
+              c.fillStyle = p.color; c.fillText(p.str, 0, 0);
+              break;
+            }
+            case 'puff': {
+              c.setTransform(dpr, 0, 0, dpr, 0, 0); c.globalAlpha = (1 - k) * 0.9;
+              c.beginPath(); c.arc(p.x, p.y, p.size * (1 + k * 1.5), 0, 7); c.fillStyle = '#fff'; c.fill(); c.strokeStyle = INK; c.lineWidth = 1.6; c.stroke();
+              break;
+            }
+            case 'streamer': {
+              if (p.trail.length < 2) break;
+              c.setTransform(dpr, 0, 0, dpr, 0, 0); c.globalAlpha = fade; c.lineCap = 'round'; c.lineJoin = 'round';
+              c.beginPath();
+              p.trail.forEach((q, i) => { const off = Math.sin(i * 0.8 + p.age * 12 + p.phase) * 5; if (i === 0) c.moveTo(q.x, q.y + off); else c.lineTo(q.x, q.y + off); });
+              c.strokeStyle = INK; c.lineWidth = p.w + 3; c.stroke();
+              c.strokeStyle = p.color; c.lineWidth = p.w; c.stroke();
+              break;
+            }
+          }
+        }
+        if (sparks.length) {
+          c.setTransform(dpr, 0, 0, dpr, 0, 0); c.globalCompositeOperation = 'lighter'; c.lineCap = 'round';
+          for (const p of sparks) {
+            const k = p.age / p.life;
+            c.globalAlpha = Math.max(0, k > 0.75 ? 1 - (k - 0.75) / 0.25 : 1);
+            c.strokeStyle = p.color; c.lineWidth = 3 * (p.size || 1) * (1 - k * 0.6);
+            c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(p.x - p.vx * 0.045, p.y - p.vy * 0.045); c.stroke();
+          }
+          c.globalCompositeOperation = 'source-over';
+        }
+        c.globalAlpha = 1;
+      }
+    }
+
+    /* =========================================================================
+       BACKDROP: WebGL サンバースト → 虹 → ドパキチトンネル（盛り上がり E に連動）
+       ========================================================================= */
+    const VERT = 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0., 1.); }';
+    const FRAG = `precision highp float;
+uniform vec2 uRes; uniform vec2 uCenter; uniform float uTime, uE, uKick, uFlash, uHue;
+vec3 hsv(float h, float s, float v){ vec3 k = clamp(abs(mod(h*6. + vec3(0.,4.,2.), 6.) - 3.) - 1., 0., 1.); return v * mix(vec3(1.), k, s); }
+float dopa(vec2 p){
+  vec2 q = (p - vec2(0., -0.02)) / vec2(0.2, 0.15);
+  float h = (length(q) - 1.) * 0.15;
+  float e1 = length(p - vec2(-0.26, 0.01)) - 0.11;
+  float e2 = length(p - vec2(0.26, 0.01)) - 0.11;
+  return min(h, min(e1, e2));
+}
+float beatRings(float r, float t, float E){ return smoothstep(.35, .7, E) * smoothstep(0.035, 0., abs(fract(r * 2.4 - t * 0.8) - .5) - .45); }
+vec3 classic(vec2 p, float r, float a, float E, float t){
+  float nr = floor(mix(10., 20., clamp(E, 0., 1.)));
+  float tw = sin(r * 6. - t * 1.5) * 0.25 * smoothstep(.6, 1., E);
+  float rs = sin(a * nr + t * (0.12 + 0.55 * E) + tw);
+  float ray = smoothstep(-0.06, 0.06, rs);
+  float sat = smoothstep(.15, .75, E);
+  vec3 cA = mix(vec3(1., .975, .93), vec3(.24, .43, 1.), sat);
+  vec3 cB = mix(vec3(1., .93, .96), vec3(1., .5, .72), sat);
+  vec3 col = mix(cA, cB, ray);
+  float rb = smoothstep(.55, .95, E);
+  vec3 rain = hsv(fract(a / 6.2832 + t * 0.07 + r * 0.25 + uHue), .62, 1.);
+  col = mix(col, mix(rain, rain * .7 + .3, ray), rb * .75);
+  col = mix(col, vec3(1.), beatRings(r, t, E) * .55);
+  float tn = smoothstep(.82, 1.08, E);
+  if (tn > 0.001) {
+    vec2 uv = vec2(a / 6.2832 * 10., 0.32 / (r + .015) + t * (1.2 + .8 * max(0., E - 1.)));
+    vec2 cell = floor(uv); vec2 f = fract(uv) - .5;
+    f.x += .5 * mod(cell.y, 2.) - .25;
+    float d = dopa(vec2(f.x, -f.y) * 1.1);
+    vec3 sc = hsv(fract((cell.x * .11 + cell.y * .17) + t * .25 + uHue), .7, 1.);
+    float m = smoothstep(.015, -.015, d) * smoothstep(.02, .22, r);
+    float ol = smoothstep(.03, 0., abs(d + .012)) * smoothstep(.02, .22, r);
+    col = mix(col, sc, tn * m);
+    col = mix(col, vec3(.1, .11, .3), tn * ol * .8);
+  }
+  return col;
+}
+void main(){
+  vec2 fc = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y);
+  vec2 p = (fc - uCenter) / uRes.y;
+  float E = uE; float t = uTime;
+  p *= 1. - 0.06 * uKick * smoothstep(.35, .6, E);
+  float r = length(p); float a = atan(p.y, p.x);
+  vec3 col = classic(p, r, a, E, t);
+  col += vec3(1., .96, .85) * exp(-r * r * 14.) * (.25 + .6 * uKick * E);
+  col = mix(col, vec3(1.), clamp(uFlash, 0., 1.));
+  float alpha = smoothstep(.1, .3, E) * (.32 + .68 * smoothstep(.3, .62, E));
+  alpha = max(alpha, clamp(uFlash, 0., 1.));
+  gl_FragColor = vec4(col * alpha, alpha);
+}`;
+
+    class Backdrop {
+      constructor(canvas, fallback) {
+        this.canvas = canvas; this.fallback = fallback;
+        this.state = { E: 0, kick: 0, flash: 0, hue: 0, cx: innerWidth / 2, cy: innerHeight / 2 };
+        this.gl = null;
+        try { this.init(); } catch (e) { console.warn('webgl off', e); this.gl = null; }
+        if (!this.gl) { canvas.style.display = 'none'; fallback.style.display = 'block'; }
+      }
+      init() {
+        const gl = this.canvas.getContext('webgl', { antialias: false, premultipliedAlpha: true, alpha: true });
+        if (!gl) return;
+        const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; };
+        const prog = gl.createProgram();
+        gl.attachShader(prog, sh(gl.VERTEX_SHADER, VERT));
+        gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FRAG));
+        gl.linkProgram(prog);
+        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+        gl.useProgram(prog);
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+        const loc = gl.getAttribLocation(prog, 'p');
+        gl.enableVertexAttribArray(loc);
+        gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+        this.u = {};
+        for (const n of ['uRes', 'uCenter', 'uTime', 'uE', 'uKick', 'uFlash', 'uHue']) this.u[n] = gl.getUniformLocation(prog, n);
+        this.gl = gl;
+        this.canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); this.gl = null; this.canvas.style.display = 'none'; this.fallback.style.display = 'block'; });
+      }
+      resize() {
+        const dpr = Math.min(1.25, window.devicePixelRatio || 1);
+        const w = Math.round(innerWidth * dpr); const h = Math.round(innerHeight * dpr);
+        if (this.canvas.width !== w || this.canvas.height !== h) { this.canvas.width = w; this.canvas.height = h; }
+        this.dpr = dpr;
+      }
+      render(t) {
+        const s = this.state;
+        if (!this.gl) {
+          const f = this.fallback;
+          f.style.opacity = String(Math.min(1, Math.max(s.flash, (s.E - 0.12) * 2)));
+          f.style.transform = `rotate(${(t / 1000) * (8 + 40 * s.E)}deg) scale(${1 + s.kick * 0.04})`;
+          f.style.filter = s.E > 0.6 ? `hue-rotate(${(t / 20) % 360}deg)` : 'none';
+          return;
+        }
+        if (s.E < 0.02 && s.flash < 0.01) {
+          if (!this.cleared) { this.resize(); this.gl.viewport(0, 0, this.canvas.width, this.canvas.height); this.gl.clearColor(0, 0, 0, 0); this.gl.clear(this.gl.COLOR_BUFFER_BIT); this.cleared = true; }
+          return;
+        }
+        this.cleared = false;
+        this.resize();
+        const gl = this.gl;
+        gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+        gl.uniform2f(this.u.uRes, this.canvas.width, this.canvas.height);
+        gl.uniform2f(this.u.uCenter, s.cx * this.dpr, s.cy * this.dpr);
+        gl.uniform1f(this.u.uTime, t / 1000);
+        gl.uniform1f(this.u.uE, s.E);
+        gl.uniform1f(this.u.uKick, s.kick);
+        gl.uniform1f(this.u.uFlash, s.flash);
+        gl.uniform1f(this.u.uHue, s.hue);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+      }
+    }
+
+    /* =========================================================================
+       AUDIO: Web Audio だけで合成する BGM ＋ 効果音
+       レベルが上がるごとに楽器が増えてテンポも上がる
+       ========================================================================= */
+    const midiHz = (m) => 440 * 2 ** ((m - 69) / 12);
+    const CHORDS = [
+      { root: 36, pad: [60, 64, 67], arp: [60, 64, 67, 72, 67, 64, 72, 76] },
+      { root: 43, pad: [59, 62, 67], arp: [55, 59, 62, 67, 62, 59, 67, 71] },
+      { root: 45, pad: [57, 60, 64], arp: [57, 60, 64, 69, 64, 60, 69, 72] },
+      { root: 41, pad: [57, 60, 65], arp: [53, 57, 60, 65, 60, 57, 65, 69] }
+    ];
+    const LEAD = [
+      [[0, 76, 2], [2, 79, 2], [4, 84, 4], [10, 83, 2], [12, 79, 4]],
+      [[0, 74, 2], [2, 79, 2], [4, 83, 4], [10, 81, 2], [12, 79, 4]],
+      [[0, 72, 2], [2, 76, 2], [4, 81, 4], [8, 79, 2], [10, 76, 2], [12, 72, 4]],
+      [[0, 72, 2], [2, 77, 2], [4, 81, 4], [8, 84, 4], [12, 79, 4]]
+    ];
+    const BASS_STEPS = [0, 3, 6, 8, 11, 14];
+    const PENTA = [72, 74, 76, 79, 81, 84, 86, 88, 91, 93, 96, 98, 100];
+
+    class SoundEngine {
+      constructor() {
+        this.ctx = null; this.mode = 2; // 2: BGM+SE, 1: SEのみ, 0: OFF
+        this.level = 0; this.step = 0; this.timer = null; this.beats = [];
+      }
+      get enabled() { return this.mode > 0; }
+      init() {
+        if (!this.ctx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) return;
+          const ctx = this.ctx = new AC();
+          this.master = ctx.createGain(); this.master.gain.value = this.mode > 0 ? 0.75 : 0;
+          const comp = ctx.createDynamicsCompressor();
+          comp.threshold.value = -14; comp.knee.value = 10; comp.ratio.value = 4; comp.attack.value = 0.003; comp.release.value = 0.2;
+          this.master.connect(comp); comp.connect(ctx.destination);
+          this.musicVol = ctx.createGain(); this.musicVol.gain.value = this.mode === 2 ? 0.55 : 0; this.musicVol.connect(this.master);
+          this.musicFilter = ctx.createBiquadFilter(); this.musicFilter.type = 'lowpass'; this.musicFilter.frequency.value = 1400; this.musicFilter.Q.value = 0.8;
+          this.musicFilter.connect(this.musicVol);
+          this.drums = ctx.createGain(); this.drums.gain.value = 0.85; this.drums.connect(this.musicVol);
+          this.sfx = ctx.createGain(); this.sfx.gain.value = 0.9; this.sfx.connect(this.master);
+          // reverb
+          const len = Math.floor(ctx.sampleRate * 2);
+          const ir = ctx.createBuffer(2, len, ctx.sampleRate);
+          for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 2.6; }
+          this.rev = ctx.createGain(); this.rev.gain.value = 0.35;
+          const conv = ctx.createConvolver(); conv.buffer = ir;
+          this.rev.connect(conv); conv.connect(this.master);
+          // noise
+          const nlen = ctx.sampleRate;
+          this.noiseBuf = ctx.createBuffer(1, nlen, ctx.sampleRate);
+          const nd = this.noiseBuf.getChannelData(0);
+          for (let i = 0; i < nlen; i++) nd[i] = Math.random() * 2 - 1;
+        }
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        if (this.mode === 2) this.startMusic();
+      }
+      setMode(m) {
+        this.mode = m;
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        this.master.gain.setTargetAtTime(m > 0 ? 0.75 : 0, now, 0.03);
+        this.musicVol.gain.setTargetAtTime(m === 2 ? 0.55 : 0, now, 0.05);
+        if (m === 2) this.startMusic(); else this.stopMusic();
+      }
+      setLevel(L) {
+        this.level = L;
+        if (this.ctx) this.musicFilter.frequency.setTargetAtTime(Math.min(16000, 1400 + L * 1700), this.ctx.currentTime, 0.3);
+      }
+      startMusic() {
+        if (!this.ctx || this.timer) return;
+        this.nextTime = this.ctx.currentTime + 0.08; this.step = 0; this.beats = [];
+        this.timer = setInterval(() => this._schedule(), 25);
+      }
+      stopMusic() { clearInterval(this.timer); this.timer = null; this.beats = []; }
+      _schedule() {
+        const ctx = this.ctx;
+        if (!ctx || ctx.state !== 'running') return;
+        if (this.nextTime < ctx.currentTime - 0.2) this.nextTime = ctx.currentTime + 0.05;
+        while (this.nextTime < ctx.currentTime + 0.14) {
+          this._step(this.step, this.nextTime);
+          this.nextTime += 60 / this.bpm() / 4;
+          this.step = (this.step + 1) % 64;
+        }
+      }
+      bpm() { return 116 + this.level * 2.5; }
+      // Visual beat pulse (0..1) in sync with the BGM kick
+      getKick(nowMs) {
+        if (this.ctx && this.timer && this.ctx.state === 'running') {
+          const now = this.ctx.currentTime; let last = -1;
+          for (const b of this.beats) if (b <= now) last = b;
+          if (last < 0) return 0;
+          return Math.exp(-(now - last) * 7);
+        }
+        const ph = ((nowMs / 1000) * (this.bpm() / 60)) % 1;
+        return Math.exp(-ph * 4.5);
+      }
+      _step(s, t) {
+        const L = this.level; const bar = Math.floor(s / 16); const k = s % 16; const ch = CHORDS[bar % 4];
+        const sixteenth = 60 / this.bpm() / 4;
+        if (k % 4 === 0) { this.beats.push(t); if (this.beats.length > 12) this.beats.shift(); }
+        if (k === 0) this.pad(t, ch.pad, sixteenth * 16, L >= 6 ? 0.045 : 0.065, 700 + L * 380);
+        if (L >= 1 && k % 4 === 0) this.kick(t, 1);
+        if (L >= 9 && bar === 3 && (k === 13 || k === 14 || k === 15)) this.kick(t, 0.6);
+        if (L >= 2 && k % 4 === 2) this.hat(t, 0.22, false);
+        if (L >= 6 && k % 2 === 1) this.hat(t, 0.1, false);
+        if (L >= 6 && k === 14) this.hat(t, 0.16, true);
+        if (L >= 3 && BASS_STEPS.includes(k)) this.bass(t, ch.root + (k === 6 || k === 14 ? 12 : 0), sixteenth * 2, 0.4);
+        if (L >= 4 && (k === 4 || k === 12)) this.clap(t, 0.8);
+        if (L >= 5) this.arp(t, ch.arp[k % 8] + 12, L >= 8 ? 0.07 : 0.055);
+        if (L >= 7) for (const [st, m, d] of LEAD[bar]) if (st === k) this.lead(t, m, sixteenth * d, 0.07);
+        if (L >= 8 && s === 0) this.crash(t, 0.35);
+      }
+      /* ---- primitives ---- */
+      _env(t, { a = 0.005, peak = 1, d = 0.2, s = 0, hold = 0, r = 0.1 } = {}) {
+        const g = this.ctx.createGain(); const p = g.gain;
+        p.setValueAtTime(0.0001, t); p.linearRampToValueAtTime(peak, t + a);
+        if (s > 0) { p.setTargetAtTime(peak * s, t + a, d / 3); p.setValueAtTime(peak * s, t + a + hold); p.exponentialRampToValueAtTime(0.0001, t + a + hold + r); }
+        else p.exponentialRampToValueAtTime(0.0001, t + a + d);
+        return g;
+      }
+      _osc(type, f, t, stop, detune = 0) { const o = this.ctx.createOscillator(); o.type = type; o.frequency.setValueAtTime(f, t); o.detune.value = detune; o.start(t); o.stop(stop); return o; }
+      _noise(t, stop) { const n = this.ctx.createBufferSource(); n.buffer = this.noiseBuf; n.loop = true; n.start(t, Math.random() * 0.8); n.stop(stop); return n; }
+      _filt(type, f, q = 0.7) { const b = this.ctx.createBiquadFilter(); b.type = type; b.frequency.value = f; b.Q.value = q; return b; }
+      _send(node, amt) { const s = this.ctx.createGain(); s.gain.value = amt; node.connect(s); s.connect(this.rev); }
+      /* ---- instruments ---- */
+      kick(t, v = 1) {
+        const o = this._osc('sine', 170, t, t + 0.45);
+        o.frequency.exponentialRampToValueAtTime(48, t + 0.11); o.frequency.exponentialRampToValueAtTime(38, t + 0.4);
+        const e = this._env(t, { a: 0.002, peak: 1.0 * v, d: 0.4 }); o.connect(e); e.connect(this.drums);
+      }
+      hat(t, v = 0.2, open = false) {
+        const n = this._noise(t, t + (open ? 0.35 : 0.06)); const hp = this._filt('highpass', open ? 6500 : 8200);
+        const e = this._env(t, { a: 0.001, peak: v, d: open ? 0.26 : 0.035 }); n.connect(hp); hp.connect(e); e.connect(this.drums);
+      }
+      clap(t, v = 0.8) {
+        for (let i = 0; i < 3; i++) {
+          const tt = t + i * 0.011; const n = this._noise(tt, tt + 0.25); const bp = this._filt('bandpass', 1350, 0.9);
+          const e = this._env(tt, { a: 0.001, peak: (i === 2 ? 0.6 : 0.35) * v, d: i === 2 ? 0.18 : 0.03 });
+          n.connect(bp); bp.connect(e); e.connect(this.drums); this._send(e, 0.3);
+        }
+      }
+      crash(t, v = 0.4, bus) {
+        const n = this._noise(t, t + 2); const hp = this._filt('highpass', 4200);
+        const e = this._env(t, { a: 0.002, peak: v, d: 1.8 }); n.connect(hp); hp.connect(e); e.connect(bus || this.drums); this._send(e, 0.3);
+      }
+      bass(t, m, dur = 0.2, v = 0.4) {
+        const f = midiHz(m);
+        const o1 = this._osc('sawtooth', f, t, t + dur + 0.15); const o2 = this._osc('square', f / 2, t, t + dur + 0.15);
+        const lp = this._filt('lowpass', 180, 6);
+        lp.frequency.setValueAtTime(180, t); lp.frequency.exponentialRampToValueAtTime(1100, t + 0.02); lp.frequency.exponentialRampToValueAtTime(260, t + dur);
+        const e = this._env(t, { a: 0.004, peak: v, d: dur, s: 0.6, hold: dur * 0.6, r: 0.08 });
+        const m2 = this.ctx.createGain(); m2.gain.value = 0.5;
+        o1.connect(lp); o2.connect(m2); m2.connect(lp); lp.connect(e); e.connect(this.musicFilter);
+      }
+      pad(t, notes, dur = 2, v = 0.06, bright = 900) {
+        const e = this._env(t, { a: 0.3, peak: v, d: 0.4, s: 0.85, hold: dur, r: 0.6 });
+        const lp = this._filt('lowpass', bright, 0.8); lp.connect(e); e.connect(this.musicFilter); this._send(e, 0.5);
+        for (const m of notes) for (const dt of [-9, 9]) this._osc('sawtooth', midiHz(m), t, t + dur + 1.1, dt).connect(lp);
+      }
+      arp(t, m, v = 0.06) {
+        const o = this._osc('square', midiHz(m), t, t + 0.22);
+        const lp = this._filt('lowpass', 3800, 2); lp.frequency.setValueAtTime(3800, t); lp.frequency.exponentialRampToValueAtTime(700, t + 0.14);
+        const e = this._env(t, { a: 0.002, peak: v, d: 0.15 }); o.connect(lp); lp.connect(e); e.connect(this.musicFilter); this._send(e, 0.15);
+      }
+      lead(t, m, dur, v = 0.07) {
+        const lp = this._filt('lowpass', 3000, 1);
+        const e = this._env(t, { a: 0.01, peak: v, d: 0.1, s: 0.7, hold: dur * 0.8, r: 0.12 });
+        for (const dt of [-6, 6]) this._osc('sawtooth', midiHz(m), t, t + dur + 0.3, dt).connect(lp);
+        lp.connect(e); e.connect(this.musicFilter); this._send(e, 0.35);
+      }
+      chime(t, m, v = 0.2) {
+        const f = midiHz(m);
+        const o = this._osc('triangle', f, t, t + 0.5); const o2 = this._osc('sine', f * 2, t, t + 0.25);
+        const e = this._env(t, { a: 0.002, peak: v, d: 0.42 }); const e2 = this._env(t, { a: 0.001, peak: v * 0.4, d: 0.12 });
+        o.connect(e); o2.connect(e2); e.connect(this.sfx); e2.connect(this.sfx); this._send(e, 0.35);
+      }
+      stab(t, notes, v = 0.12, dur = 0.22) {
+        const lp = this._filt('lowpass', 5200, 1.2); lp.frequency.setValueAtTime(5200, t); lp.frequency.exponentialRampToValueAtTime(900, t + dur + 0.1);
+        const e = this._env(t, { a: 0.003, peak: v, d: dur }); lp.connect(e); e.connect(this.sfx); this._send(e, 0.4);
+        for (const m of notes) for (const dt of [-8, 8]) this._osc('sawtooth', midiHz(m), t, t + dur + 0.2, dt).connect(lp);
+      }
+      swoosh(t, dur = 0.35, v = 0.25) {
+        const n = this._noise(t, t + dur + 0.05); const bp = this._filt('bandpass', 500, 1.8);
+        bp.frequency.exponentialRampToValueAtTime(6000, t + dur);
+        const e = this._env(t, { a: dur * 0.7, peak: v, d: dur * 0.3 }); n.connect(bp); bp.connect(e); e.connect(this.sfx);
+      }
+      impact(t, v = 0.8) {
+        const o = this._osc('sine', 90, t, t + 1.2); o.frequency.exponentialRampToValueAtTime(30, t + 1.1);
+        const e = this._env(t, { a: 0.003, peak: v, d: 1.1 }); o.connect(e); e.connect(this.sfx);
+      }
+      /* ---- public SFX ---- */
+      _ready() { if (!this.enabled) return false; this.init(); return !!this.ctx && this.ctx.state !== 'closed'; }
+      correct(combo = 1) {
+        if (!this._ready()) return;
+        const t = this.ctx.currentTime + 0.005;
+        const i = Math.min(Math.max(0, combo - 1), PENTA.length - 3);
+        [0, 1, 2].forEach((j) => this.chime(t + j * 0.055, PENTA[i + j], 0.17));
+        const n = this._noise(t, t + 0.3); const hp = this._filt('highpass', 9000); const e = this._env(t, { a: 0.002, peak: 0.12, d: 0.25 });
+        n.connect(hp); hp.connect(e); e.connect(this.sfx);
+        if (this.level >= 5) this.stab(t + 0.11, CHORDS[0].pad.map((m) => m + 12), 0.06, 0.18);
+      }
+      wrong() {
+        if (!this._ready()) return;
+        const t = this.ctx.currentTime + 0.005;
+        [[523, 392, 0], [392, 311, 0.15]].forEach(([f1, f2, d]) => {
+          const o = this._osc('sine', f1, t + d, t + d + 0.25); o.frequency.exponentialRampToValueAtTime(f2, t + d + 0.18);
+          const e = this._env(t + d, { a: 0.005, peak: 0.22, d: 0.22 }); o.connect(e); e.connect(this.sfx);
+        });
+      }
+      combo() {
+        if (!this._ready()) return;
+        const t = this.ctx.currentTime + 0.01;
+        this.stab(t, [72, 76, 79, 84], 0.1, 0.25); this.crash(t, 0.25, this.sfx);
+      }
+      levelUp(L) {
+        if (!this._ready()) return;
+        const t = this.ctx.currentTime + 0.01;
+        this.swoosh(t, 0.3, 0.22);
+        this.stab(t + 0.28, [60 + L, 64 + L, 67 + L, 72 + L], 0.12, 0.35);
+        this.crash(t + 0.28, 0.3, this.sfx);
+        if (L >= 6) this.impact(t + 0.28, 0.6);
+      }
+      count(go) {
+        if (!this._ready()) return;
+        const t = this.ctx.currentTime + 0.005;
+        if (go) { [72, 76, 79, 84].forEach((m, i) => this.chime(t + i * 0.04, m, 0.18)); this.crash(t, 0.3, this.sfx); this.impact(t, 0.5); }
+        else { const o = this._osc('square', 880, t, t + 0.12); const e = this._env(t, { a: 0.002, peak: 0.12, d: 0.1 }); o.connect(e); e.connect(this.sfx); }
+      }
+      tick(urgent) {
+        if (!this._ready()) return;
+        const t = this.ctx.currentTime + 0.005;
+        const o = this._osc('square', urgent ? 1760 : 1320, t, t + 0.06); const e = this._env(t, { a: 0.001, peak: urgent ? 0.1 : 0.06, d: 0.05 });
+        o.connect(e); e.connect(this.sfx);
+      }
+      fanfare() {
+        if (!this._ready()) return;
+        const t = this.ctx.currentTime + 0.02;
+        [67, 72, 76, 79].forEach((m, i) => this.chime(t + i * 0.09, m, 0.2));
+        this.stab(t + 0.38, [72, 76, 79, 84], 0.12, 1.0);
+        this.crash(t + 0.38, 0.4, this.sfx); this.impact(t + 0.38, 0.7);
+        [84, 88, 91, 96].forEach((m, i) => this.chime(t + 0.6 + i * 0.07, m, 0.12));
+      }
+      tap() {
+        if (!this._ready()) return;
+        const t = this.ctx.currentTime + 0.002;
+        const o = this._osc('sine', 1200, t, t + 0.06); o.frequency.exponentialRampToValueAtTime(700, t + 0.05);
+        const e = this._env(t, { a: 0.001, peak: 0.08, d: 0.05 }); o.connect(e); e.connect(this.sfx);
+      }
+    }
+
+    const audio = new SoundEngine();
+
+    /* =========================================================================
+       MATHEMATICAL HELPER & MULTIPLE QUESTION GENERATOR
+       ========================================================================= */
+    const TARGET_DIVISORS = [2, 3, 4, 5, 6, 9];
+
+    // Compute divisors from target set
+    function getMatchingDivisors(n) {
+      return TARGET_DIVISORS.filter(d => n % d === 0);
+    }
+
+    // Format choices: "2, 3, 4, 6 の倍数" or "どれでもない"
+    function formatDivisorsText(divisors) {
+      if (!divisors || divisors.length === 0) {
+        return 'どれでもない';
+      }
+      return divisors.join(', ') + ' の倍数';
+    }
+
+    // Intelligent generator of 3 realistic, distinct distractors
+    function generateDistractors(n, correctDivisors) {
+      const candidates = new Set();
+      const correctKey = correctDivisors.join(',');
+
+      function addCandidate(divs) {
+        const sorted = Array.from(new Set(divs)).filter(d => TARGET_DIVISORS.includes(d)).sort((a, b) => a - b);
+        const key = sorted.join(',');
+        if (key !== correctKey) {
+          candidates.add(key);
+        }
+      }
+
+      // Trap 1: 4 confusion (missed 4 or thought even meant 4)
+      if (correctDivisors.includes(4)) {
+        addCandidate(correctDivisors.filter(d => d !== 4));
+      } else if (correctDivisors.includes(2)) {
+        addCandidate([...correctDivisors, 4]);
+      }
+
+      // Trap 2: 9 vs 3 confusion (3 exists but 9 doesn't, or forgot 9)
+      if (correctDivisors.includes(9)) {
+        addCandidate(correctDivisors.filter(d => d !== 9));
+      } else if (correctDivisors.includes(3)) {
+        addCandidate([...correctDivisors, 9]);
+      }
+
+      // Trap 3: 6 confusion (forgot that 2 & 3 implies 6, or added 6 without 2/3)
+      if (correctDivisors.includes(6)) {
+        addCandidate(correctDivisors.filter(d => d !== 6));
+      } else if (correctDivisors.includes(2) || correctDivisors.includes(3)) {
+        addCandidate([...correctDivisors, 6]);
+      }
+
+      // Trap 4: 5 confusion (forgot 5 or added 5)
+      if (correctDivisors.includes(5)) {
+        addCandidate(correctDivisors.filter(d => d !== 5));
+      } else {
+        addCandidate([...correctDivisors, 5]);
+      }
+
+      // Trap 5: Only prime factors (2, 3, 5) without composite (4, 6, 9)
+      const primesOnly = correctDivisors.filter(d => [2, 3, 5].includes(d));
+      if (primesOnly.length > 0) {
+        addCandidate(primesOnly);
+      }
+
+      // Trap 6: "どれでもない" as a distractor if answer is not empty
+      if (correctDivisors.length > 0) {
+        addCandidate([]);
+      }
+
+      // Pool of plausible subsets for guarantees
+      const backupPool = [
+        [2], [3], [4], [5], [2, 4], [3, 9], [2, 3, 6], [2, 4, 5],
+        [2, 3, 4, 6], [2, 3, 4, 6, 9], [2, 3, 5, 6], [3, 5, 9],
+        [2, 5], [3, 5], [2, 3, 4, 5, 6, 9], []
+      ];
+
+      for (const poolItem of backupPool) {
+        addCandidate(poolItem);
+        if (candidates.size >= 8) break;
+      }
+
+      // Convert candidates back to array
+      const candList = Array.from(candidates).map(k => k === '' ? [] : k.split(',').map(Number));
+
+      // Shuffle candidates
+      for (let i = candList.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [candList[i], candList[j]] = [candList[j], candList[i]];
+      }
+
+      return candList.slice(0, 3);
+    }
+
+    function makeBreakdown(num) {
+      const digitsArr = String(num).split('').map(Number);
+      const sumDigits = digitsArr.reduce((a, b) => a + b, 0);
+      const lastDigit = num % 10;
+      const last2Digits = num % 100;
+      return {
+        lastDigit: lastDigit,
+        is2: lastDigit % 2 === 0,
+        is5: lastDigit === 0 || lastDigit === 5,
+        last2Digits: last2Digits,
+        is4: last2Digits % 4 === 0,
+        digitsSumFormula: digitsArr.join('+') + '=' + sumDigits,
+        sumDigits: sumDigits,
+        is3: sumDigits % 3 === 0,
+        is9: sumDigits % 9 === 0,
+        is6: (lastDigit % 2 === 0) && (sumDigits % 3 === 0)
+      };
+    }
+
+    // Generate binary question (初級・2択: 指定の数で割れる or 割れない)
+    function generateBinaryQuestion(digits, targetDivisor = 'random') {
+      let singleDivisor;
+      if (targetDivisor === 'random' || !targetDivisor) {
+        const list = [2, 3, 4, 5, 6, 9];
+        singleDivisor = list[Math.floor(Math.random() * list.length)];
+      } else {
+        singleDivisor = parseInt(targetDivisor, 10);
+      }
+
+      const min = Math.pow(10, digits - 1);
+      const max = Math.pow(10, digits) - 1;
+
+      // 50% chance divisible, 50% not divisible
+      const wantDivisible = Math.random() < 0.5;
+      let num = 0;
+
+      if (wantDivisible) {
+        const minK = Math.ceil(min / singleDivisor);
+        const maxK = Math.floor(max / singleDivisor);
+        if (maxK >= minK) {
+          const k = Math.floor(Math.random() * (maxK - minK + 1)) + minK;
+          num = k * singleDivisor;
+        } else {
+          num = min;
+        }
+      } else {
+        // Educational traps for numbers NOT divisible by singleDivisor
+        let attempts = 0;
+        while (attempts < 30) {
+          attempts++;
+          let candidate = 0;
+
+          if (singleDivisor === 4) {
+            // Even number ending in 10, 14, 18, 22... not divisible by 4
+            const minK = Math.ceil(min / 2);
+            const maxK = Math.floor(max / 2);
+            const k = Math.floor(Math.random() * (maxK - minK + 1)) + minK;
+            const oddK = (k % 2 === 0) ? k + 1 : k;
+            candidate = oddK * 2;
+          } else if (singleDivisor === 6) {
+            // Either divisible by 3 but odd, or even but not divisible by 3
+            if (Math.random() < 0.5) {
+              const minK = Math.ceil(min / 3);
+              const maxK = Math.floor(max / 3);
+              const k = Math.floor(Math.random() * (maxK - minK + 1)) + minK;
+              const oddK = (k % 2 === 0) ? k + 1 : k;
+              candidate = oddK * 3;
+            } else {
+              const minK = Math.ceil(min / 2);
+              const maxK = Math.floor(max / 2);
+              const k = Math.floor(Math.random() * (maxK - minK + 1)) + minK;
+              candidate = k * 2;
+            }
+          } else if (singleDivisor === 9) {
+            // Divisible by 3, but NOT by 9 (e.g. sum of digits is 6, 12, 15, 21...)
+            const minK = Math.ceil(min / 3);
+            const maxK = Math.floor(max / 3);
+            const k = Math.floor(Math.random() * (maxK - minK + 1)) + minK;
+            const not3K = (k % 3 === 0) ? k + 1 : k;
+            candidate = not3K * 3;
+          } else if (singleDivisor === 2) {
+            // Odd number
+            candidate = Math.floor(Math.random() * (max - min + 1)) + min;
+            if (candidate % 2 === 0) candidate++;
+          } else {
+            candidate = Math.floor(Math.random() * (max - min + 1)) + min;
+          }
+
+          if (candidate >= min && candidate <= max && candidate % singleDivisor !== 0) {
+            num = candidate;
+            break;
+          }
+        }
+
+        // Guaranteed fallback if while loop did not find candidate
+        if (!num || num % singleDivisor === 0 || num < min || num > max) {
+          do {
+            num = Math.floor(Math.random() * (max - min + 1)) + min;
+          } while (num % singleDivisor === 0);
+        }
+      }
+
+      return {
+        number: num,
+        formattedNumber: String(num),
+        digits: digits,
+        questionType: 'binary',
+        singleDivisor: singleDivisor,
+        isDivisible: num % singleDivisor === 0,
+        correctDivisors: getMatchingDivisors(num),
+        breakdown: makeBreakdown(num)
+      };
+    }
+
+    // Generate integer based on selected digit mode and question type
+    function generateQuestion(digitMode = '3', questionType = 'binary', targetDivisor = 'random') {
+      let digits = 3;
+      if (digitMode === 'all') {
+        const dChoices = [2, 3, 4, 5];
+        digits = dChoices[Math.floor(Math.random() * dChoices.length)];
+      } else {
+        digits = parseInt(digitMode, 10) || 3;
+      }
+
+      if (questionType === 'binary') {
+        return generateBinaryQuestion(digits, targetDivisor);
+      }
+
+      const min = Math.pow(10, digits - 1);
+      const max = Math.pow(10, digits) - 1;
+
+      let num = 0;
+      // 80% chance: pick an interesting composite multiplier
+      if (Math.random() < 0.8) {
+        const interestingMultipliers = [2, 3, 4, 5, 6, 9, 12, 15, 18, 20, 36, 45, 60, 90];
+        const mult = interestingMultipliers[Math.floor(Math.random() * interestingMultipliers.length)];
+        const minK = Math.ceil(min / mult);
+        const maxK = Math.floor(max / mult);
+        if (maxK >= minK) {
+          const k = Math.floor(Math.random() * (maxK - minK + 1)) + minK;
+          num = k * mult;
+        }
+      }
+      // Fallback or 20% random integer
+      if (!num || num < min || num > max) {
+        num = Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      const correctDivisors = getMatchingDivisors(num);
+      const distractors = generateDistractors(num, correctDivisors);
+
+      // Create 4 choices and shuffle
+      const rawChoices = [
+        { divisors: correctDivisors, isCorrect: true, text: formatDivisorsText(correctDivisors) },
+        { divisors: distractors[0], isCorrect: false, text: formatDivisorsText(distractors[0]) },
+        { divisors: distractors[1], isCorrect: false, text: formatDivisorsText(distractors[1]) },
+        { divisors: distractors[2], isCorrect: false, text: formatDivisorsText(distractors[2]) }
+      ];
+
+      for (let i = rawChoices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [rawChoices[i], rawChoices[j]] = [rawChoices[j], rawChoices[i]];
+      }
+
+      return {
+        number: num,
+        formattedNumber: String(num),
+        digits: digits,
+        questionType: 'multi',
+        correctDivisors: correctDivisors,
+        choices: rawChoices,
+        correctIndex: rawChoices.findIndex(c => c.isCorrect),
+        breakdown: makeBreakdown(num)
+      };
+    }
+
+    /* =========================================================================
+       APPLICATION STATE
+       ========================================================================= */
+    const state = {
+      questionType: 'binary', // 'binary' | 'multi'
+      targetDivisor: 'random', // '2' | '3' | '4' | '5' | '6' | '9' | 'random'
+      mode: 'practice',        // 'practice' | 'timeattack' | 'test10'
+      digits: '3',             // '2' | '3' | '4' | '5' | 'all'
+      currentQuestion: null,
+      isAnswered: false,
+      autoAdvance: true,
+
+      score: 0, streak: 0, maxStreak: 0, totalAnswered: 0, points: 0,
+
+      timer: null, timeLeft: 60, timeLimit: 60, isChallengeActive: false, countingDown: false, cdTimer: null,
+      testTotalQuestions: 10, testCurrentIndex: 0,
+
+      history: [], lifetimeTotal: 0, lifetimeCorrect: 0, lifetimeBestStreak: 0, bests: {},
+      motion: true
+    };
+    let advanceTimer = null;
+
+    function loadSavedStats() {
+      try {
+        const saved = localStorage.getItem('multiple_master_stats_v1');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          state.history = parsed.history || [];
+          state.lifetimeTotal = parsed.lifetimeTotal || 0;
+          state.lifetimeCorrect = parsed.lifetimeCorrect || 0;
+          state.lifetimeBestStreak = parsed.lifetimeBestStreak || 0;
+          state.bests = parsed.bests || {};
+          if (parsed.digits) state.digits = parsed.digits;
+          if (parsed.questionType) state.questionType = parsed.questionType;
+          if (parsed.targetDivisor) state.targetDivisor = parsed.targetDivisor;
+        }
+        const sm = localStorage.getItem('multiple_sound_mode');
+        if (sm !== null) audio.mode = Math.max(0, Math.min(2, parseInt(sm, 10) || 0));
+        const mo = localStorage.getItem('multiple_motion');
+        if (mo !== null) state.motion = mo === '1';
+        else state.motion = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+      } catch (e) {
+        console.warn('Failed to load storage', e);
+      }
+    }
+
+    function saveStats() {
+      try {
+        localStorage.setItem('multiple_master_stats_v1', JSON.stringify({
+          history: state.history.slice(0, 30),
+          lifetimeTotal: state.lifetimeTotal,
+          lifetimeCorrect: state.lifetimeCorrect,
+          lifetimeBestStreak: state.lifetimeBestStreak,
+          bests: state.bests,
+          digits: state.digits,
+          questionType: state.questionType,
+          targetDivisor: state.targetDivisor
+        }));
+      } catch (e) {
+        console.warn('Failed to save storage', e);
+      }
+    }
+
+    /* =========================================================================
+       DOM
+       ========================================================================= */
+    const el = {
+      app: $('app'),
+      typeBinaryBtn: $('typeBinaryBtn'), typeMultiBtn: $('typeMultiBtn'),
+      targetDivisorBar: $('targetDivisorBar'), divisorBtns: document.querySelectorAll('.divisor-btn'),
+      numberDisplay: $('numberDisplay'), gameCard: $('gameCard'),
+      currentDigitBadge: $('currentDigitBadge'), questionCounterBadge: $('questionCounterBadge'),
+      stamp: $('stamp'), questionPrompt: $('questionPrompt'),
+      binaryChoicesArea: $('binaryChoicesArea'), btnBinaryFalse: $('btnBinaryFalse'), btnBinaryTrue: $('btnBinaryTrue'),
+      multiChoicesArea: $('multiChoicesArea'), choiceBtns: document.querySelectorAll('.choice-btn'),
+      nextControls: $('nextControls'), btnNext: $('btnNext'), shortcutHints: $('shortcutHints'),
+      breakdownDrawer: $('breakdownDrawer'),
+      bdBox25: $('bdBox25'), bdBox4: $('bdBox4'), bdBox39: $('bdBox39'), bdBox6: $('bdBox6'),
+      bdLastDigit: $('bdLastDigit'), bdLastDigitVerdict: $('bdLastDigitVerdict'),
+      bdLast2Digits: $('bdLast2Digits'), bdLast2DigitsVerdict: $('bdLast2DigitsVerdict'),
+      bdSumDigits: $('bdSumDigits'), bdSumDigitsVerdict: $('bdSumDigitsVerdict'),
+      bd6Result: $('bd6Result'), bd6Verdict: $('bd6Verdict'),
+      statLabel1: $('statLabel1'), statVal1: $('statVal1'), statLabel2: $('statLabel2'), statVal2: $('statVal2'),
+      statLabel3: $('statLabel3'), statVal3: $('statVal3'), stat3: $('stat3'),
+      comboBadge: $('comboBadge'), comboNum: $('comboNum'), lvPips: $('lvPips'), lvName: $('lvName'),
+      dopaBox: $('dopaBox'), dopaPts: $('dopaPts'),
+      timerBarContainer: $('timerBarContainer'), timerBarFill: $('timerBarFill'),
+      startScreen: $('startScreen'), startScreenTitle: $('startScreenTitle'), startScreenDesc: $('startScreenDesc'),
+      startScreenIcon: $('startScreenIcon'), startChallengeBtn: $('startChallengeBtn'), questionArea: $('questionArea'),
+      resultScreen: $('resultScreen'), resultRankBadge: $('resultRankBadge'), resultRank: $('resultRank'), rankBurst: $('rankBurst'),
+      resultTitle: $('resultTitle'), resultSubtitle: $('resultSubtitle'), resultCorrectCount: $('resultCorrectCount'),
+      resultAccuracy: $('resultAccuracy'), resultMaxStreak: $('resultMaxStreak'), resultPoints: $('resultPoints'),
+      bestTag: $('bestTag'), bestNote: $('bestNote'),
+      btnRetry: $('btnRetry'), btnBackToPractice: $('btnBackToPractice'),
+      modePracticeBtn: $('modePracticeBtn'), modeTimeAttackBtn: $('modeTimeAttackBtn'), modeTest10Btn: $('modeTest10Btn'),
+      digitButtons: document.querySelectorAll('.digit-btn'),
+      soundToggleBtn: $('soundToggleBtn'), motionToggleBtn: $('motionToggleBtn'), fullscreenToggleBtn: $('fullscreenToggleBtn'),
+      autoAdvanceCheck: $('autoAdvanceCheck'),
+      cheatsheetBtn: $('cheatsheetBtn'), cheatsheetModal: $('cheatsheetModal'), closeCheatsheetBtn: $('closeCheatsheetBtn'),
+      historyModalBtn: $('historyModalBtn'), historyModal: $('historyModal'), closeHistoryBtn: $('closeHistoryBtn'),
+      clearHistoryBtn: $('clearHistoryBtn'), historyList: $('historyList'),
+      totalLifetimeQuestions: $('totalLifetimeQuestions'), lifetimeAccuracy: $('lifetimeAccuracy'), lifetimeBestStreak: $('lifetimeBestStreak'),
+      bubble: $('bubble'), mascot: $('mascot'), mascotInner: $('mascotInner'), cutins: $('cutins'), flash: $('flash'), bunting: $('bunting')
+    };
+
+    const fx = new FX($('fx'));
+    const bg = new Backdrop($('bg'), $('rays-fallback'));
+
+    /* ---------- decorative builders ---------- */
+    function starPoints(n = 16, r1 = 96, r2 = 70) {
+      const pts = [];
+      for (let i = 0; i < n * 2; i++) { const r = i % 2 ? r2 : r1; const a = (i / (n * 2)) * Math.PI * 2 - Math.PI / 2; pts.push(`${(Math.cos(a) * r).toFixed(1)},${(Math.sin(a) * r).toFixed(1)}`); }
+      return pts.join(' ');
+    }
+    document.querySelectorAll('.burst-poly').forEach((p) => p.setAttribute('points', starPoints()));
+    (function buildBunting() {
+      const cols = ['#ff7ab6', '#ffd23f', '#3b6bff', '#3fdcb0', '#a77bff'];
+      let s = `<path d="M0 4 Q140 28 280 4" fill="none" stroke="${INK}" stroke-width="2"/>`;
+      for (let i = 0; i < 15; i++) {
+        const x = 8 + i * 18.5; const tt = x / 280; const y = 4 + 48 * tt * (1 - tt) * 0.5;
+        s += `<path d="M${x - 7} ${y} L${x + 7} ${y + 0.5} L${x} ${y + 16} Z" fill="${cols[i % 5]}" stroke="${INK}" stroke-width="1.6" stroke-linejoin="round"/>`;
+      }
+      el.bunting.innerHTML = s;
+    })();
+    el.mascotInner.innerHTML = dopaSVG('#FF97BF', 16, true);
+    const LV_COLORS = ['#3fdcb0', '#3fdcb0', '#3b9bff', '#3b6bff', '#a77bff', '#ff7ab6', '#ff7ab6', '#ff4f6d', '#ffd23f'];
+    el.lvPips.innerHTML = LV_COLORS.map((c) => `<i class="pip" style="--c:${c}"></i>`).join('');
+
+    /* =========================================================================
+       HYPE（盛り上がり）システム — 正解するほどレベルが上がり、まちがえても下がらない
+       ========================================================================= */
+    const LEVEL_TH = [0, 2, 4.5, 7.5, 11, 15, 19.5, 24.5, 30, 36];
+    const LEVEL_NAMES = ['スタンバイ', 'ウォーミングアップ！', 'ノッてきた！', 'いい感じ！', 'ドパドパ！', 'アゲアゲ！', 'フィーバー！！', 'スーパーフィーバー！！', 'ハイパーフィーバー！！', 'ドパミンMAX！！！'];
+    const hype = { pts: 0, level: 0 };
+
+    function hypeGain() { return state.mode === 'test10' ? 3.4 : state.mode === 'timeattack' ? 1.5 : 1; }
+    function applyLevel() {
+      for (let i = 1; i <= 9; i++) document.body.classList.toggle('lv' + i, hype.level >= i);
+      audio.setLevel(hype.level);
+      el.lvPips.querySelectorAll('.pip').forEach((p, i) => p.classList.toggle('on', i < hype.level));
+      el.lvName.textContent = LEVEL_NAMES[hype.level].replace(/！+$/, '');
+    }
+    function resetHype() { hype.pts = 0; hype.level = 0; applyLevel(); }
+    function addHype(n) {
+      hype.pts += n * hypeGain();
+      let lv = 0;
+      for (let i = 0; i < LEVEL_TH.length; i++) if (hype.pts >= LEVEL_TH[i]) lv = i;
+      if (lv > hype.level) { hype.level = lv; applyLevel(); onLevelUp(lv); return true; }
+      return false;
+    }
+    function onLevelUp(lv) {
+      const W = innerWidth, H = innerHeight;
+      const pal = [['#3b6bff', '#2a55e0'], ['#3fdcb0', '#22b892'], ['#3b6bff', '#ff7ab6'], ['#a77bff', '#7d55e6'], ['#ff7ab6', '#ffd23f'], ['#ff4f6d', '#ffd23f'], ['#ff7ab6', '#3b6bff'], ['#ffd23f', '#ff4f6d'], ['#ff7ab6', '#3fdcb0']][lv - 1] || ['#3b6bff', '#ff7ab6'];
+      cutin(`LV${lv} ${LEVEL_NAMES[lv]}`, { c1: pal[0], c2: pal[1], y: 0.62, size: lv >= 6 ? 46 : 38 });
+      audio.levelUp(lv);
+      mascot.react('spin', lv >= 6 ? `<b>${LEVEL_NAMES[lv]}</b><br>もっといこう！` : `レベル${lv}！<br><b>${LEVEL_NAMES[lv]}</b>`);
+      if (lv >= 3) fx.streamers(W, H, 4 + lv);
+      if (lv >= 6) { flash(0.55); bg.state.flash = 0.5; }
+      if (lv >= 7) fx.fireworks(W, H, lv - 4);
+      if (lv >= 9) fx.rain(W, 90, { kinds: ['confetti', 'mini', 'star', 'digit'] });
+    }
+
+    /* =========================================================================
+       VISUAL HELPERS: カットイン・スラム・フラッシュ・吹き出し
+       ========================================================================= */
+    function cutin(text, { c1 = '#3b6bff', c2 = '#2a55e0', y = 0.4, size = 42, dur = 1250 } = {}) {
+      if (!state.motion) dur = 900;
+      const band = document.createElement('div');
+      band.className = 'cutin-band';
+      band.style.top = `calc(${y * 100}% - ${size * 0.95}px)`;
+      band.style.height = `${size * 1.9}px`;
+      band.style.setProperty('--c1', c1); band.style.setProperty('--c2', c2);
+      band.innerHTML = `<div class="band-bg"></div><div class="band-text" style="font-size:${size}px">${text}</div>`;
+      el.cutins.appendChild(band);
+      const rot = 'rotate(-5deg)';
+      const anim = band.animate([
+        { transform: `translateX(-110%) ${rot} scaleY(.3)` },
+        { transform: `translateX(0) ${rot} scaleY(1)`, offset: 0.16 },
+        { transform: `translateX(2%) ${rot} scaleY(1)`, offset: 0.8 },
+        { transform: `translateX(110%) ${rot} scaleY(.4)` }
+      ], { duration: dur, easing: 'cubic-bezier(.2,.8,.3,1)' });
+      band.querySelector('.band-text').animate([
+        { transform: 'translateX(40%) scale(1.4)' }, { transform: 'translateX(0) scale(1)', offset: 0.2 },
+        { transform: 'translateX(-4%) scale(1)', offset: 0.8 }, { transform: 'translateX(-30%) scale(1)' }
+      ], { duration: dur, easing: 'cubic-bezier(.2,.8,.3,1)' });
+      anim.onfinish = () => band.remove();
+    }
+    function slam(text, x, y, { color = '#ffd23f', size = 120, dur = 600 } = {}) {
+      const d = document.createElement('div');
+      d.className = 'slam'; d.textContent = text;
+      d.style.left = x + 'px'; d.style.top = y + 'px'; d.style.fontSize = size + 'px'; d.style.color = color;
+      el.cutins.appendChild(d);
+      d.animate([
+        { transform: 'translate(-50%,-50%) scale(3) rotate(-25deg)', opacity: 0 },
+        { transform: 'translate(-50%,-50%) scale(.9) rotate(4deg)', opacity: 1, offset: 0.3 },
+        { transform: 'translate(-50%,-50%) scale(1) rotate(0)', opacity: 1, offset: 0.7 },
+        { transform: 'translate(-50%,-80%) scale(1.1)', opacity: 0 }
+      ], { duration: dur, easing: 'cubic-bezier(.2,.9,.3,1)' }).onfinish = () => d.remove();
+    }
+    function flash(v = 0.5) {
+      if (!state.motion) return;
+      el.flash.animate([{ opacity: v }, { opacity: 0 }], { duration: 380, easing: 'ease-out' });
+    }
+    function centerOf(node) { const r = node.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, r }; }
+    function restartAnim(node, cls) { node.classList.remove(cls); void node.offsetWidth; node.classList.add(cls); }
+
+    const mascot = {
+      timer: null, bubbleTimer: null,
+      react(kind, msg) {
+        const m = el.mascot;
+        clearTimeout(this.timer);
+        m.classList.remove('happy', 'sad', 'jump', 'spin');
+        void m.offsetWidth;
+        if (kind === 'happy') m.classList.add('happy', 'jump');
+        else if (kind === 'sad') m.classList.add('sad');
+        else if (kind === 'spin') m.classList.add('happy', 'spin');
+        this.timer = setTimeout(() => m.classList.remove('happy', 'sad', 'jump', 'spin'), kind === 'spin' ? 950 : 800);
+        if (msg) this.say(msg, kind === 'sad');
+      },
+      say(msg, isHint = false) {
+        el.bubble.innerHTML = msg;
+        el.bubble.classList.toggle('hint', isHint);
+        restartAnim(el.bubble, 'pop');
+      }
+    };
+    const PRAISE = ['ナイス！', 'その調子！', 'すごい！', 'バッチリ！', 'いいね〜！', 'キレてる！', 'ドパッ！', '天才かも！？', '見抜いたね！', 'さすが！'];
+    const HINTS = {
+      2: '<b>2</b>の倍数は<br>一の位が 0,2,4,6,8 だよ！',
+      3: '<b>3</b>の倍数は<br>各位をたして3の倍数か見てね！',
+      4: '<b>4</b>の倍数は<br>下2けたが4の倍数かチェック！',
+      5: '<b>5</b>の倍数は<br>一の位が 0か5 だよ！',
+      6: '<b>6</b>の倍数は<br>2の倍数 かつ 3の倍数！',
+      9: '<b>9</b>の倍数は<br>各位の和が9の倍数だよ！'
+    };
+
+    /* =========================================================================
+       UI UPDATERS
+       ========================================================================= */
+    const setPressed = (btn, on) => btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+
+    function updateDigitsUI() {
+      el.digitButtons.forEach(btn => setPressed(btn, btn.dataset.digits === state.digits));
+      el.currentDigitBadge.textContent = state.digits === 'all' ? '2〜5桁' : `${state.digits}桁`;
+    }
+    function updateTypeUI() {
+      setPressed(el.typeBinaryBtn, state.questionType === 'binary');
+      setPressed(el.typeMultiBtn, state.questionType === 'multi');
+      el.targetDivisorBar.classList.toggle('hidden', state.questionType !== 'binary');
+    }
+    function updateDivisorUI() {
+      el.divisorBtns.forEach(btn => setPressed(btn, btn.dataset.divisor === state.targetDivisor));
+    }
+    function updateModeUI() {
+      [el.modePracticeBtn, el.modeTimeAttackBtn, el.modeTest10Btn].forEach(btn => setPressed(btn, btn.dataset.mode === state.mode));
+    }
+    function updateSoundUI() {
+      const icons = ['🔇', '🔉', '🔊'];
+      const titles = ['音：OFF', '音：効果音のみ', '音：BGM＋効果音'];
+      el.soundToggleBtn.textContent = icons[audio.mode];
+      el.soundToggleBtn.title = titles[audio.mode] + '（クリックで切り替え）';
+      setPressed(el.soundToggleBtn, audio.mode > 0);
+    }
+    function updateMotionUI() {
+      document.body.classList.toggle('reduced', !state.motion);
+      fx.reduced = !state.motion;
+      setPressed(el.motionToggleBtn, state.motion);
+      el.motionToggleBtn.title = state.motion ? '演出：ハデ（クリックで控えめに）' : '演出：控えめ（クリックでハデに）';
+    }
+    function updateCombo() {
+      const s = state.streak;
+      el.comboNum.textContent = s;
+      el.comboBadge.classList.toggle('on', s >= 2);
+      el.comboBadge.classList.toggle('hot', s >= 10);
+      if (s >= 2) restartAnim(el.comboBadge, 'pop');
+    }
+
+    function updateStatsUI() {
+      el.stat3.classList.remove('hurry');
+      if (state.mode === 'practice') {
+        el.statLabel1.textContent = '正解数'; el.statVal1.textContent = state.score;
+        el.statLabel2.textContent = '連続正解'; el.statVal2.textContent = `${state.streak}🔥`;
+        el.statLabel3.textContent = '総解答数'; el.statVal3.textContent = state.totalAnswered;
+      } else if (state.mode === 'timeattack') {
+        el.statLabel1.textContent = 'スコア'; el.statVal1.textContent = state.score;
+        el.statLabel2.textContent = 'コンボ'; el.statVal2.textContent = `${state.streak}🔥`;
+        el.statLabel3.textContent = '残り時間'; el.statVal3.textContent = `${state.timeLeft}s`;
+        if (state.isChallengeActive && state.timeLeft <= 10) el.stat3.classList.add('hurry');
+      } else if (state.mode === 'test10') {
+        el.statLabel1.textContent = '正解数'; el.statVal1.textContent = `${state.score} / ${state.testTotalQuestions}`;
+        el.statLabel2.textContent = '進行度'; el.statVal2.textContent = `${Math.min(state.testCurrentIndex, state.testTotalQuestions)}/${state.testTotalQuestions}`;
+        el.statLabel3.textContent = '正解率';
+        const acc = state.totalAnswered > 0 ? Math.round((state.score / state.totalAnswered) * 100) : 0;
+        el.statVal3.textContent = `${acc}%`;
+      }
+      updateCombo();
+    }
+
+    function setHints(type) {
+      el.shortcutHints.innerHTML = type === 'binary'
+        ? '<span><kbd>← / 1</kbd>割れない</span><span><kbd>→ / 2</kbd>割れる</span><span><kbd>Space</kbd>次へ</span><span><kbd>F</kbd>全画面</span>'
+        : '<span><kbd>1〜4</kbd>選択</span><span><kbd>Space</kbd>次へ</span><span><kbd>F</kbd>全画面</span>';
+    }
+
+    function choiceHTML(divs) {
+      if (!divs || divs.length === 0) return '<span class="none">どれでもない</span>';
+      return divs.map(d => `<b>${d}</b>`).join('') + '<span>の倍数</span>';
+    }
+
+    /* =========================================================================
+       QUESTION RENDERING
+       ========================================================================= */
+    function renderQuestion(q) {
+      state.currentQuestion = q;
+      state.isAnswered = false;
+
+      el.numberDisplay.innerHTML = q.formattedNumber.split('').map((c, i) => `<span class="d" style="--i:${i}" data-c="${c}">${c}</span>`).join('');
+      el.stamp.className = 'stamp';
+      el.breakdownDrawer.classList.add('hidden');
+      el.nextControls.classList.add('hidden');
+
+      if (state.mode === 'test10') {
+        el.questionCounterBadge.classList.remove('hidden');
+        el.questionCounterBadge.textContent = `#${state.testCurrentIndex} / 10`;
+      } else {
+        el.questionCounterBadge.classList.add('hidden');
+      }
+      el.currentDigitBadge.textContent = `${q.digits}桁`;
+
+      if (q.questionType === 'binary') {
+        el.binaryChoicesArea.classList.remove('hidden');
+        el.multiChoicesArea.classList.add('hidden');
+        [el.btnBinaryFalse, el.btnBinaryTrue].forEach(b => { b.classList.remove('is-correct', 'is-wrong', 'is-dim', 'is-reveal'); b.disabled = false; });
+        el.questionPrompt.innerHTML = `この数は <span class="dv">${q.singleDivisor}</span> で割り切れる？（${q.singleDivisor}の倍数？）`;
+        setHints('binary');
+      } else {
+        el.binaryChoicesArea.classList.add('hidden');
+        el.multiChoicesArea.classList.remove('hidden');
+        el.questionPrompt.textContent = 'この数は何の倍数？（2, 3, 4, 5, 6, 9 から全部えらぶ）';
+        setHints('multi');
+        el.choiceBtns.forEach((btn, idx) => {
+          const choice = q.choices[idx];
+          btn.querySelector('.ct').innerHTML = choiceHTML(choice.divisors);
+          btn.querySelector('.res').textContent = '';
+          btn.classList.remove('is-correct', 'is-wrong', 'is-dim');
+          btn.disabled = false;
+        });
+      }
+    }
+
+    /* =========================================================================
+       ANSWER HANDLING
+       ========================================================================= */
+    function canAnswer() {
+      if (state.isAnswered || state.countingDown) return false;
+      if ((state.mode === 'timeattack' || state.mode === 'test10') && !state.isChallengeActive) return false;
+      return !!state.currentQuestion;
+    }
+
+    function registerAnswer(isCorrect, chosenEl, historyEntry) {
+      state.isAnswered = true;
+      state.totalAnswered++;
+      state.lifetimeTotal++;
+      const q = state.currentQuestion;
+
+      if (isCorrect) {
+        state.score++;
+        state.streak++;
+        state.lifetimeCorrect++;
+        if (state.streak > state.maxStreak) state.maxStreak = state.streak;
+        if (state.streak > state.lifetimeBestStreak) state.lifetimeBestStreak = state.streak;
+        celebrateCorrect(chosenEl);
+      } else {
+        state.streak = 0;
+        reactWrong(chosenEl, q);
+      }
+
+      state.history.unshift({ ...historyEntry, number: q.number, isCorrect, timestamp: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) });
+      saveStats();
+      renderBreakdown(q);
+      updateStatsUI();
+      progress(isCorrect);
+    }
+
+    function celebrateCorrect(chosenEl) {
+      const L0 = hype.level;
+      const mult = 1 + Math.min(state.streak - 1, 19) * 0.1;
+      const gained = Math.round((100 * mult * (1 + L0 * 0.05)) / 10) * 10;
+      state.points += gained;
+      restartAnim(el.dopaBox, 'pop');
+
+      audio.correct(state.streak);
+      addHype(1 + Math.min(state.streak, 10) * 0.1);
+      const L = hype.level;
+
+      const { x, y } = centerOf(chosenEl);
+      fx.burst(x, y, { count: 18 + L * 7, speed: 420 + L * 40, kinds: L >= 4 ? ['confetti', 'star', 'coin'] : ['confetti', 'star'], up: 140 });
+      fx.burst(x, y, { count: 8 + L * 2, kinds: ['spark'], speed: 520 });
+      fx.ring(x, y, { color: '#ffd23f', radius: 90 + L * 12, width: 9 });
+      if (L >= 2) fx.burst(x, y, { count: 3 + L, kinds: ['digit'], speed: 480, up: 200 });
+      if (L >= 6) fx.burst(x, y, { count: 3 + L, kinds: ['mini'], speed: 540, up: 280 });
+      if (L >= 8) fx.rain(innerWidth, 24 + L * 3, { kinds: ['confetti', 'mini', 'star'] });
+
+      const n = centerOf(el.numberDisplay);
+      fx.text(n.x, n.r.top + 6, `+${gained}`, { color: '#ffd23f', size: 30 + Math.min(18, state.streak) });
+      if (state.streak >= 3) fx.text(x, y - 46, `${state.streak} COMBO`, { color: '#ff7ab6', size: 22, vy: -120 });
+      restartAnim(el.numberDisplay, 'bounce');
+
+      el.stamp.textContent = '正解';
+      el.stamp.className = 'stamp';
+      restartAnim(el.stamp, 'show');
+
+      bg.state.flash = Math.max(bg.state.flash, 0.06 + L * 0.02);
+
+      const s = state.streak;
+      let msg = null;
+      if (s > 0 && s % 5 === 0) {
+        cutin(`${s} COMBO!!`, { c1: '#ffd23f', c2: '#ff7ab6', y: 0.36, size: s >= 10 ? 52 : 44 });
+        audio.combo();
+        fx.streamers(innerWidth, innerHeight, 6);
+        if (s % 10 === 0) fx.fireworks(innerWidth, innerHeight, 4);
+        msg = `<b>${s}連続</b>正解！<br>止まらない〜！`;
+      } else if (Math.random() < 0.55) {
+        msg = pick(PRAISE);
+      }
+      if (L === L0) mascot.react('happy', msg);
+    }
+
+    function reactWrong(chosenEl, q) {
+      audio.wrong();
+      const { x, y } = centerOf(chosenEl);
+      fx.puff(x, y, 9);
+      el.stamp.textContent = 'おしい';
+      el.stamp.className = 'stamp ng';
+      restartAnim(el.stamp, 'show');
+      restartAnim(el.gameCard, 'shake');
+
+      let d;
+      if (q.questionType === 'binary') d = q.singleDivisor;
+      else {
+        const chosen = q.choices[parseInt(chosenEl.dataset.index, 10)].divisors;
+        const diff = TARGET_DIVISORS.filter(v => chosen.includes(v) !== q.correctDivisors.includes(v));
+        d = diff[0] || 2;
+      }
+      mascot.react('sad', `だいじょうぶ！<br>${HINTS[d]}`);
+    }
+
+    function progress(isCorrect) {
+      clearTimeout(advanceTimer);
+      if (state.mode === 'timeattack') {
+        advanceTimer = setTimeout(() => { if (state.isChallengeActive) nextQuestion(); }, isCorrect ? 650 : 1100);
+      } else if (state.mode === 'test10') {
+        if (isCorrect && state.autoAdvance) {
+          advanceTimer = setTimeout(() => {
+            if (!state.isChallengeActive) return;
+            if (state.testCurrentIndex >= state.testTotalQuestions) finishTest10(); else nextQuestion();
+          }, 650);
+        } else if (state.testCurrentIndex >= state.testTotalQuestions) {
+          advanceTimer = setTimeout(() => { if (state.isChallengeActive) finishTest10(); }, 1200);
+        } else {
+          el.nextControls.classList.remove('hidden');
+        }
+      } else {
+        if (isCorrect && state.autoAdvance) {
+          advanceTimer = setTimeout(() => { if (state.isAnswered && state.mode === 'practice') nextQuestion(); }, 650);
+        } else {
+          el.nextControls.classList.remove('hidden');
+        }
+      }
+    }
+
+    // 4択
+    function handleChoice(chosenIndex) {
+      if (!canAnswer() || state.currentQuestion.questionType !== 'multi') return;
+      const q = state.currentQuestion;
+      const isCorrect = chosenIndex === q.correctIndex;
+      const chosenBtn = el.choiceBtns[chosenIndex];
+      const correctBtn = el.choiceBtns[q.correctIndex];
+      el.choiceBtns.forEach((b) => { b.disabled = true; if (b !== chosenBtn && b !== correctBtn) b.classList.add('is-dim'); });
+      correctBtn.classList.add('is-correct'); correctBtn.querySelector('.res').textContent = '○';
+      if (!isCorrect) { chosenBtn.classList.add('is-wrong'); chosenBtn.querySelector('.res').textContent = '✕'; }
+      registerAnswer(isCorrect, chosenBtn, { correctText: q.choices[q.correctIndex].text, userText: q.choices[chosenIndex].text });
+    }
+
+    // 2択（割れない: false / 割れる: true）
+    function handleBinaryAnswer(userChoiceBool) {
+      if (!canAnswer() || state.currentQuestion.questionType !== 'binary') return;
+      const q = state.currentQuestion;
+      const isCorrect = userChoiceBool === q.isDivisible;
+      const chosenBtn = userChoiceBool ? el.btnBinaryTrue : el.btnBinaryFalse;
+      const otherBtn = userChoiceBool ? el.btnBinaryFalse : el.btnBinaryTrue;
+      el.btnBinaryFalse.disabled = true; el.btnBinaryTrue.disabled = true;
+      if (isCorrect) { chosenBtn.classList.add('is-correct'); otherBtn.classList.add('is-dim'); }
+      else { chosenBtn.classList.add('is-wrong'); otherBtn.classList.add('is-reveal'); }
+      const u = userChoiceBool ? '割れる' : '割れない';
+      const c = q.isDivisible ? '割れる' : '割れない';
+      registerAnswer(isCorrect, chosenBtn, { correctText: `${q.singleDivisor}で${c}`, userText: `${q.singleDivisor}で${u}` });
+    }
+
+    /* ---------- breakdown ---------- */
+    function renderBreakdown(q) {
+      el.breakdownDrawer.classList.remove('hidden');
+      const b = q.breakdown;
+      const ox = (ok, label) => ok ? `<span class="o">${label}○</span>` : `<span class="x">${label}×</span>`;
+
+      el.bdLastDigit.textContent = b.lastDigit;
+      el.bdLastDigitVerdict.innerHTML = `${ox(b.is2, '2')} / ${ox(b.is5, '5')}`;
+      el.bdLast2Digits.textContent = String(b.last2Digits).padStart(2, '0');
+      el.bdLast2DigitsVerdict.innerHTML = ox(b.is4, '4');
+      el.bdSumDigits.textContent = b.digitsSumFormula;
+      el.bdSumDigits.title = b.digitsSumFormula;
+      el.bdSumDigitsVerdict.innerHTML = `${ox(b.is3, '3')} / ${ox(b.is9, '9')}`;
+      el.bd6Result.textContent = `2${b.is2 ? '○' : '×'} & 3${b.is3 ? '○' : '×'}`;
+      el.bd6Verdict.innerHTML = ox(b.is6, '6');
+
+      [el.bdBox25, el.bdBox4, el.bdBox39, el.bdBox6].forEach(box => box.classList.remove('focus'));
+      const digits = el.numberDisplay.querySelectorAll('.d');
+      const n = digits.length;
+      const hlLast = (k) => { for (let i = Math.max(0, n - k); i < n; i++) digits[i].classList.add('hl'); };
+      const hlAll = () => digits.forEach(d => d.classList.add('hls'));
+
+      if (q.questionType === 'binary' && q.singleDivisor) {
+        const d = q.singleDivisor;
+        if (d === 2 || d === 5) { el.bdBox25.classList.add('focus'); hlLast(1); }
+        else if (d === 4) { el.bdBox4.classList.add('focus'); hlLast(2); }
+        else if (d === 3 || d === 9) { el.bdBox39.classList.add('focus'); hlAll(); }
+        else if (d === 6) { el.bdBox6.classList.add('focus'); hlAll(); hlLast(1); }
+      }
+    }
+
+    /* =========================================================================
+       FLOW: next / modes / challenge
+       ========================================================================= */
+    function nextQuestion() {
+      clearTimeout(advanceTimer);
+      if (state.mode === 'test10') {
+        state.testCurrentIndex++;
+        if (state.testCurrentIndex > state.testTotalQuestions) { finishTest10(); return; }
+      }
+      updateStatsUI();
+      renderQuestion(generateQuestion(state.digits, state.questionType, state.targetDivisor));
+    }
+
+    function setDigits(newDigits) {
+      if (state.digits === newDigits) return;
+      state.digits = newDigits;
+      updateDigitsUI(); saveStats();
+      if (state.mode === 'practice') nextQuestion(); else switchMode(state.mode);
+    }
+    function switchQuestionType(newType) {
+      if (state.questionType === newType) return;
+      state.questionType = newType;
+      updateTypeUI(); saveStats();
+      if (state.mode === 'practice') nextQuestion(); else switchMode(state.mode);
+    }
+    function setTargetDivisor(newDivisor) {
+      if (state.targetDivisor === newDivisor) return;
+      state.targetDivisor = newDivisor;
+      updateDivisorUI(); saveStats();
+      if (state.mode === 'practice') nextQuestion(); else switchMode(state.mode);
+    }
+
+    function configLabel() {
+      const digitsStr = state.digits === 'all' ? '2〜5桁' : state.digits + '桁';
+      const typeStr = state.questionType === 'binary'
+        ? `初級（${state.targetDivisor === 'random' ? 'ランダム' : state.targetDivisor + 'の倍数'}）`
+        : '総合（4択）';
+      return `${digitsStr} / ${typeStr}`;
+    }
+
+    function stopChallengeTimers() {
+      clearInterval(state.timer); state.timer = null;
+      clearTimeout(state.cdTimer); state.cdTimer = null;
+      clearTimeout(advanceTimer);
+      state.countingDown = false;
+    }
+
+    function switchMode(newMode) {
+      const changed = state.mode !== newMode;
+      stopChallengeTimers();
+      state.isChallengeActive = false;
+      state.mode = newMode;
+      state.score = 0; state.streak = 0; state.maxStreak = 0; state.totalAnswered = 0; state.points = 0;
+      if (changed || newMode !== 'practice') resetHype();
+      updateModeUI();
+
+      el.resultScreen.classList.remove('on');
+      el.timerBarContainer.classList.remove('on', 'hurry');
+      el.stamp.className = 'stamp';
+
+      if (newMode === 'practice') {
+        el.startScreen.classList.remove('on');
+        el.questionArea.classList.remove('hidden');
+        nextQuestion();
+        if (changed) mascot.say('練習モード！<br>じっくりいこう');
+      } else {
+        el.questionArea.classList.add('hidden');
+        el.startScreen.classList.add('on');
+        state.currentQuestion = null;
+        if (newMode === 'timeattack') {
+          el.startScreenTitle.textContent = '60秒タイムアタック';
+          el.startScreenDesc.textContent = `選択中:「${configLabel()}」で60秒間に何問正解できるか挑戦！`;
+          el.startScreenIcon.textContent = '⚡';
+          mascot.say('60秒勝負！<br>準備はいい？');
+        } else {
+          el.startScreenTitle.textContent = '10問実力テスト';
+          el.startScreenDesc.textContent = `選択中:「${configLabel()}」から10問を出題してランクを判定！`;
+          el.startScreenIcon.textContent = '🎓';
+          mascot.say('10問テスト！<br>ランクSSをめざそう');
+        }
+      }
+      updateStatsUI();
+    }
+
+    function startChallenge() {
+      if (state.countingDown) return;
+      audio.init();
+      stopChallengeTimers();
+      state.isChallengeActive = false;
+      state.score = 0; state.streak = 0; state.maxStreak = 0; state.totalAnswered = 0; state.points = 0;
+      resetHype();
+      el.startScreen.classList.remove('on');
+      el.resultScreen.classList.remove('on');
+      el.questionArea.classList.add('hidden');
+      el.stamp.className = 'stamp';
+      updateStatsUI();
+      countdown(beginChallenge);
+    }
+
+    function countdown(done) {
+      state.countingDown = true;
+      const seq = ['3', '2', '1', 'GO!'];
+      let i = 0;
+      const step = () => {
+        if (i < seq.length) {
+          const s = seq[i]; const go = i === 3;
+          const c = centerOf(el.gameCard);
+          slam(s, c.x, c.y, { size: go ? 130 : 160, color: go ? '#ff7ab6' : '#ffd23f', dur: go ? 700 : 560 });
+          audio.count(go);
+          if (go) { fx.burst(c.x, c.y, { count: 50, speed: 650, kinds: ['confetti', 'star'] }); fx.ring(c.x, c.y, { color: '#ff7ab6', radius: 220, width: 12 }); }
+          else fx.ring(c.x, c.y, { color: '#fff', radius: 140, width: 8 });
+          i++;
+          state.cdTimer = setTimeout(step, go ? 380 : 600);
+        } else {
+          state.countingDown = false;
+          done();
+        }
+      };
+      step();
+    }
+
+    function beginChallenge() {
+      state.isChallengeActive = true;
+      el.questionArea.classList.remove('hidden');
+      if (state.mode === 'timeattack') {
+        state.timeLeft = state.timeLimit;
+        el.timerBarContainer.classList.add('on');
+        el.timerBarContainer.classList.remove('hurry');
+        el.timerBarFill.style.transition = 'none';
+        el.timerBarFill.style.width = '100%';
+        void el.timerBarFill.offsetWidth;
+        el.timerBarFill.style.transition = '';
+        state.timer = setInterval(() => {
+          state.timeLeft--;
+          el.timerBarFill.style.width = `${(state.timeLeft / state.timeLimit) * 100}%`;
+          if (state.timeLeft <= 10) { el.timerBarContainer.classList.add('hurry'); audio.tick(state.timeLeft <= 5); }
+          if (state.timeLeft === 10) cutin('のこり10秒！', { c1: '#ff4f6d', c2: '#1b1d4d', y: 0.3, size: 36, dur: 1000 });
+          updateStatsUI();
+          if (state.timeLeft <= 0) { clearInterval(state.timer); state.timer = null; finishTimeAttack(); }
+        }, 1000);
+      } else if (state.mode === 'test10') {
+        state.testCurrentIndex = 0;
+      }
+      nextQuestion();
+    }
+
+    function bestKey() {
+      return `${state.mode}|${state.questionType}|${state.digits}|${state.questionType === 'binary' ? state.targetDivisor : '-'}`;
+    }
+
+    function finishTimeAttack() {
+      state.isChallengeActive = false;
+      clearTimeout(advanceTimer);
+      const acc = state.totalAnswered > 0 ? Math.round((state.score / state.totalAnswered) * 100) : 0;
+      cutin('タイムアップ！', { c1: '#1b1d4d', c2: '#3b6bff', y: 0.42, size: 50, dur: 1100 });
+      showResult({
+        title: 'タイムアップ！', subtitle: `60秒間で ${state.score} 問正解を達成！`,
+        correctText: `${state.score}問`, acc, rankMetric: state.score, unit: '問'
+      });
+    }
+
+    function finishTest10() {
+      state.isChallengeActive = false;
+      clearTimeout(advanceTimer);
+      const acc = Math.round((state.score / state.testTotalQuestions) * 100);
+      showResult({
+        title: 'テスト終了！', subtitle: `10問中 ${state.score} 問正解！`,
+        correctText: `${state.score} / 10`, acc, rankMetric: state.score * 2.5, unit: '問'
+      });
+    }
+
+    function calculateRank(scoreMetric, accuracy) {
+      if (scoreMetric >= 22 && accuracy >= 90) return { rank: 'SS', color: '#ffd23f' };
+      if (scoreMetric >= 16 && accuracy >= 80) return { rank: 'S', color: '#ff7ab6' };
+      if (scoreMetric >= 11 && accuracy >= 70) return { rank: 'A', color: '#3fdcb0' };
+      if (scoreMetric >= 6) return { rank: 'B', color: '#8fb4ff' };
+      return { rank: 'C', color: '#d9d6e8' };
+    }
+
+    function showResult({ title, subtitle, correctText, acc, rankMetric, unit }) {
+      el.questionArea.classList.add('hidden');
+      el.timerBarContainer.classList.remove('on', 'hurry');
+      el.resultScreen.classList.add('on');
+      el.stamp.className = 'stamp';
+
+      el.resultTitle.textContent = title;
+      el.resultSubtitle.textContent = subtitle;
+      el.resultCorrectCount.textContent = correctText;
+      el.resultAccuracy.textContent = `${acc}%`;
+      el.resultMaxStreak.textContent = `${state.maxStreak}連続`;
+      el.resultPoints.textContent = state.points.toLocaleString();
+
+      const { rank, color } = calculateRank(rankMetric, acc);
+      el.resultRank.textContent = rank;
+      el.rankBurst.setAttribute('fill', color);
+      el.resultRankBadge.classList.remove('show'); void el.resultRankBadge.offsetWidth; el.resultRankBadge.classList.add('show');
+
+      // best record
+      const key = bestKey();
+      const prev = state.bests[key];
+      const isBest = state.score > 0 && (prev === undefined || state.score > prev);
+      if (isBest) { state.bests[key] = state.score; saveStats(); }
+      el.bestTag.classList.toggle('on', isBest);
+      el.bestNote.textContent = prev !== undefined ? `これまでのベスト: ${prev}${unit}` : '';
+
+      // celebration
+      const W = innerWidth, H = innerHeight;
+      setTimeout(() => {
+        audio.fanfare();
+        const c = centerOf(el.resultRankBadge);
+        fx.burst(c.x, c.y, { count: 70, speed: 700, kinds: ['confetti', 'star', 'coin'], up: 200 });
+        fx.ring(c.x, c.y, { color: color, radius: 200, width: 12 });
+        fx.streamers(W, H, 8);
+        if (rank === 'SS' || rank === 'S' || isBest) {
+          fx.fireworks(W, H, 5);
+          setTimeout(() => fx.fireworks(W, H, 4), 700);
+          fx.rain(W, 80, { kinds: ['confetti', 'mini', 'star'] });
+          flash(0.5);
+        }
+        if (isBest) cutin('ベスト更新！！', { c1: '#ffd23f', c2: '#ff4f6d', y: 0.3, size: 46 });
+      }, 250);
+      const msgs = { SS: '<b>SSランク！</b><br>倍数マスターだ〜！', S: '<b>Sランク！</b><br>すごすぎ！', A: '<b>Aランク！</b><br>いい感じ！', B: '<b>Bランク！</b><br>のびしろたっぷり！', C: 'コツを見て<br>もう一回やってみよう！' };
+      mascot.react(rank === 'C' ? 'sad' : 'spin', msgs[rank]);
+      updateStatsUI();
+    }
+
+    /* =========================================================================
+       HISTORY MODAL
+       ========================================================================= */
+    function renderHistoryModal() {
+      el.totalLifetimeQuestions.textContent = state.lifetimeTotal;
+      const acc = state.lifetimeTotal > 0 ? Math.round((state.lifetimeCorrect / state.lifetimeTotal) * 100) : 0;
+      el.lifetimeAccuracy.textContent = `${acc}%`;
+      el.lifetimeBestStreak.textContent = `${state.lifetimeBestStreak}連続`;
+      if (state.history.length === 0) {
+        el.historyList.innerHTML = '<div class="h-empty">まだ解答履歴がありません</div>';
+        return;
+      }
+      el.historyList.innerHTML = state.history.map(item => `
+        <div class="h-item">
+          <div class="l">
+            <span class="m ${item.isCorrect ? 'ok' : 'ng'}">${item.isCorrect ? '○' : '✕'}</span>
+            <span class="num2">${item.number}</span>
+            <span class="ans">${item.correctText}</span>
+          </div>
+          <span class="tm">${item.timestamp}</span>
+        </div>`).join('');
+    }
+    function openModal(m) { m.classList.add('on'); audio.tap(); }
+    function closeModals() { el.cheatsheetModal.classList.remove('on'); el.historyModal.classList.remove('on'); }
+    const anyModalOpen = () => el.cheatsheetModal.classList.contains('on') || el.historyModal.classList.contains('on');
+
+    /* =========================================================================
+       FULLSCREEN
+       ========================================================================= */
+    function isFullscreen() {
+      return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+    }
+    function toggleFullscreen() {
+      try {
+        if (!isFullscreen()) {
+          const docEl = document.documentElement;
+          if (docEl.requestFullscreen) docEl.requestFullscreen().catch(err => console.warn(err));
+          else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
+          else if (docEl.msRequestFullscreen) docEl.msRequestFullscreen();
+        } else {
+          if (document.exitFullscreen) document.exitFullscreen().catch(err => console.warn(err));
+          else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+          else if (document.msExitFullscreen) document.msExitFullscreen();
+        }
+      } catch (e) {
+        console.warn('Fullscreen error:', e);
+      }
+    }
+    function updateFullscreenUI() {
+      const fs = isFullscreen();
+      setPressed(el.fullscreenToggleBtn, fs);
+      el.fullscreenToggleBtn.title = fs ? '全画面表示を解除 (Esc / F)' : '全画面表示 (ON/OFF) [F]';
+    }
+    ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => document.addEventListener(ev, updateFullscreenUI));
+
+    /* =========================================================================
+       EVENTS
+       ========================================================================= */
+    el.typeBinaryBtn.addEventListener('click', () => { audio.tap(); switchQuestionType('binary'); });
+    el.typeMultiBtn.addEventListener('click', () => { audio.tap(); switchQuestionType('multi'); });
+    el.divisorBtns.forEach(btn => btn.addEventListener('click', () => { audio.tap(); setTargetDivisor(btn.dataset.divisor); }));
+    el.digitButtons.forEach(btn => btn.addEventListener('click', () => { audio.tap(); setDigits(btn.dataset.digits); }));
+    el.modePracticeBtn.addEventListener('click', () => { audio.tap(); switchMode('practice'); });
+    el.modeTimeAttackBtn.addEventListener('click', () => { audio.tap(); switchMode('timeattack'); });
+    el.modeTest10Btn.addEventListener('click', () => { audio.tap(); switchMode('test10'); });
+
+    el.btnBinaryFalse.addEventListener('click', () => handleBinaryAnswer(false));
+    el.btnBinaryTrue.addEventListener('click', () => handleBinaryAnswer(true));
+    el.choiceBtns.forEach(btn => btn.addEventListener('click', () => handleChoice(parseInt(btn.dataset.index, 10))));
+    el.btnNext.addEventListener('click', () => { audio.tap(); nextQuestion(); });
+
+    el.startChallengeBtn.addEventListener('click', startChallenge);
+    el.btnRetry.addEventListener('click', startChallenge);
+    el.btnBackToPractice.addEventListener('click', () => switchMode('practice'));
+
+    el.soundToggleBtn.addEventListener('click', () => {
+      const next = (audio.mode + 2) % 3; // 2 -> 1 -> 0 -> 2
+      audio.setMode(next);
+      if (next > 0) { audio.init(); audio.tap(); }
+      try { localStorage.setItem('multiple_sound_mode', String(next)); } catch (e) {}
+      updateSoundUI();
+    });
+    el.motionToggleBtn.addEventListener('click', () => {
+      state.motion = !state.motion;
+      try { localStorage.setItem('multiple_motion', state.motion ? '1' : '0'); } catch (e) {}
+      updateMotionUI(); audio.tap();
+    });
+    el.fullscreenToggleBtn.addEventListener('click', toggleFullscreen);
+    el.autoAdvanceCheck.addEventListener('change', (e) => { state.autoAdvance = e.target.checked; });
+
+    el.cheatsheetBtn.addEventListener('click', () => openModal(el.cheatsheetModal));
+    el.closeCheatsheetBtn.addEventListener('click', closeModals);
+    el.historyModalBtn.addEventListener('click', () => { renderHistoryModal(); openModal(el.historyModal); });
+    el.closeHistoryBtn.addEventListener('click', closeModals);
+    [el.cheatsheetModal, el.historyModal].forEach(m => m.addEventListener('click', (e) => { if (e.target === m) closeModals(); }));
+    el.clearHistoryBtn.addEventListener('click', () => {
+      state.history = []; state.lifetimeTotal = 0; state.lifetimeCorrect = 0; state.lifetimeBestStreak = 0; state.bests = {};
+      saveStats(); renderHistoryModal();
+    });
+
+    // 最初の操作でオーディオを解錠して BGM 開始
+    const unlockAudio = () => { audio.init(); window.removeEventListener('pointerdown', unlockAudio); window.removeEventListener('keydown', unlockAudio); };
+    window.addEventListener('pointerdown', unlockAudio);
+    window.addEventListener('keydown', unlockAudio);
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (anyModalOpen()) {
+        if (e.key === 'Escape') closeModals();
+        return;
+      }
+      if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+      if (e.key === 'f' || e.key === 'F') { e.preventDefault(); toggleFullscreen(); return; }
+      if (state.countingDown) return;
+
+      if (el.startScreen.classList.contains('on')) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); startChallenge(); }
+        return;
+      }
+      if (el.resultScreen.classList.contains('on')) {
+        if (e.key === 'Enter') { e.preventDefault(); startChallenge(); }
+        return;
+      }
+
+      if (!state.isAnswered) {
+        if (state.questionType === 'binary') {
+          if (e.key === 'ArrowLeft' || e.key === '1' || e.key === 'a' || e.key === 'A') { e.preventDefault(); handleBinaryAnswer(false); }
+          else if (e.key === 'ArrowRight' || e.key === '2' || e.key === 'd' || e.key === 'D') { e.preventDefault(); handleBinaryAnswer(true); }
+        } else if (['1', '2', '3', '4'].includes(e.key)) {
+          e.preventDefault(); handleChoice(parseInt(e.key, 10) - 1);
+        }
+      } else if (!el.nextControls.classList.contains('hidden')) {
+        if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); nextQuestion(); }
+      }
+    });
+
+    /* =========================================================================
+       MAIN LOOP — 背景・パーティクル・ビートの同期
+       ========================================================================= */
+    let lastT = performance.now();
+    let shownPts = 0;
+    let cardCenterAt = 0;
+    let ambientAt = 0;
+    function frame(t) {
+      const dt = Math.min(0.05, (t - lastT) / 1000);
+      lastT = t;
+
+      const kickRaw = audio.getKick(t);
+      const kick = state.motion ? kickRaw * (hype.level >= 1 ? 1 : 0.35) : 0;
+      el.app.style.setProperty('--kick', kick.toFixed(3));
+
+      const s = bg.state;
+      const targetE = (state.motion ? 1 : 0.55) * Math.min(1.3, hype.level / 7);
+      s.E += (targetE - s.E) * Math.min(1, dt * 1.6);
+      s.kick = kick;
+      s.flash *= Math.exp(-dt * 5);
+      s.hue = (s.hue + dt * 0.02) % 1;
+      if (t - cardCenterAt > 300) {
+        const c = centerOf(el.gameCard);
+        s.cx = c.x; s.cy = c.y; cardCenterAt = t;
+      }
+      bg.render(t);
+
+      // 高レベル時はときどき紙吹雪が降る
+      if (state.motion && hype.level >= 7 && t - ambientAt > 1600) {
+        ambientAt = t;
+        fx.rain(innerWidth, 6 + (hype.level - 7) * 6, { kinds: hype.level >= 9 ? ['confetti', 'mini', 'digit'] : ['confetti', 'digit'] });
+      }
+      fx.update(dt);
+      fx.draw();
+
+      // ドパpt のカウントアップ
+      if (shownPts !== state.points) {
+        const diff = state.points - shownPts;
+        shownPts = Math.abs(diff) < 2 ? state.points : Math.round(shownPts + diff * Math.min(1, dt * 10));
+        el.dopaPts.textContent = shownPts.toLocaleString();
+      }
+      requestAnimationFrame(frame);
+    }
+
+    /* =========================================================================
+       INIT
+       ========================================================================= */
+    function init() {
+      loadSavedStats();
+      el.autoAdvanceCheck.checked = state.autoAdvance;
+      updateDigitsUI();
+      updateTypeUI();
+      updateDivisorUI();
+      updateSoundUI();
+      updateMotionUI();
+      updateFullscreenUI();
+      applyLevel();
+      state.mode = 'practice';
+      switchMode('practice');
+      mascot.say('倍数のなぞ、<br>いっしょに解こう！');
+      requestAnimationFrame(frame);
+    }
+    if (document.readyState === 'loading') window.addEventListener('DOMContentLoaded', init);
+    else init();
+  </script>
+</body>
+</html>
