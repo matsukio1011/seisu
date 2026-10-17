@@ -1595,7 +1595,7 @@
         this.h = 0;
         this.miniImg = dopaSprite();
         this.frameTick = 0;
-        this.mouse = { x: -200, y: -200, down: false, angle: 0, trail: [] };
+        this.mouse = { x: -200, y: -200, down: false, angle: 0 };
         this.resize();
         window.addEventListener('resize', () => this.resize());
         window.addEventListener('mousemove', (e) => this._onMouseMove(e), { passive: true });
@@ -1604,51 +1604,8 @@
       }
 
       _onMouseMove(e) {
-        const nx = e.clientX;
-        const ny = e.clientY;
-        const dx = nx - this.mouse.x;
-        const dy = ny - this.mouse.y;
-        const dist = Math.hypot(dx, dy);
-        this.mouse.x = nx;
-        this.mouse.y = ny;
-        const lv = state.dopaMode ? (state.level || 0) : 0;
-        this.mouse.trail.push({
-          x: nx,
-          y: ny,
-          life: 1,
-          color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
-          r: 8 + lv * 1.1
-        });
-        const maxTrail = 18 + lv * 3;
-        if (this.mouse.trail.length > maxTrail) {
-          this.mouse.trail.splice(0, this.mouse.trail.length - maxTrail);
-        }
-        if (dist > 5 && this.particles.length < 650) {
-          const count = state.dopaMode ? (1 + Math.floor(lv / 3)) : 1;
-          const shapes = lv >= 7 ? ['star', 'spark', 'coin', 'heart', 'confetti']
-                       : lv >= 4 ? ['star', 'spark', 'coin']
-                       : ['star', 'spark'];
-          for (let i = 0; i < count; i++) {
-            const shape = shapes[Math.floor(Math.random() * shapes.length)];
-            this.particles.push({
-              x: nx + (Math.random() - 0.5) * 12,
-              y: ny + (Math.random() - 0.5) * 12,
-              vx: (Math.random() - 0.5) * (2.5 + lv * 0.35),
-              vy: (Math.random() - 0.5) * (2.5 + lv * 0.35) - 0.6,
-              g: 0.08,
-              drag: 0.96,
-              size: (5 + Math.random() * 5) * (1 + lv * 0.06),
-              rot: Math.random() * Math.PI * 2,
-              vr: (Math.random() - 0.5) * 0.25,
-              wobble: Math.random() * Math.PI * 2,
-              vw: 0.15,
-              color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
-              shape,
-              life: 0.85,
-              decay: 0.032
-            });
-          }
-        }
+        this.mouse.x = e.clientX;
+        this.mouse.y = e.clientY;
       }
 
       _onMouseDown(e) {
@@ -2055,32 +2012,7 @@
       }
 
       _drawCursorOverlay(ctx, level, kick) {
-        for (let i = this.mouse.trail.length - 1; i >= 0; i--) {
-          const pt = this.mouse.trail[i];
-          pt.life -= 0.055;
-          if (pt.life <= 0) {
-            this.mouse.trail.splice(i, 1);
-          }
-        }
-        if (this.mouse.x < 0 || this.mouse.y < 0) return;
-
-        // Rainbow comet ribbon along mouse path
-        if (this.mouse.trail.length > 1) {
-          for (let i = 1; i < this.mouse.trail.length; i++) {
-            const p0 = this.mouse.trail[i - 1];
-            const p1 = this.mouse.trail[i];
-            ctx.save();
-            ctx.globalAlpha = Math.max(0, p1.life * 0.72);
-            ctx.strokeStyle = p1.color;
-            ctx.lineWidth = Math.max(2, p1.r * p1.life);
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(p0.x, p0.y);
-            ctx.lineTo(p1.x, p1.y);
-            ctx.stroke();
-            ctx.restore();
-          }
-        }
+        if (!state.dopaMode || this.mouse.x < 0 || this.mouse.y < 0) return;
 
         // High-visibility animated cursor halo & orbiting stars
         this.mouse.angle += 0.06 + level * 0.015;
