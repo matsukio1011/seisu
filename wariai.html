@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="ja" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>割合・暗算アニマル道場</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&family=Inter:wght@600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"M PLUS Rounded 1c"', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        @keyframes pop {
+            0% { transform: scale(0.92); opacity: 0.5; }
+            60% { transform: scale(1.03); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: pop 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+        .animate-shake {
+            animation: shake 0.25s ease-in-out;
+        }
+        /* Hide scrollbars globally for clean single-page view */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        /* Vertical stacked fraction styling */
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            line-height: 1.05;
+            margin: 0 0.12em;
+            font-size: 0.78em;
+            transform: translateY(-0.06em);
+        }
+        .frac-num {
+            border-bottom: 2px solid currentColor;
+            padding: 0 0.2em 0.06em;
+            width: 100%;
+            text-align: center;
+        }
+        .frac-den {
+            padding: 0.06em 0.2em 0;
+            width: 100%;
+            text-align: center;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(1.2deg); }
+        }
+        .animate-float {
+            animation: float 2.6s ease-in-out infinite;
+        }
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spinSlow 16s linear infinite;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col justify-between p-2 sm:p-4 transition-colors duration-300">
+
+    <header class="w-full max-w-5xl mx-auto flex items-center justify-between bg-white dark:bg-slate-900 px-4 py-2.5 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 shrink-0">
+        <div class="flex items-center gap-2.5">
+            <span id="header-icon" class="text-2xl sm:text-3xl transition-transform duration-300 hover:scale-110">🐰</span>
+            <div>
+                <h1 class="text-base sm:text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-600 to-amber-500 dark:from-indigo-400 dark:to-amber-400 bg-clip-text text-transparent">
+                    割合・暗算アニマル道場
+                </h1>
+                <p id="header-subtitle" class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 hidden sm:block">
+                    ウサギ級：九九だけで一瞬で解ける癒やし系レベル
+                </p>
+            </div>
+        </div>
+
+        <!-- Score & Utility Buttons -->
+        <div class="flex items-center gap-2 sm:gap-3">
+            <div class="flex items-center gap-3 bg-slate-100 dark:bg-slate-800/90 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold">
+                <div class="flex items-center gap-1">
+                    <span class="text-slate-400">正解:</span>
+                    <span id="score-val" class="text-emerald-600 dark:text-emerald-400 text-sm sm:text-base">0</span>
+                </div>
+                <div class="h-3 w-[1px] bg-slate-300 dark:bg-slate-700"></div>
+                <div class="flex items-center gap-1">
+                    <span class="text-amber-500">🔥</span>
+                    <span id="streak-val" class="text-amber-600 dark:text-amber-400 text-sm sm:text-base">0</span>
+                    <span id="target-streak-display" class="text-xs text-slate-400 dark:text-slate-500 font-bold">/ 10</span>
+                </div>
+            </div>
+
+            <!-- Portal Link -->
+            <a href="index.html" title="ポータルへ戻る" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition active:scale-95 flex items-center justify-center">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            </a>
+
+            <!-- Sound Toggle -->
+            <button id="btn-sound" onclick="toggleSound()" title="効果音 ON/OFF" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition active:scale-95">
+                <svg id="icon-sound-on" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+                <svg id="icon-sound-off" class="w-5 h-5 hidden text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+            </button>
+
+            <!-- Dark Mode Toggle -->
+            <button id="btn-theme" onclick="toggleDarkMode()" title="ダークモード切替" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition active:scale-95">
+                <!-- Sun Icon -->
+                <svg id="icon-sun" class="w-5 h-5 hidden dark:block text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                <!-- Moon Icon -->
+                <svg id="icon-moon" class="w-5 h-5 block dark:hidden text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            </button>
+
+            <!-- Fullscreen Button -->
+            <button id="btn-fullscreen" onclick="toggleFullScreen()" title="全画面表示" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition active:scale-95">
+                <svg id="icon-fs-enter" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                <svg id="icon-fs-exit" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <section class="w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-1.5 sm:gap-2 my-1.5 shrink-0">
+        <!-- Difficulty Selector -->
+        <div class="bg-white dark:bg-slate-900 p-2 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+            <div class="text-[11px] font-bold text-slate-400 dark:text-slate-500 px-1 mb-1 flex justify-between">
+                <span>1. 難易度（動物）</span>
+                <span id="level-badge" class="text-emerald-600 dark:text-emerald-400">全50問</span>
+            </div>
+            <div class="grid grid-cols-3 gap-1">
+                <button onclick="setDifficulty('rabbit')" id="diff-rabbit" class="diff-btn py-1.5 px-0.5 rounded-xl text-xs font-bold flex items-center justify-center gap-0.5 transition-all">
+                    <span>🐰</span><span class="truncate">ウサギ</span>
+                </button>
+                <button onclick="setDifficulty('collie')" id="diff-collie" class="diff-btn py-1.5 px-0.5 rounded-xl text-xs font-bold flex items-center justify-center gap-0.5 transition-all">
+                    <span>🐕</span><span class="truncate">コリー</span>
+                </button>
+                <button onclick="setDifficulty('tiger')" id="diff-tiger" class="diff-btn py-1.5 px-0.5 rounded-xl text-xs font-bold flex items-center justify-center gap-0.5 transition-all">
+                    <span>🐯</span><span class="truncate">トラ</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Sentence Pattern Selector -->
+        <div class="bg-white dark:bg-slate-900 p-2 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+            <div class="text-[11px] font-bold text-slate-400 dark:text-slate-500 px-1 mb-1">
+                2. 出題の文型
+            </div>
+            <div class="grid grid-cols-3 gap-1">
+                <button onclick="setPattern('ABC')" id="pat-ABC" class="pat-btn py-1.5 px-0.5 rounded-xl text-xs font-bold transition-all">
+                    AのBはC
+                </button>
+                <button onclick="setPattern('CAB')" id="pat-CAB" class="pat-btn py-1.5 px-0.5 rounded-xl text-xs font-bold transition-all">
+                    CはAのB
+                </button>
+                <button onclick="setPattern('RANDOM')" id="pat-RANDOM" class="pat-btn py-1.5 px-0.5 rounded-xl text-xs font-bold transition-all">
+                    🎲混ぜる
+                </button>
+            </div>
+        </div>
+
+        <!-- Target Blank Selector -->
+        <div class="bg-white dark:bg-slate-900 p-2 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+            <div class="text-[11px] font-bold text-slate-400 dark:text-slate-500 px-1 mb-1">
+                3. どこを「□」にする？
+            </div>
+            <div class="grid grid-cols-4 gap-1">
+                <button onclick="setTarget('A')" id="target-A" class="target-btn py-1 rounded-xl text-xs font-bold transition-all">
+                    A <span class="text-[9px] block font-normal opacity-80">元数</span>
+                </button>
+                <button onclick="setTarget('B')" id="target-B" class="target-btn py-1 rounded-xl text-xs font-bold transition-all">
+                    B <span class="text-[9px] block font-normal opacity-80">割合</span>
+                </button>
+                <button onclick="setTarget('C')" id="target-C" class="target-btn py-1 rounded-xl text-xs font-bold transition-all">
+                    C <span class="text-[9px] block font-normal opacity-80">結果</span>
+                </button>
+                <button onclick="setTarget('RANDOM')" id="target-RANDOM" class="target-btn py-1 rounded-xl text-xs font-bold transition-all">
+                    🎲 <span class="text-[9px] block font-normal opacity-80">ランダム</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Expression Type Selector -->
+        <div class="bg-white dark:bg-slate-900 p-2 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+            <div class="text-[11px] font-bold text-slate-400 dark:text-slate-500 px-1 mb-1">
+                4. 割合（B）の表記
+            </div>
+            <div class="grid grid-cols-5 gap-1">
+                <button onclick="setFormat('ALL')" id="fmt-ALL" class="fmt-btn py-1.5 rounded-xl text-[11px] font-bold transition-all">全て</button>
+                <button onclick="setFormat('0')" id="fmt-0" class="fmt-btn py-1.5 rounded-xl text-[11px] font-bold transition-all">％</button>
+                <button onclick="setFormat('1')" id="fmt-1" class="fmt-btn py-1.5 rounded-xl text-[11px] font-bold transition-all">歩合</button>
+                <button onclick="setFormat('2')" id="fmt-2" class="fmt-btn py-1.5 rounded-xl text-[11px] font-bold transition-all">小数</button>
+                <button onclick="setFormat('3')" id="fmt-3" class="fmt-btn py-1.5 rounded-xl text-[11px] font-bold transition-all">分数</button>
+            </div>
+        </div>
+
+        <!-- Target Streak Selector -->
+        <div class="col-span-2 md:col-span-1 bg-white dark:bg-slate-900 p-2 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+            <div class="text-[11px] font-bold text-slate-400 dark:text-slate-500 px-1 mb-1 flex justify-between">
+                <span>5. 連続正解目標</span>
+                <span id="streak-target-badge" class="text-amber-500 font-bold">10問</span>
+            </div>
+            <div class="grid grid-cols-4 gap-1">
+                <button onclick="setTargetStreak(5)" id="target-streak-5" class="streak-btn py-1.5 rounded-xl text-[11px] font-bold transition-all">5問</button>
+                <button onclick="setTargetStreak(10)" id="target-streak-10" class="streak-btn py-1.5 rounded-xl text-[11px] font-bold transition-all">10問</button>
+                <button onclick="setTargetStreak(20)" id="target-streak-20" class="streak-btn py-1.5 rounded-xl text-[11px] font-bold transition-all">20問</button>
+                <button onclick="setTargetStreak(0)" id="target-streak-0" class="streak-btn py-1.5 rounded-xl text-[11px] font-bold transition-all">なし</button>
+            </div>
+        </div>
+    </section>
+
+    <main class="w-full max-w-5xl mx-auto flex-1 flex flex-col justify-between gap-2 sm:gap-3 min-h-0">
+        
+        <!-- Question Display Box -->
+        <div id="question-card" class="flex-1 bg-white dark:bg-slate-900 rounded-3xl shadow-md border-2 border-slate-200/90 dark:border-slate-800 flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden min-h-0">
+            
+            <!-- Streak Progress Bar inside Card -->
+            <div class="absolute top-0 left-0 right-0 h-1 bg-slate-100 dark:bg-slate-800/80">
+                <div id="streak-progress-bar" class="h-full bg-gradient-to-r from-amber-400 via-amber-500 to-emerald-500 transition-all duration-300" style="width: 0%;"></div>
+            </div>
+
+            <!-- Top Info Pill inside Card -->
+            <div class="absolute top-3 left-4 right-4 flex items-center justify-between text-xs font-bold text-slate-400 dark:text-slate-500">
+                <span id="question-meta" class="bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">
+                    セット #1 / 表記：％
+                </span>
+                <button onclick="toggleHint()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 px-3 py-1 rounded-full transition flex items-center gap-1">
+                    <span>💡</span><span>他の表現・暗算ヒント</span>
+                </button>
+            </div>
+
+            <!-- Main Formula: Dynamically switches between [A] の [B] は [C] and [C] は [A] の [B] -->
+            <div id="formula-container" class="flex flex-wrap items-center justify-center gap-2 sm:gap-5 my-auto py-2">
+                <!-- Slot 1 -->
+                <div id="slot-1" class="px-4 py-2 sm:px-6 sm:py-4 rounded-2xl text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight transition-all">
+                    300
+                </div>
+
+                <span id="particle-1" class="text-2xl sm:text-4xl font-bold text-slate-400 dark:text-slate-500">の</span>
+
+                <!-- Slot 2 -->
+                <div id="slot-2" class="px-4 py-2 sm:px-6 sm:py-4 rounded-2xl text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight transition-all">
+                    20％
+                </div>
+
+                <span id="particle-2" class="text-2xl sm:text-4xl font-bold text-slate-400 dark:text-slate-500">は</span>
+
+                <!-- Slot 3 -->
+                <div id="slot-3" class="px-4 py-2 sm:px-6 sm:py-4 rounded-2xl text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight transition-all">
+                    60
+                </div>
+            </div>
+
+            <!-- Feedback / Hint Bar at Bottom of Card -->
+            <div id="feedback-bar" class="w-full max-w-2xl min-h-[2.5rem] px-4 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 flex items-center justify-between text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300 transition-all">
+                <div id="feedback-text" class="truncate">
+                    □ に入る正しい数字・割合を下から選ぼう！（キーボードの 1〜6 でも回答可能）
+                </div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden shrink-0 ml-3 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1 rounded-lg text-xs sm:text-sm font-bold shadow transition">
+                    次の問題へ (Space) →
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 shrink-0 h-36 sm:h-40">
+            <button onclick="selectOption(0)" id="opt-0" class="choice-btn group relative rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-400 shadow-sm hover:shadow-md transition-all flex items-center justify-center p-2 active:scale-95">
+                <span class="absolute top-2 left-3 text-[11px] font-bold text-slate-400 dark:text-slate-600 group-hover:text-indigo-400">1</span>
+                <span id="opt-text-0" class="text-xl sm:text-3xl font-extrabold">60</span>
+            </button>
+            <button onclick="selectOption(1)" id="opt-1" class="choice-btn group relative rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-400 shadow-sm hover:shadow-md transition-all flex items-center justify-center p-2 active:scale-95">
+                <span class="absolute top-2 left-3 text-[11px] font-bold text-slate-400 dark:text-slate-600 group-hover:text-indigo-400">2</span>
+                <span id="opt-text-1" class="text-xl sm:text-3xl font-extrabold">40</span>
+            </button>
+            <button onclick="selectOption(2)" id="opt-2" class="choice-btn group relative rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-400 shadow-sm hover:shadow-md transition-all flex items-center justify-center p-2 active:scale-95">
+                <span class="absolute top-2 left-3 text-[11px] font-bold text-slate-400 dark:text-slate-600 group-hover:text-indigo-400">3</span>
+                <span id="opt-text-2" class="text-xl sm:text-3xl font-extrabold">80</span>
+            </button>
+            <button onclick="selectOption(3)" id="opt-3" class="choice-btn group relative rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-400 shadow-sm hover:shadow-md transition-all flex items-center justify-center p-2 active:scale-95">
+                <span class="absolute top-2 left-3 text-[11px] font-bold text-slate-400 dark:text-slate-600 group-hover:text-indigo-400">4</span>
+                <span id="opt-text-3" class="text-xl sm:text-3xl font-extrabold">50</span>
+            </button>
+            <button onclick="selectOption(4)" id="opt-4" class="choice-btn group relative rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-400 shadow-sm hover:shadow-md transition-all flex items-center justify-center p-2 active:scale-95">
+                <span class="absolute top-2 left-3 text-[11px] font-bold text-slate-400 dark:text-slate-600 group-hover:text-indigo-400">5</span>
+                <span id="opt-text-4" class="text-xl sm:text-3xl font-extrabold">75</span>
+            </button>
+            <button onclick="selectOption(5)" id="opt-5" class="choice-btn group relative rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-400 shadow-sm hover:shadow-md transition-all flex items-center justify-center p-2 active:scale-95">
+                <span class="absolute top-2 left-3 text-[11px] font-bold text-slate-400 dark:text-slate-600 group-hover:text-indigo-400">6</span>
+                <span id="opt-text-5" class="text-xl sm:text-3xl font-extrabold">90</span>
+            </button>
+        </div>
+    </main>
+
+    <!-- Pass / Clear Modal -->
+    <div id="pass-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-sm transition-all duration-300">
+        <!-- Confetti Canvas -->
+        <canvas id="confetti-canvas" class="absolute inset-0 pointer-events-none w-full h-full z-0"></canvas>
+
+        <div class="relative z-10 w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border-2 border-amber-400/90 p-5 sm:p-6 text-center flex flex-col items-center animate-pop">
+            
+            <!-- Sparkle Badge -->
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500/20 to-emerald-500/20 border border-amber-400/50 text-amber-600 dark:text-amber-400 font-extrabold text-xs mb-2">
+                <span>✨</span><span>合格おめでとう！</span><span>✨</span>
+            </div>
+
+            <!-- Title & Subtitle -->
+            <h2 id="pass-title" class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-500 bg-clip-text text-transparent">
+                目標連続正解を達成！
+            </h2>
+            <p id="pass-subtitle" class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 font-bold">
+                ウサギ級 10問連続正解クリア！
+            </p>
+
+            <!-- Animal Celebration Illustration (SVG Container) -->
+            <div id="pass-animal-art" class="my-2.5 w-44 h-44 sm:w-52 sm:h-52 flex items-center justify-center">
+                <!-- SVG dynamically inserted -->
+            </div>
+
+            <!-- Animal Speech Bubble -->
+            <div class="relative bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold border border-slate-200 dark:border-slate-700 max-w-sm mb-3.5 shadow-sm">
+                <span id="pass-dialogue">「ぴょんぴょん！九九の計算もバッチリ！すごい集中力だぴょん！🐰✨」</span>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="w-full grid grid-cols-2 gap-2 bg-slate-50 dark:bg-slate-800/60 p-2 rounded-2xl border border-slate-200/80 dark:border-slate-800 mb-3.5 text-xs font-bold text-slate-500 dark:text-slate-400">
+                <div class="flex flex-col">
+                    <span class="text-[10px] text-slate-400">連続正解</span>
+                    <span id="pass-streak-count" class="text-base font-extrabold text-amber-500">10問達成</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-[10px] text-slate-400">総正解数</span>
+                    <span id="pass-total-score" class="text-base font-extrabold text-emerald-500">10問</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="w-full flex flex-col sm:flex-row gap-2">
+                <button onclick="retryPassChallenge()" class="flex-1 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-extrabold transition active:scale-95 flex items-center justify-center gap-1">
+                    <span>🔄</span><span>もう一度挑戦</span>
+                </button>
+                <button id="btn-next-level" onclick="advancePassLevel()" class="flex-1 py-2 px-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white text-xs sm:text-sm font-extrabold shadow-md shadow-indigo-500/25 transition active:scale-95 flex items-center justify-center gap-1">
+                    <span id="btn-next-icon">🐕</span><span id="btn-next-text">次の難易度へ</span>
+                </button>
+                <button onclick="continuePlaying()" class="py-2 px-3 rounded-xl bg-slate-200/80 hover:bg-slate-300 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold transition active:scale-95">
+                    続けて練習
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 割合マスター辞書（％ → [％表記, 歩合表記, 小数倍表記, 分数倍表記]）
+        const RATE_MAP = {
+            5:  ["5％", "5分", "0.05倍", "1/20倍"],
+            10: ["10％", "1割", "0.1倍", "1/10倍"],
+            12: ["12％", "1割2分", "0.12倍", "3/25倍"],
+            15: ["15％", "1割5分", "0.15倍", "3/20倍"],
+            16: ["16％", "1割6分", "0.16倍", "4/25倍"],
+            20: ["20％", "2割", "0.2倍", "1/5倍"],
+            24: ["24％", "2割4分", "0.24倍", "6/25倍"],
+            25: ["25％", "2割5分", "0.25倍", "1/4倍"],
+            28: ["28％", "2割8分", "0.28倍", "7/25倍"],
+            30: ["30％", "3割", "0.3倍", "3/10倍"],
+            32: ["32％", "3割2分", "0.32倍", "8/25倍"],
+            35: ["35％", "3割5分", "0.35倍", "7/20倍"],
+            36: ["36％", "3割6分", "0.36倍", "9/25倍"],
+            40: ["40％", "4割", "0.4倍", "2/5倍"],
+            44: ["44％", "4割4分", "0.44倍", "11/25倍"],
+            45: ["45％", "4割5分", "0.45倍", "9/20倍"],
+            48: ["48％", "4割8分", "0.48倍", "12/25倍"],
+            50: ["50％", "5割", "0.5倍", "1/2倍"],
+            55: ["55％", "5割5分", "0.55倍", "11/20倍"],
+            60: ["60％", "6割", "0.6倍", "3/5倍"],
+            65: ["65％", "6割5分", "0.65倍", "13/20倍"],
+            70: ["70％", "7割", "0.7倍", "7/10倍"],
+            75: ["75％", "7割5分", "0.75倍", "3/4倍"],
+            80: ["80％", "8割", "0.8倍", "4/5倍"],
+            90: ["90％", "9割", "0.9倍", "9/10倍"]
+        };
+
+        // これまでの3パターン（各50セット＋例題の300×20%=60を含む）
+        const DATASETS = {
+            // パターン1：ウサギ級（キリの良い100〜1000の暗算）
+            rabbit: [
+                [300,20],[100,10],[100,20],[100,25],[100,30],[100,40],[100,50],[100,60],[100,70],[100,75],
+                [100,80],[100,90],[100,5],[200,10],[200,20],[200,25],[200,30],[200,40],[200,50],[200,60],
+                [200,70],[200,75],[200,80],[200,90],[200,5],[300,10],[300,30],[300,40],[300,50],[300,60],
+                [300,70],[300,80],[400,10],[400,20],[400,25],[400,30],[400,50],[400,75],[500,10],[500,20],
+                [500,30],[500,40],[500,50],[500,60],[500,70],[500,80],[600,50],[800,25],[800,75],[1000,30]
+            ],
+            // パターン2：ボーダーコリー級（320の20％＝64 系統の50セット）
+            collie: [
+                [120,20],[120,25],[120,30],[120,40],[120,50],[120,75],[140,20],[140,30],[150,20],[150,30],
+                [150,40],[150,60],[160,20],[160,25],[160,30],[160,75],[180,20],[180,30],[180,40],[180,50],
+                [240,10],[240,20],[240,25],[240,30],[240,40],[240,50],[240,75],[250,20],[250,40],[280,20],
+                [280,30],[320,10],[320,20],[320,25],[320,30],[320,50],[320,75],[350,20],[350,40],[360,20],
+                [360,25],[360,30],[360,40],[360,75],[420,20],[450,20],[480,25],[540,20],[560,20],[640,25]
+            ],
+            // パターン3：野生のトラ級（450の36％＝162 系統の50セット）
+            tiger: [
+                [150,24],[150,28],[150,32],[150,36],[150,44],[240,15],[240,35],[240,45],[240,55],[240,65],
+                [250,12],[250,16],[250,24],[250,28],[250,32],[250,36],[250,44],[250,48],[280,15],[280,35],
+                [280,45],[320,15],[320,35],[320,45],[350,12],[350,16],[350,24],[350,32],[350,36],[360,15],
+                [360,35],[360,45],[360,55],[420,15],[420,35],[420,45],[450,12],[450,16],[450,24],[450,28],
+                [450,32],[450,36],[450,44],[450,48],[480,15],[480,35],[480,45],[550,12],[550,16],[550,24]
+            ]
+        };
+
+        const LEVEL_INFO = {
+            rabbit: {
+                icon: "🐰",
+                name: "ウサギ級",
+                desc: "ウサギ級：九九の基本だけで一瞬で片が付くおとなしい癒やし系レベル",
+                rates: [5, 10, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90],
+                quote: "「ぴょんぴょん！九九の計算もバッチリ！すごい集中力だぴょん！🐰✨」",
+                nextDiff: "collie",
+                nextDiffName: "コリー級へ進む",
+                nextDiffIcon: "🐕"
+            },
+            collie: {
+                icon: "🐕",
+                name: "ボーダーコリー級",
+                desc: "ボーダーコリー級：1ステップの掛け算や割り算の身のこなしを楽しむ実戦レベル",
+                rates: [10, 20, 25, 30, 40, 50, 60, 75],
+                quote: "「ワンだふる！素早い計算と的確な判断、見事な合格だワン！🐕🌟」",
+                nextDiff: "tiger",
+                nextDiffName: "トラ級へ進む",
+                nextDiffIcon: "🐯"
+            },
+            tiger: {
+                icon: "🐯",
+                name: "野生のトラ級",
+                desc: "野生のトラ級：「倍と半分」や「分数化」の知恵を武器に仕留める上級レベル",
+                rates: [12, 15, 16, 24, 28, 32, 35, 36, 44, 45, 48, 55, 65],
+                quote: "「がおーーっ！難問をことごとく仕留めたな！まさに暗算の王者じゃ！🐯🔥」",
+                nextDiff: null,
+                nextDiffName: "全制覇マスター！",
+                nextDiffIcon: "👑"
+            }
+        };
+
+        // 動物のお祝いSVGイラスト
+        const ANIMAL_SVGS = {
+            rabbit: `
+                <svg viewBox="0 0 240 220" class="w-full h-full drop-shadow-xl animate-float">
+                    <!-- 背景の光彩 -->
+                    <circle cx="120" cy="115" r="88" fill="#fef9c3" opacity="0.4" class="animate-spin-slow origin-center"/>
+                    <!-- きらきら星・紙吹雪 -->
+                    <polygon points="35,45 40,55 50,55 42,62 45,72 35,66 25,72 28,62 20,55 30,55" fill="#f59e0b"/>
+                    <polygon points="205,48 209,56 218,56 211,62 214,70 205,65 196,70 199,62 192,56 201,56" fill="#ec4899"/>
+                    <circle cx="48" cy="138" r="6" fill="#38bdf8"/>
+                    <circle cx="192" cy="132" r="7" fill="#34d399"/>
+                    <circle cx="178" cy="38" r="5" fill="#fbbf24"/>
+                    <!-- ウサギの長い耳 -->
+                    <ellipse cx="88" cy="62" rx="15" ry="44" transform="rotate(-15 88 62)" fill="#ffffff" stroke="#f472b6" stroke-width="3.5"/>
+                    <ellipse cx="88" cy="62" rx="8" ry="32" transform="rotate(-15 88 62)" fill="#fbcfe8"/>
+                    <ellipse cx="152" cy="62" rx="15" ry="44" transform="rotate(15 152 62)" fill="#ffffff" stroke="#f472b6" stroke-width="3.5"/>
+                    <ellipse cx="152" cy="62" rx="8" ry="32" transform="rotate(15 152 62)" fill="#fbcfe8"/>
+                    <!-- きらめくティアラ -->
+                    <path d="M102 82 L110 66 L120 77 L130 66 L138 82 Z" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+                    <circle cx="110" cy="66" r="3" fill="#ef4444"/>
+                    <circle cx="120" cy="77" r="3" fill="#3b82f6"/>
+                    <circle cx="130" cy="66" r="3" fill="#10b981"/>
+                    <!-- 体 -->
+                    <ellipse cx="120" cy="162" rx="40" ry="38" fill="#ffffff" stroke="#f472b6" stroke-width="3.5"/>
+                    <!-- ピンクの胸リボン -->
+                    <path d="M112 145 C108 140 102 142 102 148 C102 154 112 158 120 165 C128 158 138 154 138 148 C138 142 132 140 128 145 Z" fill="#f43f5e"/>
+                    <!-- 顔 -->
+                    <circle cx="120" cy="114" r="45" fill="#ffffff" stroke="#f472b6" stroke-width="3.5"/>
+                    <!-- ほっぺ -->
+                    <ellipse cx="94" cy="120" rx="9" ry="6" fill="#fbcfe8"/>
+                    <ellipse cx="146" cy="120" rx="9" ry="6" fill="#fbcfe8"/>
+                    <!-- キラキラの瞳 -->
+                    <ellipse cx="102" cy="108" rx="5" ry="7" fill="#1e293b"/>
+                    <circle cx="100" cy="106" r="2.2" fill="#ffffff"/>
+                    <ellipse cx="138" cy="108" rx="5" ry="7" fill="#1e293b"/>
+                    <circle cx="136" cy="106" r="2.2" fill="#ffffff"/>
+                    <!-- 鼻と口 -->
+                    <polygon points="120,116 116,112 124,112" fill="#f43f5e"/>
+                    <path d="M116 118 Q120 122 120 120 Q120 122 124 118" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round"/>
+                    <!-- バンザイの両前足 -->
+                    <ellipse cx="72" cy="128" rx="12" ry="18" transform="rotate(-38 72 128)" fill="#ffffff" stroke="#f472b6" stroke-width="3.5"/>
+                    <ellipse cx="168" cy="128" rx="12" ry="18" transform="rotate(38 168 128)" fill="#ffffff" stroke="#f472b6" stroke-width="3.5"/>
+                    <!-- クラッカーから出る花吹雪 -->
+                    <polygon points="56,105 45,98 52,90" fill="#f59e0b"/>
+                    <polygon points="184,105 195,98 188,90" fill="#06b6d4"/>
+                </svg>
+            `,
+            collie: `
+                <svg viewBox="0 0 240 220" class="w-full h-full drop-shadow-xl animate-float">
+                    <!-- 背景の光彩 -->
+                    <circle cx="120" cy="115" r="88" fill="#bae6fd" opacity="0.35" class="animate-spin-slow origin-center"/>
+                    <!-- キラキラ星・紙吹雪 -->
+                    <polygon points="38,45 43,55 53,55 45,62 48,72 38,66 28,72 31,62 23,55 33,55" fill="#f59e0b"/>
+                    <polygon points="202,46 206,54 215,54 208,60 211,68 202,63 193,68 196,60 189,54 198,54" fill="#3b82f6"/>
+                    <circle cx="44" cy="142" r="6" fill="#10b981"/>
+                    <circle cx="196" cy="138" r="7" fill="#f43f5e"/>
+                    <!-- コリーの黒い耳 -->
+                    <path d="M68 82 C58 62 70 45 88 55 C96 62 96 80 84 90 Z" fill="#1e293b" stroke="#0f172a" stroke-width="2"/>
+                    <path d="M172 82 C182 62 170 45 152 55 C144 62 144 80 156 90 Z" fill="#1e293b" stroke="#0f172a" stroke-width="2"/>
+                    <!-- 体（黒と白い毛並み） -->
+                    <ellipse cx="120" cy="168" rx="44" ry="38" fill="#1e293b"/>
+                    <!-- ふわふわの白い胸毛 -->
+                    <path d="M100 142 C106 174 134 174 140 142 C134 153 126 156 120 153 C114 156 106 153 100 142 Z" fill="#ffffff"/>
+                    <!-- 金メダル 🥇 -->
+                    <path d="M110 146 L115 162 L125 162 L130 146" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2"/>
+                    <circle cx="120" cy="170" r="13" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+                    <text x="120" y="175" font-size="12" font-weight="900" fill="#78350f" text-anchor="middle">1</text>
+                    <!-- 頭（黒ベース） -->
+                    <circle cx="120" cy="110" r="46" fill="#1e293b"/>
+                    <!-- コリー特有の白いブレーズ（鼻筋の白） -->
+                    <path d="M112 66 C112 88 98 100 98 122 C98 138 142 138 142 122 C142 100 128 88 128 66 Z" fill="#ffffff"/>
+                    <!-- 賢く優しい瞳 -->
+                    <ellipse cx="98" cy="104" rx="5" ry="6.5" fill="#334155"/>
+                    <circle cx="96" cy="102" r="2.2" fill="#ffffff"/>
+                    <ellipse cx="142" cy="104" rx="5" ry="6.5" fill="#334155"/>
+                    <circle cx="140" cy="102" r="2.2" fill="#ffffff"/>
+                    <!-- ほっぺのチーク -->
+                    <ellipse cx="86" cy="114" rx="6" ry="4" fill="#fda4af" opacity="0.8"/>
+                    <ellipse cx="154" cy="114" rx="6" ry="4" fill="#fda4af" opacity="0.8"/>
+                    <!-- 鼻と笑顔の口、舌ペロッ -->
+                    <ellipse cx="120" cy="118" rx="7" ry="5" fill="#0f172a"/>
+                    <path d="M116 124 Q120 126 124 124" stroke="#0f172a" stroke-width="2.5" fill="none"/>
+                    <path d="M117 125 C117 134 123 134 123 125 Z" fill="#f43f5e"/>
+                    <!-- 前足とお祝いトロフィー 🏆 -->
+                    <path d="M78 138 C74 128 88 126 95 136 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+                    <!-- トロフィー -->
+                    <path d="M182 112 L196 112 L193 134 C193 144 180 146 180 146 L180 154 L175 154 L175 158 L197 158 L197 154 L191 154 L191 146 C191 146 178 144 178 134 Z" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+                    <path d="M178 116 C171 116 171 127 179 129" fill="none" stroke="#d97706" stroke-width="2"/>
+                    <path d="M194 116 C201 116 201 127 193 129" fill="none" stroke="#d97706" stroke-width="2"/>
+                    <polygon points="187,126 189,130 193,130 190,133 191,137 187,134 183,137 184,133 181,130 185,130" fill="#ffffff"/>
+                </svg>
+            `,
+            tiger: `
+                <svg viewBox="0 0 240 220" class="w-full h-full drop-shadow-xl animate-float">
+                    <!-- 背景の光彩 -->
+                    <circle cx="120" cy="115" r="88" fill="#fed7aa" opacity="0.4" class="animate-spin-slow origin-center"/>
+                    <!-- 花火・星 -->
+                    <polygon points="36,40 41,50 51,50 43,57 46,67 36,61 26,67 29,57 21,50 31,50" fill="#f59e0b"/>
+                    <polygon points="204,44 208,52 217,52 210,58 213,66 204,61 195,66 198,58 191,52 200,52" fill="#ef4444"/>
+                    <circle cx="42" cy="140" r="6" fill="#8b5cf6"/>
+                    <circle cx="198" cy="142" r="7" fill="#10b981"/>
+                    <!-- トラのみみ -->
+                    <circle cx="82" cy="72" r="18" fill="#f97316" stroke="#c2410c" stroke-width="2.5"/>
+                    <circle cx="82" cy="72" r="10" fill="#fef08a"/>
+                    <circle cx="158" cy="72" r="18" fill="#f97316" stroke="#c2410c" stroke-width="2.5"/>
+                    <circle cx="158" cy="72" r="10" fill="#fef08a"/>
+                    <!-- 王者の王冠 👑 -->
+                    <path d="M96 68 L104 46 L120 60 L136 46 L144 68 Z" fill="#fbbf24" stroke="#b45309" stroke-width="2.5"/>
+                    <circle cx="104" cy="46" r="3.5" fill="#ef4444"/>
+                    <circle cx="120" cy="60" r="3.5" fill="#3b82f6"/>
+                    <circle cx="136" cy="46" r="3.5" fill="#10b981"/>
+                    <circle cx="120" cy="66" r="2.5" fill="#ec4899"/>
+                    <!-- 体 -->
+                    <ellipse cx="120" cy="168" rx="44" ry="38" fill="#f97316" stroke="#c2410c" stroke-width="2.5"/>
+                    <!-- 白いお腹 -->
+                    <ellipse cx="120" cy="172" rx="26" ry="24" fill="#fff7ed"/>
+                    <!-- 体のトラ縞 -->
+                    <path d="M78 165 L90 168 L78 175 Z" fill="#1e293b"/>
+                    <path d="M162 165 L150 168 L162 175 Z" fill="#1e293b"/>
+                    <!-- 頭 -->
+                    <circle cx="120" cy="112" r="48" fill="#f97316" stroke="#c2410c" stroke-width="2.5"/>
+                    <!-- 額の「王」の文様 -->
+                    <path d="M110 74 L130 74 M120 74 L120 86 M112 86 L128 86" stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
+                    <!-- ほっぺの縞模様 -->
+                    <path d="M74 106 L88 108 L74 114 Z" fill="#1e293b"/>
+                    <path d="M74 120 L86 120 L74 124 Z" fill="#1e293b"/>
+                    <path d="M166 106 L152 108 L166 114 Z" fill="#1e293b"/>
+                    <path d="M166 120 L154 120 L166 124 Z" fill="#1e293b"/>
+                    <!-- 白い口元マズル -->
+                    <ellipse cx="109" cy="125" rx="14" ry="11" fill="#fff7ed"/>
+                    <ellipse cx="131" cy="125" rx="14" ry="11" fill="#fff7ed"/>
+                    <!-- 瞳（凛々しくにっこり） -->
+                    <ellipse cx="98" cy="104" rx="6" ry="7" fill="#1e293b"/>
+                    <circle cx="96" cy="102" r="2.5" fill="#ffffff"/>
+                    <ellipse cx="142" cy="104" rx="6" ry="7" fill="#1e293b"/>
+                    <circle cx="140" cy="102" r="2.5" fill="#ffffff"/>
+                    <!-- 鼻と口と小さな牙 -->
+                    <polygon points="120,122 113,116 127,116" fill="#ec4899"/>
+                    <path d="M113 124 Q120 128 120 126 Q120 128 127 124" fill="none" stroke="#1e293b" stroke-width="2.2"/>
+                    <polygon points="112,126 115,131 116,126" fill="#ffffff"/>
+                    <polygon points="124,126 125,131 128,126" fill="#ffffff"/>
+                    <!-- 両手の力強いガッツポーズ！ -->
+                    <circle cx="66" cy="138" r="14" fill="#f97316" stroke="#c2410c" stroke-width="2.5"/>
+                    <path d="M62 130 C62 124 72 124 72 135" stroke="#fff7ed" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="174" cy="138" r="14" fill="#f97316" stroke="#c2410c" stroke-width="2.5"/>
+                    <path d="M178 130 C178 124 168 124 168 135" stroke="#fff7ed" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+            `
+        };
+
+        let state = {
+            difficulty: 'collie', // 'rabbit' | 'collie' | 'tiger'
+            patternMode: 'ABC',   // 'ABC' ('AのBはC') | 'CAB' ('CはAのB') | 'RANDOM'
+            targetMode: 'C',      // 'A' | 'B' | 'C' | 'RANDOM'
+            formatMode: 'ALL',    // 'ALL' | '0' | '1' | '2' | '3'
+            targetStreak: 10,     // 連続正解目標 (5, 10, 20, 0=なし)
+            score: 0,
+            streak: 0,
+            soundEnabled: true,
+            currentQ: null,
+            answered: false,
+            autoNextTimer: null,
+            isModalOpen: false
+        };
+
+        // Web Audio API Synthesizer for pleasant feedback sounds without external assets
+        let audioCtx = null;
+        function playSound(type) {
+            if (!state.soundEnabled) return;
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now);       // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.07);// E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.14);// G5
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(190, now);
+                    osc.frequency.linearRampToValueAtTime(140, now + 0.22);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                }
+            } catch (e) {
+                // Ignore audio errors if blocked by browser autoplay policy
+            }
+        }
+
+        // ファンファーレ効果音（Web Audio API）
+        function playFanfare() {
+            if (!state.soundEnabled) return;
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = audioCtx.currentTime;
+                // 明るい祝祭ファンファーレ (C5, C5, E5, G5, C6)
+                const notes = [
+                    { f: 523.25, time: 0, dur: 0.12 },
+                    { f: 523.25, time: 0.11, dur: 0.10 },
+                    { f: 659.25, time: 0.22, dur: 0.13 },
+                    { f: 783.99, time: 0.36, dur: 0.16 },
+                    { f: 1046.50, time: 0.54, dur: 0.80 },
+                    // 和音
+                    { f: 783.99, time: 0.54, dur: 0.80 },
+                    { f: 523.25, time: 0.54, dur: 0.80 }
+                ];
+                notes.forEach(n => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(n.f, now + n.time);
+                    gain.gain.setValueAtTime(0.18, now + n.time);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + n.time + n.dur);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + n.time);
+                    osc.stop(now + n.time + n.dur);
+                });
+            } catch (e) {}
+        }
+
+        // 紙吹雪アニメーション（Canvas Confetti）
+        let confettiAnimId = null;
+        function startConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const colors = ['#f59e0b', '#ec4899', '#3b82f6', '#10b981', '#8b5cf6', '#ef4444', '#fbbf24', '#06b6d4'];
+            const particles = [];
+            for (let i = 0; i < 90; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * -canvas.height * 0.9,
+                    size: Math.random() * 9 + 6,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    vx: (Math.random() - 0.5) * 3,
+                    vy: Math.random() * 3 + 2.4,
+                    rot: Math.random() * 360,
+                    vRot: (Math.random() - 0.5) * 8,
+                    shape: Math.random() > 0.4 ? 'rect' : 'circle'
+                });
+            }
+
+            function frame() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.rot += p.vRot;
+                    if (p.y > canvas.height + 20) {
+                        p.y = -20;
+                        p.x = Math.random() * canvas.width;
+                    }
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rot * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    if (p.shape === 'rect') {
+                        ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(0, 0, p.size / 2.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                });
+                confettiAnimId = requestAnimationFrame(frame);
+            }
+            if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
+            frame();
+        }
+
+        function stopConfetti() {
+            if (confettiAnimId) {
+                cancelAnimationFrame(confettiAnimId);
+                confettiAnimId = null;
+            }
+            const canvas = document.getElementById('confetti-canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        // 合格モーダル表示
+        function showPassModal() {
+            state.isModalOpen = true;
+            if (state.autoNextTimer) {
+                clearTimeout(state.autoNextTimer);
+                state.autoNextTimer = null;
+            }
+
+            const info = LEVEL_INFO[state.difficulty];
+            document.getElementById('pass-title').textContent = "目標達成！合格おめでとう！";
+            document.getElementById('pass-subtitle').textContent =
+                `${info.name} ${state.targetStreak}問 連続正解クリア！`;
+
+            // 動物のお祝い絵（SVG）とセリフ
+            document.getElementById('pass-animal-art').innerHTML = ANIMAL_SVGS[state.difficulty];
+            document.getElementById('pass-dialogue').textContent = info.quote;
+
+            // スコアサマリー
+            document.getElementById('pass-streak-count').textContent = `${state.streak}問 達成！`;
+            document.getElementById('pass-total-score').textContent = `${state.score}問`;
+
+            // 次の難易度ボタン
+            const nextIcon = document.getElementById('btn-next-icon');
+            const nextText = document.getElementById('btn-next-text');
+            if (info.nextDiff) {
+                nextIcon.textContent = info.nextDiffIcon;
+                nextText.textContent = info.nextDiffName;
+            } else {
+                nextIcon.textContent = info.nextDiffIcon;
+                nextText.textContent = info.nextDiffName;
+            }
+
+            const modal = document.getElementById('pass-modal');
+            modal.classList.remove('hidden');
+
+            playFanfare();
+            startConfetti();
+        }
+
+        function closePassModal() {
+            state.isModalOpen = false;
+            stopConfetti();
+            document.getElementById('pass-modal').classList.add('hidden');
+        }
+
+        function retryPassChallenge() {
+            closePassModal();
+            state.streak = 0;
+            updateScoreUI();
+            nextQuestion();
+        }
+
+        function advancePassLevel() {
+            const info = LEVEL_INFO[state.difficulty];
+            closePassModal();
+            state.streak = 0;
+            if (info.nextDiff) {
+                setDifficulty(info.nextDiff);
+            } else {
+                updateScoreUI();
+                nextQuestion();
+            }
+        }
+
+        function continuePlaying() {
+            closePassModal();
+            nextQuestion();
+        }
+
+        function setTargetStreak(n) {
+            state.targetStreak = parseInt(n, 10);
+            updateControlStyles();
+            updateScoreUI();
+        }
+
+        function shuffle(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        // Convert "X/Y" fraction notation into vertical stacked fraction HTML without "/"
+        function formatMathHTML(str) {
+            if (typeof str !== 'string') str = String(str);
+            return str.replace(/(\d+)\/(\d+)/g, '<span class="frac"><span class="frac-num">$1</span><span class="frac-den">$2</span></span>');
+        }
+
+        function generateChoicesForNumber(correctVal, poolValues, isBaseA) {
+            const set = new Set([correctVal]);
+            const step = isBaseA ? 20 : (correctVal % 10 === 0 ? 10 : 2);
+
+            // 1. Add plausible nearby arithmetic values
+            const candidates = [
+                Math.round(correctVal * 0.5),
+                Math.round(correctVal * 0.8),
+                Math.round(correctVal * 1.2),
+                Math.round(correctVal * 1.25),
+                Math.round(correctVal * 1.5),
+                correctVal + step,
+                correctVal - step,
+                correctVal + step * 2,
+                correctVal - step * 2,
+                correctVal + 10,
+                correctVal - 10
+            ].filter(v => v > 0 && v !== correctVal);
+
+            for (const c of shuffle(candidates)) {
+                if (set.size >= 6) break;
+                set.add(c);
+            }
+
+            // 2. Fill remaining from dataset pool if needed
+            for (const p of shuffle(poolValues)) {
+                if (set.size >= 6) break;
+                if (p > 0) set.add(p);
+            }
+
+            return shuffle(Array.from(set).slice(0, 6)).map(String);
+        }
+
+        function generateChoicesForRate(correctRatePct, formatIdx, difficulty) {
+            const levelRates = LEVEL_INFO[difficulty].rates;
+            const allRates = Object.keys(RATE_MAP).map(Number);
+            const set = new Set([correctRatePct]);
+
+            for (const r of shuffle(levelRates)) {
+                if (set.size >= 6) break;
+                set.add(r);
+            }
+            for (const r of shuffle(allRates)) {
+                if (set.size >= 6) break;
+                set.add(r);
+            }
+
+            return shuffle(Array.from(set).slice(0, 6)).map(r => RATE_MAP[r][formatIdx]);
+        }
+
+        function buildHintText(A, ratePct, C) {
+            const expressions = RATE_MAP[ratePct].join(' ＝ ');
+            // Provide a smart mental math tip especially for Collie/Tiger
+            let tip = "";
+            if (A % 50 === 0 && ratePct % 2 === 0) {
+                tip = `暗算のコツ: ${A}×${ratePct}% は「倍と半分」で ${A * 2}の${ratePct / 2}% と同じ！`;
+            } else if (ratePct === 25 || ratePct === 75) {
+                tip = `暗算のコツ: 25%は「4で割る(${A}÷4=${A/4})」、75%はその3倍！`;
+            } else if (ratePct % 5 === 0) {
+                tip = `暗算のコツ: 10%が「${A / 10}」、5%がその半分の「${A / 20}」を使うと秒殺！`;
+            } else {
+                tip = `変換まとめ: ${expressions}`;
+            }
+            return `【${expressions}】 ${tip}`;
+        }
+
+        function nextQuestion() {
+            if (state.autoNextTimer) {
+                clearTimeout(state.autoNextTimer);
+                state.autoNextTimer = null;
+            }
+            state.answered = false;
+            document.getElementById('next-btn').classList.add('hidden');
+
+            const pool = DATASETS[state.difficulty];
+            const setIndex = Math.floor(Math.random() * pool.length);
+            const [A, ratePct] = pool[setIndex];
+            const C = Math.round((A * ratePct) / 100);
+
+            const formatIdx = state.formatMode === 'ALL'
+                ? Math.floor(Math.random() * 4)
+                : parseInt(state.formatMode, 10);
+
+            const activeTarget = state.targetMode === 'RANDOM'
+                ? ['A', 'B', 'C'][Math.floor(Math.random() * 3)]
+                : state.targetMode;
+
+            const activePattern = state.patternMode === 'RANDOM'
+                ? (Math.random() < 0.5 ? 'ABC' : 'CAB')
+                : state.patternMode;
+
+            const B_str = RATE_MAP[ratePct][formatIdx];
+            const formatNames = ['割合(％)', '歩合(割・分)', '小数倍', '分数倍'];
+
+            let correctStr = "";
+            let options = [];
+
+            if (activeTarget === 'A') {
+                correctStr = String(A);
+                const poolA = pool.map(item => item[0]);
+                options = generateChoicesForNumber(A, poolA, true);
+            } else if (activeTarget === 'B') {
+                correctStr = B_str;
+                options = generateChoicesForRate(ratePct, formatIdx, state.difficulty);
+            } else {
+                correctStr = String(C);
+                const poolC = pool.map(item => Math.round((item[0] * item[1]) / 100));
+                options = generateChoicesForNumber(C, poolC, false);
+            }
+
+            state.currentQ = {
+                setNo: setIndex + 1,
+                A,
+                ratePct,
+                B_str,
+                C,
+                formatIdx,
+                formatName: formatNames[formatIdx],
+                activePattern,
+                activeTarget,
+                correctStr,
+                options
+            };
+
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = state.currentQ;
+
+            // Update Metadata Pill
+            const patLabel = q.activePattern === 'ABC' ? 'AのBはC' : 'CはAのB';
+            document.getElementById('question-meta').textContent =
+                `${LEVEL_INFO[state.difficulty].icon} セット #${q.setNo} ／ 文型：${patLabel} ／ 表記：${q.formatName}`;
+
+            // Render slots according to sentence pattern
+            const parts = {
+                A: String(q.A),
+                B: q.B_str,
+                C: String(q.C)
+            };
+
+            const order = q.activePattern === 'ABC' ? ['A', 'B', 'C'] : ['C', 'A', 'B'];
+            const particles = q.activePattern === 'ABC' ? ['の', 'は'] : ['は', 'の'];
+
+            document.getElementById('particle-1').textContent = particles[0];
+            document.getElementById('particle-2').textContent = particles[1];
+
+            order.forEach((key, index) => {
+                const el = document.getElementById(`slot-${index + 1}`);
+                el.dataset.part = key;
+                if (q.activeTarget === key) {
+                    el.textContent = '□';
+                    el.className = "px-6 py-2 sm:px-8 sm:py-4 rounded-2xl text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight transition-all border-4 border-dashed border-amber-500 bg-amber-500/10 text-amber-500 animate-pop min-w-[4.5rem] sm:min-w-[6.5rem] text-center flex items-center justify-center";
+                } else {
+                    el.innerHTML = formatMathHTML(parts[key]);
+                    el.className = "px-4 py-2 sm:px-6 sm:py-4 rounded-2xl text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight transition-all bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-100 flex items-center justify-center";
+                }
+            });
+
+            // Render 6 Choice Buttons
+            q.options.forEach((optText, idx) => {
+                const btn = document.getElementById(`opt-${idx}`);
+                const span = document.getElementById(`opt-text-${idx}`);
+                span.innerHTML = formatMathHTML(optText);
+                btn.disabled = false;
+                btn.className = "choice-btn group relative rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-400 shadow-sm hover:shadow-md transition-all flex items-center justify-center p-2 active:scale-95";
+            });
+
+            // Reset Feedback bar
+            const fbBar = document.getElementById('feedback-bar');
+            fbBar.className = "w-full max-w-2xl min-h-[2.5rem] px-4 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 flex items-center justify-between text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 transition-all";
+            document.getElementById('feedback-text').textContent =
+                "□ に当てはまる正解を6択から選ぼう！（数字キー 1〜6 でも回答できます）";
+        }
+
+        function selectOption(idx) {
+            if (state.answered) return;
+            const q = state.currentQ;
+            const chosen = q.options[idx];
+            const isCorrect = chosen === q.correctStr;
+
+            const btn = document.getElementById(`opt-${idx}`);
+            const targetBox = document.querySelector(`[data-part="${q.activeTarget}"]`);
+            const fbBar = document.getElementById('feedback-bar');
+            const fbText = document.getElementById('feedback-text');
+
+            if (isCorrect) {
+                state.answered = true;
+                state.score++;
+                state.streak++;
+
+                // Fill in the blank box with the correct answer
+                targetBox.innerHTML = formatMathHTML(q.correctStr);
+                targetBox.className = "px-6 py-2 sm:px-8 sm:py-4 rounded-2xl text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight transition-all border-4 border-emerald-500 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 animate-pop text-center flex items-center justify-center";
+
+                // Highlight button green
+                btn.className = "choice-btn relative rounded-2xl bg-emerald-500 text-white border-2 border-emerald-600 shadow-lg transition-all flex items-center justify-center p-2 scale-[1.02]";
+
+                // Show all 4 expressions in feedback bar matching current sentence pattern
+                fbBar.className = "w-full max-w-2xl min-h-[2.5rem] px-4 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-between text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-300 transition-all";
+                const summarySentence = q.activePattern === 'ABC'
+                    ? `${q.A}の ${RATE_MAP[q.ratePct].join(' ・ ')} は ${q.C}`
+                    : `${q.C}は ${q.A}の ${RATE_MAP[q.ratePct].join(' ・ ')}`;
+                fbText.innerHTML = formatMathHTML(`⭕ 大正解！ (${summarySentence})`);
+
+                document.getElementById('next-btn').classList.remove('hidden');
+                updateScoreUI();
+
+                // 連続正解目標を達成したか判定
+                if (state.targetStreak > 0 && state.streak === state.targetStreak) {
+                    playSound('correct');
+                    setTimeout(() => {
+                        showPassModal();
+                    }, 350);
+                } else {
+                    playSound('correct');
+                    // Auto-advance after 1.15s
+                    state.autoNextTimer = setTimeout(() => {
+                        nextQuestion();
+                    }, 1150);
+                }
+
+            } else {
+                state.streak = 0;
+                playSound('wrong');
+                updateScoreUI();
+
+                btn.disabled = true;
+                btn.className = "choice-btn relative rounded-2xl bg-rose-500/15 text-rose-500 border-2 border-rose-500/40 opacity-60 transition-all flex items-center justify-center p-2 animate-shake cursor-not-allowed";
+
+                fbBar.className = "w-full max-w-2xl min-h-[2.5rem] px-4 py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-between text-xs sm:text-sm font-bold text-rose-600 dark:text-rose-300 transition-all";
+                fbText.innerHTML = formatMathHTML(`❌ おしい！「${chosen}」ではありません。もう一度選んでみよう！`);
+            }
+        }
+
+        function toggleHint() {
+            const q = state.currentQ;
+            if (!q) return;
+            const fbText = document.getElementById('feedback-text');
+            fbText.innerHTML = formatMathHTML(buildHintText(q.A, q.ratePct, q.C));
+        }
+
+        function updateScoreUI() {
+            document.getElementById('score-val').textContent = state.score;
+            document.getElementById('streak-val').textContent = state.streak;
+
+            const targetEl = document.getElementById('target-streak-display');
+            if (targetEl) {
+                targetEl.textContent = state.targetStreak > 0 ? `/ ${state.targetStreak}` : '/ ∞';
+            }
+
+            const progBar = document.getElementById('streak-progress-bar');
+            if (progBar) {
+                if (state.targetStreak > 0) {
+                    const pct = Math.min(100, Math.round((state.streak / state.targetStreak) * 100));
+                    progBar.style.width = `${pct}%`;
+                } else {
+                    progBar.style.width = '100%';
+                }
+            }
+        }
+
+        function updateControlStyles() {
+            // Difficulty buttons
+            ['rabbit', 'collie', 'tiger'].forEach(d => {
+                const el = document.getElementById(`diff-${d}`);
+                if (state.difficulty === d) {
+                    el.className = "diff-btn py-1.5 px-0.5 rounded-xl text-xs font-extrabold flex items-center justify-center gap-0.5 transition-all bg-indigo-600 text-white shadow-sm";
+                } else {
+                    el.className = "diff-btn py-1.5 px-0.5 rounded-xl text-xs font-bold flex items-center justify-center gap-0.5 transition-all bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700";
+                }
+            });
+
+            // Header Icon & Subtitle
+            const info = LEVEL_INFO[state.difficulty];
+            document.getElementById('header-icon').textContent = info.icon;
+            document.getElementById('header-subtitle').textContent = info.desc;
+
+            // Pattern buttons
+            ['ABC', 'CAB', 'RANDOM'].forEach(p => {
+                const el = document.getElementById(`pat-${p}`);
+                if (state.patternMode === p) {
+                    el.className = "pat-btn py-1.5 px-0.5 rounded-xl text-xs font-extrabold transition-all bg-violet-600 text-white shadow-sm";
+                } else {
+                    el.className = "pat-btn py-1.5 px-0.5 rounded-xl text-xs font-bold transition-all bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700";
+                }
+            });
+
+            // Target buttons
+            ['A', 'B', 'C', 'RANDOM'].forEach(t => {
+                const el = document.getElementById(`target-${t}`);
+                if (state.targetMode === t) {
+                    el.className = "target-btn py-1 rounded-xl text-xs font-extrabold transition-all bg-amber-500 text-white shadow-sm";
+                } else {
+                    el.className = "target-btn py-1 rounded-xl text-xs font-bold transition-all bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700";
+                }
+            });
+
+            // Format buttons
+            ['ALL', '0', '1', '2', '3'].forEach(f => {
+                const el = document.getElementById(`fmt-${f}`);
+                if (state.formatMode === f) {
+                    el.className = "fmt-btn py-1.5 rounded-xl text-[11px] font-extrabold transition-all bg-emerald-600 text-white shadow-sm";
+                } else {
+                    el.className = "fmt-btn py-1.5 rounded-xl text-[11px] font-bold transition-all bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700";
+                }
+            });
+
+            // Streak Target buttons
+            [5, 10, 20, 0].forEach(n => {
+                const el = document.getElementById(`target-streak-${n}`);
+                if (el) {
+                    if (state.targetStreak === n) {
+                        el.className = "streak-btn py-1.5 rounded-xl text-[11px] font-extrabold transition-all bg-amber-500 text-white shadow-sm";
+                    } else {
+                        el.className = "streak-btn py-1.5 rounded-xl text-[11px] font-bold transition-all bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700";
+                    }
+                }
+            });
+            const badge = document.getElementById('streak-target-badge');
+            if (badge) {
+                badge.textContent = state.targetStreak > 0 ? `${state.targetStreak}問` : 'なし';
+            }
+        }
+
+        function setDifficulty(diff) {
+            state.difficulty = diff;
+            updateControlStyles();
+            nextQuestion();
+        }
+
+        function setPattern(pat) {
+            state.patternMode = pat;
+            updateControlStyles();
+            nextQuestion();
+        }
+
+        function setTarget(target) {
+            state.targetMode = target;
+            updateControlStyles();
+            nextQuestion();
+        }
+
+        function setFormat(fmt) {
+            state.formatMode = fmt;
+            updateControlStyles();
+            nextQuestion();
+        }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+        }
+
+        function toggleSound() {
+            state.soundEnabled = !state.soundEnabled;
+            document.getElementById('icon-sound-on').classList.toggle('hidden', !state.soundEnabled);
+            document.getElementById('icon-sound-off').classList.toggle('hidden', state.soundEnabled);
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            const isFs = !!document.fullscreenElement;
+            document.getElementById('icon-fs-enter').classList.toggle('hidden', isFs);
+            document.getElementById('icon-fs-exit').classList.toggle('hidden', !isFs);
+        });
+
+        // Keyboard Shortcuts (1-6 to answer, Space/Enter for next, modal support)
+        window.addEventListener('keydown', (e) => {
+            if (state.isModalOpen) {
+                if (e.key === 'Escape') {
+                    continuePlaying();
+                } else if (e.key === 'Enter') {
+                    advancePassLevel();
+                } else if (e.key === ' ') {
+                    retryPassChallenge();
+                }
+                return;
+            }
+            if (e.key >= '1' && e.key <= '6') {
+                selectOption(parseInt(e.key, 10) - 1);
+            } else if ((e.key === ' ' || e.key === 'Enter') && state.answered) {
+                e.preventDefault();
+                nextQuestion();
+            }
+        });
+
+        // Initialize on load
+        window.onload = function () {
+            updateControlStyles();
+            updateScoreUI();
+            nextQuestion();
+        };
+    </script>
+</body>
+</html>

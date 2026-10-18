@@ -117,11 +117,11 @@
         <span>どのトレーニングを始めますか？</span>
       </h2>
       <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
-        カードをクリックするか、キーボードの <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">1</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">2</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">3</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">4</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">5</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">6</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">7</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">8</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">9</kbd> を押してスタートできます
+        カードをクリックするか、キーボードの <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">1</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">2</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">3</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">4</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">5</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">6</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">7</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">8</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">9</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">0</kbd> を押してスタートできます
       </p>
     </div>
 
-    <!-- App Cards Container (5 Columns on large screens -> 2 rows of 5+4) -->
+    <!-- App Cards Container (5 Columns on large screens -> 2 rows of 5) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-2.5 w-full shrink-0 animate-pop">
 
       <!-- APP 1: 分数 約分マスター -->
@@ -493,6 +493,47 @@
         </div>
       </a>
 
+      <!-- APP 10: 割合・暗算アニマル道場 -->
+      <a href="wariai.html" id="cardWariai" class="app-card group glass-card rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-500 shadow-md hover:shadow-xl hover:shadow-amber-500/10 p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-200 relative overflow-hidden cursor-pointer">
+        <!-- Top Badge & Number -->
+        <div class="flex items-center justify-between mb-2">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-base sm:text-lg font-extrabold shadow-inner group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-percent"></i>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+              九九〜暗算3レベル
+            </span>
+            <span class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 group-hover:bg-amber-600 group-hover:text-white text-slate-500 dark:text-slate-300 font-mono font-black text-xs flex items-center justify-center border border-slate-200 dark:border-slate-700 transition-colors shadow-xs">
+              0
+            </span>
+          </div>
+        </div>
+
+        <!-- Title & Description -->
+        <div class="space-y-1 mb-2.5">
+          <h3 class="text-sm sm:text-base font-black tracking-tight group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors flex items-center gap-1.5">
+            <span>割合・暗算アニマル道場</span>
+          </h3>
+          <p class="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2">
+            ウサギ・コリー・トラの3難易度！文型・□の位置・％/歩合/小数/分数の即応力を鍛える。
+          </p>
+        </div>
+
+        <!-- Feature Tags -->
+        <div class="flex flex-wrap gap-1 mb-3">
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">3難易度</span>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">％・歩合・分数</span>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">動物お祝い絵🎉</span>
+        </div>
+
+        <!-- Launch Button -->
+        <div class="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 group-hover:from-amber-600 group-hover:to-orange-600 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
+          <span>割合道場へ</span>
+          <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+        </div>
+      </a>
+
     </div>
 
   </main>
@@ -501,7 +542,7 @@
   <footer class="w-full border-t border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/80 backdrop-blur py-2 px-6 shrink-0 text-center text-xs text-slate-500 dark:text-slate-400">
     <div class="max-w-6xl mx-auto flex items-center justify-between">
       <span class="font-bold text-[11px]">算数・数学トレーニングシリーズ</span>
-      <div class="hidden sm:flex items-center gap-3 font-mono text-[11px]">
+      <div class="hidden sm:flex items-center gap-2.5 font-mono text-[11px]">
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">1</kbd> 分数</span>
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">2</kbd> 倍数</span>
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">3</kbd> 数分類</span>
@@ -511,6 +552,7 @@
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">7</kbd> 速さ</span>
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">8</kbd> ドパ倍数</span>
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">9</kbd> 等式◯☓</span>
+        <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">0</kbd> 割合</span>
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">← / →</kbd> 選択</span>
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">Enter</kbd> 決定</span>
         <span><kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-bold">F</kbd> 全画面</span>
@@ -530,6 +572,7 @@
       cardHayasa: document.getElementById('cardHayasa'),
       cardDopaBaisuu: document.getElementById('cardDopaBaisuu'),
       cardToshikiMarubatu: document.getElementById('cardToshikiMarubatu'),
+      cardWariai: document.getElementById('cardWariai'),
       themeToggleBtn: document.getElementById('themeToggleBtn'),
       themeIcon: document.getElementById('themeIcon'),
       fullscreenToggleBtn: document.getElementById('fullscreenToggleBtn'),
@@ -537,7 +580,7 @@
     };
 
     let selectedIndex = 0;
-    const cards = [el.cardBunsu, el.cardBaisuu, el.cardSeisu, el.cardTenkai, el.cardTaibunsu, el.cardHouteishiki, el.cardHayasa, el.cardDopaBaisuu, el.cardToshikiMarubatu];
+    const cards = [el.cardBunsu, el.cardBaisuu, el.cardSeisu, el.cardTenkai, el.cardTaibunsu, el.cardHouteishiki, el.cardHayasa, el.cardDopaBaisuu, el.cardToshikiMarubatu, el.cardWariai];
 
     function updateCardFocus() {
       cards.forEach((c, idx) => {
@@ -630,6 +673,9 @@
       } else if (e.key === '9') {
         e.preventDefault();
         window.location.href = 'toshikimarubatu.html';
+      } else if (e.key === '0') {
+        e.preventDefault();
+        window.location.href = 'wariai.html';
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
         selectedIndex = (selectedIndex - 1 + cards.length) % cards.length;
