@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>中学数学 文字式の表し方 4択マスター（問題545対応）</title>
+  <!-- KaTeX for crisp math rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Header Bar -->
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-badge">中1数学</span>
+        <h1 class="brand-title">文字式の表し方 パターン別4択マスター</h1>
+        <span class="brand-sub">問題545.md 完全収録（全15パターン）</span>
+      </div>
+      <div class="header-controls">
+        <button type="button" id="btn-back-setup" class="btn" style="display: none;">
+          <span class="btn-icon">📋</span>
+          <span>パターン選択へ戻る</span>
+        </button>
+        <button type="button" id="btn-history" class="btn" title="これまでの解答履歴・記録を確認">
+          <span class="btn-icon">📊</span>
+          <span>履歴</span>
+        </button>
+        <button type="button" id="btn-sound" class="btn" title="効果音のON / OFF切替">
+          <span class="btn-icon">🔊</span>
+          <span>音声ON</span>
+        </button>
+        <button type="button" id="btn-theme" class="btn" title="ダークモード / ライトモード切替">
+          <span class="btn-icon">🌙</span>
+          <span>ダークモード</span>
+        </button>
+        <button type="button" id="btn-fullscreen" class="btn" title="全画面表示切替">
+          <span class="btn-icon">⛶</span>
+          <span>全画面表示</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- VIEW 1: Pattern Selection (PC zero-scroll 3x5 Grid) -->
+    <main id="view-setup" class="view active">
+      <div class="setup-layout">
+        <div class="setup-toolbar">
+          <div class="setup-toolbar-left">
+            <span class="setup-toolbar-title">出題パターンを選択</span>
+            <span id="selection-summary" class="selection-summary">15 パターン選択中</span>
+            <button type="button" id="btn-select-all" class="btn">すべて選択</button>
+            <button type="button" id="btn-clear-all" class="btn">すべて解除</button>
+          </div>
+          <div class="setup-options">
+            <div class="option-group">
+              <span>出題順：</span>
+              <div class="seg-control">
+                <button type="button" class="seg-btn active" data-order="random">ランダム</button>
+                <button type="button" class="seg-btn" data-order="sequential">番号順</button>
+              </div>
+            </div>
+            <div class="option-group">
+              <span>問題数：</span>
+              <div class="seg-control">
+                <button type="button" class="seg-btn" data-limit="5">5問</button>
+                <button type="button" class="seg-btn active" data-limit="10">10問</button>
+                <button type="button" class="seg-btn" data-limit="20">20問</button>
+                <button type="button" class="seg-btn" data-limit="0">全問</button>
+              </div>
+            </div>
+            <div class="option-group">
+              <span>🎯目標連勝：</span>
+              <div class="seg-control">
+                <button type="button" class="seg-btn" data-goal="5">5連続</button>
+                <button type="button" class="seg-btn active" data-goal="10">10連続</button>
+                <button type="button" class="seg-btn" data-goal="15">15連続</button>
+                <button type="button" class="seg-btn" data-goal="20">20連続</button>
+                <button type="button" class="seg-btn" data-goal="0">なし</button>
+              </div>
+            </div>
+            <div class="option-group">
+              <span>⚡速さ単位：</span>
+              <div class="seg-control">
+                <button type="button" class="seg-btn active" data-speed="prefix" title="「分速 x m」「時速 y km」の形式で出題・解答">分速m</button>
+                <button type="button" class="seg-btn" data-speed="slash" title="「x m/分」「y km/時」の形式で出題・解答">m/分</button>
+              </div>
+            </div>
+            <button type="button" id="btn-start-quiz" class="btn btn-primary start-btn-large">
+              <span>選択したパターンで出題開始 ▶</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3x5 Pattern Grid -->
+        <div id="pattern-grid" class="pattern-grid"></div>
+      </div>
+    </main>
+
+    <!-- VIEW 2: Quiz View (1-Column PC Zero-Scroll Layout) -->
+    <main id="view-quiz" class="view">
+      <div class="quiz-container">
+        <!-- Row 1: Top Status Bar -->
+        <div class="quiz-status-bar">
+          <div class="progress-wrap">
+            <span id="progress-label" class="progress-label">第 1 問 / 全 10 問</span>
+            <div class="progress-track">
+              <div id="progress-fill" class="progress-fill" style="width: 10%;"></div>
+            </div>
+          </div>
+          <div class="score-pills">
+            <span id="pill-correct" class="score-pill correct">⭕ 正解 0</span>
+            <span id="pill-wrong" class="score-pill wrong">❌ ミス 0</span>
+            <span id="pill-streak" class="score-pill streak">🔥 0 連続</span>
+          </div>
+          <select id="quick-pattern-select" class="btn" title="出題パターンを即時切り替え"></select>
+        </div>
+
+        <!-- Row 2: Dedicated Question Card (3 internal rows: Header / Stage / Hint) -->
+        <section class="question-card" aria-label="問題表示エリア">
+          <div class="question-header">
+            <div class="q-badges">
+              <span id="q-num-badge" class="q-num-badge">Q1</span>
+              <span id="q-pattern-badge" class="q-pattern-badge">パターン1</span>
+              <span id="q-subpattern-badge" class="q-subpattern-badge">1-1</span>
+            </div>
+            <div class="q-header-actions">
+              <button type="button" id="btn-quiz-speed" class="btn btn-hint-toggle" title="速さの単位表記（分速m ⇔ m/分）を切り替え">⚡ 速さ：分速m</button>
+              <button type="button" id="btn-toggle-hint" class="btn btn-hint-toggle">💡 考え方のヒント (H)</button>
+            </div>
+          </div>
+
+          <div class="q-stage">
+            <p class="q-instruction">次の数量を表す文字式として正しいものを、下の <strong>1 〜 4</strong> から選びなさい。</p>
+            <div id="q-text" class="q-text"></div>
+          </div>
+
+          <div id="q-hint-bar" class="q-hint-bar">
+            <span class="q-hint-label">💡 考え方ヒント：</span>
+            <span id="q-hint-placeholder" class="q-hint-placeholder">右上の「考え方のヒント」ボタン（または [H] キー）で表示できます</span>
+            <span id="q-hint-content" class="q-hint-content"></span>
+          </div>
+        </section>
+
+        <!-- Row 3: Fixed-Height Status / Feedback Bar (Never shifts layout) -->
+        <div id="quiz-action-slot" class="quiz-action-slot state-prompt">
+          <!-- Default prompt state -->
+          <div id="slot-prompt" class="slot-inner">
+            <span class="slot-prompt-icon">👇</span>
+            <span class="slot-prompt-text">下の <strong>1 〜 4</strong> の選択肢をクリック、またはキーボードの <kbd>1</kbd> 〜 <kbd>4</kbd> キーで回答してください</span>
+          </div>
+
+          <!-- Correct flash state -->
+          <div id="slot-correct" class="slot-inner" style="display: none;">
+            <span class="correct-badge">⭕ 正解！</span>
+            <span id="correct-feedback-text" class="feedback-main-text">素晴らしい！自動的に次の問題へ進みます...</span>
+          </div>
+
+          <!-- Wrong feedback state -->
+          <div id="slot-wrong" class="slot-inner" style="display: none;">
+            <div class="wrong-feedback-msg">
+              <span class="wrong-badge">❌ 不正解</span>
+              <span id="wrong-feedback-text" class="feedback-main-text">正解：</span>
+              <span id="wrong-reason-text" class="wrong-reason-text"></span>
+            </div>
+            <button type="button" id="btn-next-question" class="btn btn-primary wrong-next-btn">
+              次の問題へ進む (Enter / Space) ▶
+            </button>
+          </div>
+        </div>
+
+        <!-- Row 4: 2x2 Choices Grid -->
+        <div id="choices-grid" class="choices-grid"></div>
+      </div>
+    </main>
+
+    <!-- VIEW 3: Summary View -->
+    <main id="view-summary" class="view">
+      <div class="summary-card">
+        <div class="summary-header">
+          <div class="summary-title">🎉 出題完了！おつかれさまでした</div>
+          <div class="summary-sub">今回の学習結果</div>
+        </div>
+
+        <div class="summary-stats">
+          <div class="stat-box">
+            <div id="sum-total" class="stat-val">10 問</div>
+            <div class="stat-label">出題数</div>
+          </div>
+          <div class="stat-box">
+            <div id="sum-correct" class="stat-val">10 問</div>
+            <div class="stat-label">正解数</div>
+          </div>
+          <div class="stat-box">
+            <div id="sum-accuracy" class="stat-val">100%</div>
+            <div class="stat-label">正答率</div>
+          </div>
+          <div class="stat-box">
+            <div id="sum-streak" class="stat-val">10 連続</div>
+            <div class="stat-label">最大連続正解</div>
+          </div>
+        </div>
+
+        <div class="summary-actions">
+          <button type="button" id="btn-review-wrong" class="btn btn-primary" style="display:none;">
+            ❌ 間違えた問題だけ復習する
+          </button>
+          <button type="button" id="btn-retry-same" class="btn btn-primary">
+            🔄 同じ設定でもう一度解く
+          </button>
+          <button type="button" id="btn-summary-history" class="btn">
+            📊 履歴を確認する
+          </button>
+          <button type="button" id="btn-to-setup" class="btn">
+            📋 パターン選択画面に戻る
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL 1: PASS / CONGRATULATIONS MODAL -->
+  <div id="modal-pass" class="modal-overlay" style="display: none;">
+    <div class="modal-card pass-card">
+      <div class="pass-sparkles">✨ 🎉 ✨</div>
+      <h2 class="pass-title">目標達成！合格おめでとう！</h2>
+      <p id="pass-msg" class="pass-msg">目標の 10 連続正解を見事に達成しました！</p>
+      <div class="pass-badge-box">
+        <span class="pass-badge">👑 合格認定</span>
+      </div>
+      <div class="pass-actions">
+        <button type="button" id="btn-pass-continue" class="btn btn-primary pass-btn">
+          ▶ このまま出題を続ける
+        </button>
+        <button type="button" id="btn-pass-history" class="btn">
+          📊 履歴を見る
+        </button>
+        <button type="button" id="btn-pass-setup" class="btn">
+          📋 パターン選択に戻る
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: HISTORY MODAL (Can be opened anytime) -->
+  <div id="modal-history" class="modal-overlay" style="display: none;">
+    <div class="modal-card history-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon">📊</span>
+          <h2 class="modal-title">解答履歴・学習記録</h2>
+        </div>
+        <button type="button" id="btn-close-history" class="modal-close-btn" title="閉じる (Esc)">✕</button>
+      </div>
+
+      <!-- History Top Summary Stats -->
+      <div class="history-stats-bar">
+        <div class="h-stat-item">
+          <span class="h-stat-val" id="hist-total">0</span>
+          <span class="h-stat-lbl">総解答数</span>
+        </div>
+        <div class="h-stat-item">
+          <span class="h-stat-val" id="hist-accuracy">0%</span>
+          <span class="h-stat-lbl">正答率</span>
+        </div>
+        <div class="h-stat-item">
+          <span class="h-stat-val" id="hist-current-streak">0</span>
+          <span class="h-stat-lbl">現在連勝</span>
+        </div>
+        <div class="h-stat-item">
+          <span class="h-stat-val" id="hist-max-streak">0</span>
+          <span class="h-stat-lbl">最高連勝</span>
+        </div>
+        <div class="h-stat-item">
+          <span class="h-stat-val" id="hist-pass-count">0</span>
+          <span class="h-stat-lbl">合格回数</span>
+        </div>
+      </div>
+
+      <!-- Scrollable History List -->
+      <div class="history-list-wrap">
+        <div id="history-empty" class="history-empty" style="display: none;">
+          まだ解答履歴がありません。問題を解くとここに記録されます。
+        </div>
+        <table id="history-table" class="history-table">
+          <thead>
+            <tr>
+              <th style="width: 50px;">結果</th>
+              <th style="width: 90px;">パターン</th>
+              <th>問題文</th>
+              <th>正解の式</th>
+              <th style="width: 140px;">あなたの解答</th>
+              <th style="width: 80px;">時間</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button type="button" id="btn-clear-history" class="btn btn-danger-soft">
+          🗑️ 履歴をクリア
+        </button>
+        <button type="button" id="btn-close-history-bottom" class="btn btn-primary">
+          閉じる (Esc)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="questions_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
