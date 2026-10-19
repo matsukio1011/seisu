@@ -1095,7 +1095,7 @@
         <input type="url" id="gas-url-input" placeholder="https://script.google.com/macros/s/.../exec">
       </div>
       <div class="config-actions">
-        <button class="btn-clear-config" id="btn-clear-config">クリア（ローカルに戻す）</button>
+        <button class="btn-clear-config" id="btn-clear-config">初期URLにリセット</button>
         <button class="btn-save-config" id="btn-save-config">保存して同期する</button>
       </div>
       <div class="config-help">
@@ -1525,17 +1525,25 @@
       LOCAL_STORAGE_KEY: 'root_ranking_cache_v1',
       NAME_KEY: 'root_last_player_name',
       GAS_URL_KEY: 'root_ranking_gas_url',
+      DEFAULT_GAS_URL: 'https://script.google.com/macros/s/AKfycbymX88w3NV3qrM3XEsv7l6sxaoBcjN8pU26YoYbvHFudB7XhSjvDpxurHOHQnsrtT9E/exec',
 
       getGasUrl() {
-        return localStorage.getItem(this.GAS_URL_KEY) || '';
+        const stored = localStorage.getItem(this.GAS_URL_KEY);
+        if (stored === '__OFFLINE__') return '';
+        if (stored && stored.trim()) return stored.trim();
+        return this.DEFAULT_GAS_URL;
       },
 
       setGasUrl(url) {
         if (url && url.trim()) {
           localStorage.setItem(this.GAS_URL_KEY, url.trim());
         } else {
-          localStorage.removeItem(this.GAS_URL_KEY);
+          localStorage.setItem(this.GAS_URL_KEY, '__OFFLINE__');
         }
+      },
+
+      resetToDefaultGasUrl() {
+        localStorage.removeItem(this.GAS_URL_KEY);
       },
 
       getLocalRecords() {
@@ -1561,7 +1569,7 @@
 
         try {
           const resp = await fetch(gasUrl, { mode: 'cors' });
-          if (!resp.ok) throw new Error('Network error');
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
           const data = await resp.json();
           if (Array.isArray(data)) {
             this.saveLocalRecords(data);
@@ -1590,19 +1598,46 @@
         }
 
         try {
+          // 1. POST送信（Content-Type: text/plain でブラウザのOPTIONSプリフライトを回避）
           const resp = await fetch(gasUrl, {
             method: 'POST',
             mode: 'cors',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(record)
           });
-          const res = await resp.json();
-          if (Array.isArray(res)) {
-            this.saveLocalRecords(res);
+          if (resp.ok) {
+            const res = await resp.json();
+            if (Array.isArray(res)) {
+              this.saveLocalRecords(res);
+            }
+            return { success: true, mode: 'cloud' };
           }
-          return { success: true, mode: 'cloud' };
+          throw new Error(`HTTP ${resp.status}`);
         } catch (err) {
-          console.warn('Cloud submit failed, stored in local:', err);
+          console.warn('POST failed, trying GET fallback:', err);
+          // 2. GETパラメータ送信フォールバック（GAS側doGetでの登録）
+          try {
+            const params = new URLSearchParams({
+              action: 'submit',
+              name: record.name || '',
+              course: record.course || '',
+              targetStreak: String(record.targetStreak || ''),
+              timeSeconds: String(record.timeSeconds || ''),
+              clearTime: record.clearTime || '',
+              accuracy: record.accuracy || '',
+              date: record.date || ''
+            });
+            const getResp = await fetch(`${gasUrl}?${params.toString()}`, { mode: 'cors' });
+            if (getResp.ok) {
+              const resData = await getResp.json();
+              if (Array.isArray(resData)) {
+                this.saveLocalRecords(resData);
+              }
+              return { success: true, mode: 'cloud' };
+            }
+          } catch (getErr) {
+            console.warn('GET fallback failed:', getErr);
+          }
           return { success: true, mode: 'local_fallback', error: err.message };
         }
       }
@@ -1910,7 +1945,13 @@
       const res = await RankingManager.submitScore(record);
       if (res.success) {
         submitStatusEl.className = 'submit-status success';
-        submitStatusEl.textContent = res.mode === 'cloud' ? '✨ クラウドに登録完了！どのPCからも閲覧できます' : '✨ 登録完了！（ローカルに保存されました）';
+        if (res.mode === 'cloud') {
+          submitStatusEl.textContent = '✨ Googleスプレッドシートに保存完了！全PCで共有中';
+        } else if (res.mode === 'local_fallback') {
+          submitStatusEl.textContent = '💾 ローカルに保存しました（GAS接続設定をご確認ください）';
+        } else {
+          submitStatusEl.textContent = '✨ 登録完了！（ローカルに保存されました）';
+        }
         btnSubmitRanking.textContent = '✅ 登録済み';
       } else {
         submitStatusEl.className = 'submit-status error';
@@ -2033,8 +2074,8 @@
     });
 
     btnClearConfig.addEventListener('click', () => {
-      gasUrlInput.value = '';
-      RankingManager.setGasUrl('');
+      RankingManager.resetToDefaultGasUrl();
+      gasUrlInput.value = RankingManager.DEFAULT_GAS_URL;
       closeConfigModal();
       updateCloudStatusBadge();
       renderRankingTable();
