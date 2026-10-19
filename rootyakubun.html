@@ -671,13 +671,13 @@
 
     .ranking-card {
       background: #171a2c;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 20px;
-      width: 92%; max-width: 680px;
-      max-height: 88vh;
-      padding: 1.4rem 1.6rem;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 24px;
+      width: 95%; max-width: 980px;
+      height: 88vh; max-height: 88vh;
+      padding: 1.6rem 2.2rem;
       display: flex; flex-direction: column;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85), 0 0 40px rgba(99, 102, 241, 0.15);
       animation: fadeIn 0.25s ease;
     }
 
@@ -685,27 +685,28 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.8rem;
+      margin-bottom: 1rem;
       flex-shrink: 0;
     }
 
     .ranking-title {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      font-size: 1.15rem;
+      gap: 0.8rem;
+      font-size: 1.45rem;
       font-weight: 800;
       color: #f1f5f9;
     }
 
     .cloud-status-badge {
-      font-size: 0.68rem;
-      padding: 0.15rem 0.5rem;
+      font-size: 0.8rem;
+      padding: 0.25rem 0.75rem;
       border-radius: 9999px;
       background: rgba(16, 185, 129, 0.15);
       color: #34d399;
       border: 1px solid rgba(16, 185, 129, 0.3);
-      cursor: pointer;
+      font-weight: 600;
+      cursor: default;
     }
     .cloud-status-badge.local-only {
       background: rgba(251, 191, 36, 0.15);
@@ -715,16 +716,17 @@
 
     .ranking-header-actions {
       display: flex;
-      gap: 0.4rem;
+      align-items: center;
+      gap: 0.6rem;
     }
 
     /* タブ */
     .ranking-tabs {
       display: flex;
-      gap: 0.35rem;
-      margin-bottom: 0.8rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 0.4rem;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding-bottom: 0.6rem;
       flex-shrink: 0;
     }
 
@@ -732,153 +734,89 @@
       background: transparent;
       border: none;
       color: var(--text-sub);
-      padding: 0.3rem 0.7rem;
-      border-radius: 6px;
-      font-size: 0.78rem;
+      padding: 0.45rem 1.1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.15s;
     }
 
+    .rank-tab:hover {
+      color: #f1f5f9;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
     .rank-tab.active {
-      background: rgba(99, 102, 241, 0.2);
-      color: #a5b4fc;
-      border: 1px solid rgba(99, 102, 241, 0.4);
+      background: rgba(99, 102, 241, 0.25);
+      color: #c7d2fe;
+      border: 1px solid rgba(99, 102, 241, 0.5);
     }
 
     /* テーブル表示 */
     .ranking-table-wrapper {
       flex: 1;
       overflow-y: auto;
-      min-height: 200px;
-      max-height: 52vh;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      background: rgba(0, 0, 0, 0.2);
+      min-height: 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      background: rgba(10, 14, 26, 0.45);
     }
 
     .ranking-table-wrapper::-webkit-scrollbar {
-      width: 6px;
+      width: 8px;
     }
     .ranking-table-wrapper::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.18);
+      border-radius: 4px;
     }
 
     .ranking-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.82rem;
+      font-size: 0.98rem;
       text-align: left;
     }
 
     .ranking-table th {
       position: sticky;
       top: 0;
-      background: #1e2238;
+      background: #1c2035;
       color: #94a3b8;
       font-weight: 700;
-      padding: 0.55rem 0.7rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.85rem 1.2rem;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.12);
       white-space: nowrap;
       z-index: 2;
+      font-size: 0.92rem;
     }
 
     .ranking-table td {
-      padding: 0.5rem 0.7rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 0.8rem 1.2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
       color: #e2e8f0;
       white-space: nowrap;
     }
 
     .ranking-table tr:hover td {
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(255, 255, 255, 0.04);
     }
 
     .rank-num {
       font-weight: 800;
       text-align: center;
-      width: 44px;
+      width: 70px;
+      font-size: 1.1rem;
     }
-    .rank-1 { color: #fbbf24; font-size: 1rem; }
-    .rank-2 { color: #cbd5e1; font-size: 0.95rem; }
-    .rank-3 { color: #d97706; font-size: 0.9rem; }
+    .rank-1 { color: #fbbf24; font-size: 1.35rem; }
+    .rank-2 { color: #cbd5e1; font-size: 1.25rem; }
+    .rank-3 { color: #d97706; font-size: 1.15rem; }
 
     .ranking-empty {
-      padding: 2.5rem;
+      padding: 4rem 2rem;
       text-align: center;
       color: var(--text-sub);
-      font-size: 0.85rem;
-    }
-
-    /* =========================================================
-       クラウド設定モーダル
-       ========================================================= */
-    .config-overlay {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(10, 12, 20, 0.95);
-      backdrop-filter: blur(12px);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 120;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.2s ease;
-    }
-    .config-overlay.active {
-      opacity: 1; pointer-events: all;
-    }
-    .config-card {
-      background: #1e2136;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 18px;
-      width: 90%; max-width: 500px;
-      padding: 1.5rem;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.9);
-    }
-    .config-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 0.8rem;
-    }
-    .config-header h3 {
-      font-size: 1rem; color: #fbbf24; font-weight: 700;
-    }
-    .config-desc {
-      font-size: 0.8rem; color: #94a3b8; line-height: 1.5; margin-bottom: 1rem;
-    }
-    .config-input-group label {
-      display: block; font-size: 0.78rem; font-weight: 700; color: #c7d2fe; margin-bottom: 0.3rem;
-    }
-    .config-input-group input {
-      width: 100%;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #f1f5f9;
-      padding: 0.5rem 0.7rem;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      outline: none;
-      margin-bottom: 1rem;
-    }
-    .config-actions {
-      display: flex; gap: 0.5rem; justify-content: flex-end;
-    }
-    .btn-save-config {
-      background: linear-gradient(135deg, #6366f1, #4f46e5);
-      border: none; color: white; padding: 0.5rem 1rem; border-radius: 8px;
-      font-size: 0.85rem; font-weight: 700; cursor: pointer;
-    }
-    .btn-clear-config {
-      background: transparent; border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #94a3b8; padding: 0.5rem 0.8rem; border-radius: 8px;
-      font-size: 0.85rem; cursor: pointer;
-    }
-    .config-help {
-      margin-top: 1rem; padding-top: 0.8rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      font-size: 0.74rem; color: #64748b; line-height: 1.5;
-    }
-    .config-help code {
-      background: rgba(255, 255, 255, 0.1); padding: 1px 4px; border-radius: 4px; color: #c7d2fe;
+      font-size: 1.05rem;
     }
 
     /* 紙吹雪用キャンバス */
@@ -1037,14 +975,13 @@
     <div class="ranking-card">
       <div class="ranking-header">
         <div class="ranking-title">
-          <span style="font-size:1.3rem;">🏆</span>
+          <span style="font-size:1.6rem;">🏆</span>
           <span>ルート約分 栄光のランキング</span>
-          <span class="cloud-status-badge" id="cloud-status-badge" title="同期状態">🟢 クラウド同期中</span>
+          <span class="cloud-status-badge" id="cloud-status-badge">🟢 全PC共通ランキング</span>
         </div>
         <div class="ranking-header-actions">
-          <button class="ctrl-btn" id="btn-refresh-ranking" title="最新ランキングを取得">🔄 更新</button>
-          <button class="ctrl-btn" id="btn-cloud-config" title="クラウド設定（GAS URL）">⚙️ 設定</button>
-          <button class="ctrl-btn" id="btn-close-ranking" style="font-size:1rem; padding: 0.2rem 0.55rem;">✕</button>
+          <button class="ctrl-btn" id="btn-refresh-ranking" title="最新ランキングを取得" style="padding: 0.45rem 1rem; font-size: 0.95rem;">🔄 更新</button>
+          <button class="ctrl-btn" id="btn-close-ranking" style="padding: 0.45rem 1rem; font-size: 0.95rem; font-weight: 700;">✕ 閉じる</button>
         </div>
       </div>
 
@@ -1062,11 +999,12 @@
         <table class="ranking-table">
           <thead>
             <tr>
-              <th style="width: 48px; text-align: center;">順位</th>
+              <th style="width: 70px; text-align: center;">順位</th>
               <th>なまえ</th>
               <th>コース</th>
               <th>連勝数</th>
               <th>クリアタイム</th>
+              <th>正解率</th>
               <th>登録日時</th>
             </tr>
           </thead>
@@ -1076,30 +1014,6 @@
         </table>
         <div id="ranking-loading" class="ranking-empty" style="display:none;">⏳ ランキング読み込み中...</div>
         <div id="ranking-empty" class="ranking-empty" style="display:none;">まだ記録がありません。合格して一番乗りを記録しよう！</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- クラウド設定モーダル -->
-  <div class="config-overlay" id="config-overlay">
-    <div class="config-card">
-      <div class="config-header">
-        <h3>⚙️ クラウド共有設定 (Google Apps Script)</h3>
-        <button class="ctrl-btn" id="btn-close-config">✕</button>
-      </div>
-      <p class="config-desc">
-        GoogleスプレッドシートのWeb App URL（GAS）を設定すると、<strong>どのPCからでも全員のランキングが共通同期</strong>されます。
-      </p>
-      <div class="config-input-group">
-        <label>GAS Web App URL:</label>
-        <input type="url" id="gas-url-input" placeholder="https://script.google.com/macros/s/.../exec">
-      </div>
-      <div class="config-actions">
-        <button class="btn-clear-config" id="btn-clear-config">初期URLにリセット</button>
-        <button class="btn-save-config" id="btn-save-config">保存して同期する</button>
-      </div>
-      <div class="config-help">
-        💡 設定手順はフォルダ内の <code>GAS_ranking_setup.js</code> に記載されています（Googleスプレッドシートにコピペするだけで無料作成可能）。
       </div>
     </div>
   </div>
@@ -1701,19 +1615,11 @@
     const rankingOverlay = document.getElementById('ranking-overlay');
     const btnCloseRanking = document.getElementById('btn-close-ranking');
     const btnRefreshRanking = document.getElementById('btn-refresh-ranking');
-    const btnCloudConfig = document.getElementById('btn-cloud-config');
     const cloudStatusBadge = document.getElementById('cloud-status-badge');
     const rankingTbody = document.getElementById('ranking-tbody');
     const rankingLoading = document.getElementById('ranking-loading');
     const rankingEmpty = document.getElementById('ranking-empty');
     const rankingTabs = document.getElementById('ranking-tabs');
-
-    // 設定モーダル関連
-    const configOverlay = document.getElementById('config-overlay');
-    const btnCloseConfig = document.getElementById('btn-close-config');
-    const gasUrlInput = document.getElementById('gas-url-input');
-    const btnSaveConfig = document.getElementById('btn-save-config');
-    const btnClearConfig = document.getElementById('btn-clear-config');
 
     /* =========================================================
        初期化 & ゲームループ
@@ -1975,15 +1881,16 @@
     }
 
     function updateCloudStatusBadge() {
+      if (!cloudStatusBadge) return;
       const gasUrl = RankingManager.getGasUrl();
       if (gasUrl) {
         cloudStatusBadge.className = 'cloud-status-badge';
-        cloudStatusBadge.textContent = '🟢 クラウド同期中';
-        cloudStatusBadge.title = '全PC共通のGoogleスプレッドシートとリアルタイム同期中';
+        cloudStatusBadge.textContent = '🟢 全PC共通ランキング';
+        cloudStatusBadge.title = 'Googleスプレッドシートと自動同期中';
       } else {
         cloudStatusBadge.className = 'cloud-status-badge local-only';
-        cloudStatusBadge.textContent = '🟡 ローカル保存（クリックでGAS連携）';
-        cloudStatusBadge.title = 'クリックしてGAS URLを設定すると全PCで共有できます';
+        cloudStatusBadge.textContent = '🟡 ローカル記録';
+        cloudStatusBadge.title = 'ローカル保存モード';
       }
     }
 
@@ -2026,11 +1933,12 @@
 
         tr.innerHTML = `
           <td class="rank-num ${rankClass}">${rankBadge}</td>
-          <td style="font-weight:700;">${escapeHtml(r.name || '名無し')}</td>
-          <td><span style="font-size:0.75rem; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.08);">${escapeHtml(r.course || '')}</span></td>
-          <td style="color:#fbbf24; font-weight:700;">🔥 ${r.targetStreak || 0} 連勝</td>
-          <td style="color:#38bdf8; font-weight:700;">⏱️ ${escapeHtml(r.clearTime || formatTime(r.timeSeconds))}</td>
-          <td style="color:#94a3b8; font-size:0.75rem;">${escapeHtml(r.date || '')}</td>
+          <td style="font-weight:700; font-size:1.05rem;">${escapeHtml(r.name || '名無し')}</td>
+          <td><span style="font-size:0.85rem; padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,0.08);">${escapeHtml(r.course || '')}</span></td>
+          <td style="color:#fbbf24; font-weight:800; font-size:1.05rem;">🔥 ${r.targetStreak || 0} 連勝</td>
+          <td style="color:#38bdf8; font-weight:800; font-size:1.05rem;">⏱️ ${escapeHtml(r.clearTime || formatTime(r.timeSeconds))}</td>
+          <td style="color:#34d399; font-weight:700;">🎯 ${escapeHtml(r.accuracy || '100%')}</td>
+          <td style="color:#94a3b8; font-size:0.85rem;">${escapeHtml(r.date || '')}</td>
         `;
         rankingTbody.appendChild(tr);
       });
@@ -2050,35 +1958,6 @@
         state.activeRankTab = tab.getAttribute('data-course');
         renderRankingTable();
       });
-    });
-
-    // クラウド設定モーダル
-    function openConfigModal() {
-      gasUrlInput.value = RankingManager.getGasUrl();
-      configOverlay.classList.add('active');
-    }
-    function closeConfigModal() {
-      configOverlay.classList.remove('active');
-    }
-
-    btnCloudConfig.addEventListener('click', openConfigModal);
-    cloudStatusBadge.addEventListener('click', openConfigModal);
-    btnCloseConfig.addEventListener('click', closeConfigModal);
-
-    btnSaveConfig.addEventListener('click', () => {
-      const url = gasUrlInput.value.trim();
-      RankingManager.setGasUrl(url);
-      closeConfigModal();
-      updateCloudStatusBadge();
-      renderRankingTable();
-    });
-
-    btnClearConfig.addEventListener('click', () => {
-      RankingManager.resetToDefaultGasUrl();
-      gasUrlInput.value = RankingManager.DEFAULT_GAS_URL;
-      closeConfigModal();
-      updateCloudStatusBadge();
-      renderRankingTable();
     });
 
     btnRanking.addEventListener('click', openRankingModal);
