@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ルートで約分マスター</title>
+  <!-- KaTeX for beautiful math rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 20%, #1e1e38 0%, #0d0f18 100%);
+      --card-bg: rgba(26, 29, 45, 0.75);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-main: #f1f5f9;
+      --text-sub: #94a3b8;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --btn-bg: rgba(255, 255, 255, 0.05);
+      --btn-hover: rgba(99, 102, 241, 0.2);
+      --btn-border: rgba(255, 255, 255, 0.12);
+      --correct-bg: rgba(16, 185, 129, 0.25);
+      --correct-border: #10b981;
+      --correct-glow: rgba(16, 185, 129, 0.5);
+      --wrong-bg: rgba(239, 68, 68, 0.25);
+      --wrong-border: #ef4444;
+      --wrong-glow: rgba(239, 68, 68, 0.5);
+      --gold: #fbbf24;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Meiryo', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden; /* スクロール完全無し */
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 上部ヘッダーバー */
+    header {
+      height: clamp(48px, 7vh, 58px);
+      padding: 0 clamp(0.5rem, 1.2vw, 1.5rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(10px);
+      flex-shrink: 0;
+    }
+
+    .title-area {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .app-title {
+      font-size: clamp(0.85rem, 1.6vh, 1.15rem);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, #a5b4fc, #e0e7ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+    }
+
+    /* セレクトボックス共通 */
+    .hdr-select {
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #c7d2fe;
+      padding: 0.22rem 0.45rem;
+      border-radius: 8px;
+      font-size: clamp(0.7rem, 1.25vh, 0.8rem);
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .hdr-select:hover {
+      background: rgba(99, 102, 241, 0.25);
+      border-color: #818cf8;
+    }
+    .hdr-select option {
+      background: #1e1e34;
+      color: #f1f5f9;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: clamp(0.3rem, 0.6vw, 0.7rem);
+    }
+
+    .stats-pill {
+      display: flex;
+      align-items: center;
+      gap: clamp(0.35rem, 0.7vw, 0.8rem);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.22rem 0.65rem;
+      border-radius: 9999px;
+      font-size: clamp(0.68rem, 1.2vh, 0.78rem);
+      color: var(--text-sub);
+      white-space: nowrap;
+    }
+
+    .stats-pill span strong {
+      color: #38bdf8;
+      font-weight: 700;
+      font-size: clamp(0.8rem, 1.4vh, 0.9rem);
+    }
+
+    .streak-container {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .streak-highlight {
+      color: #fbbf24 !important;
+      text-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+    }
+
+    .ctrl-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+      padding: 0.3rem 0.55rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: clamp(0.68rem, 1.2vh, 0.78rem);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .ctrl-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+
+    /* プログレスバー（目標連続正解ゲージ） */
+    .progress-bar-container {
+      height: 4px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.06);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #38bdf8, #fbbf24);
+      width: 0%;
+      transition: width 0.3s ease, background 0.3s ease;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+    }
+    .progress-bar-fill.reset-flash {
+      background: #ef4444;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.8);
+      transition: none;
+    }
+
+    /* メインコンテンツエリア */
+    main {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(0.4rem, 1.3vh, 1.1rem) clamp(0.8rem, 2vw, 1.8rem);
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    /* 問題カード */
+    .question-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(16px);
+      width: 100%;
+      max-height: 100%;
+      padding: clamp(0.7rem, 2vh, 1.5rem) clamp(1rem, 2.5vw, 2.2rem);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-sizing: border-box;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .question-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: clamp(0.2rem, 0.7vh, 0.5rem);
+    }
+
+    .question-num {
+      font-size: clamp(0.82rem, 1.6vh, 1rem);
+      color: #818cf8;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .tip-text {
+      font-size: clamp(0.68rem, 1.25vh, 0.8rem);
+      color: var(--text-sub);
+    }
+
+    /* 数式表示 */
+    .math-display-wrapper {
+      min-height: clamp(56px, 11vh, 90px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: clamp(0.2rem, 0.7vh, 0.5rem);
+      width: 100%;
+    }
+
+    .math-display {
+      font-size: clamp(1.9rem, 4.8vh, 3rem);
+      color: #ffffff;
+      text-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* フォールバック用数式スタイル */
+    .frac {
+      display: inline-flex;
+      flex-direction: column;
+      vertical-align: middle;
+      text-align: center;
+      padding: 0 0.3em;
+    }
+    .frac > .num {
+      border-bottom: 2px solid currentColor;
+      padding-bottom: 2px;
+    }
+    .frac > .den {
+      padding-top: 2px;
+    }
+    .sqrt-symbol {
+      margin-right: 2px;
+    }
+
+    /* 解説・フィードバックポップ */
+    .feedback-box {
+      min-height: clamp(22px, 3.6vh, 32px);
+      font-size: clamp(0.78rem, 1.55vh, 0.94rem);
+      font-weight: 600;
+      margin-bottom: clamp(0.3rem, 1vh, 0.65rem);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      opacity: 0;
+      transform: translateY(-4px);
+      text-align: center;
+    }
+    .feedback-box.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .feedback-box.correct {
+      color: #34d399;
+    }
+    .feedback-box.wrong {
+      color: #f87171;
+    }
+
+    /* 4択グリッド */
+    .choices-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(0.42rem, 1.2vh, 0.85rem);
+      width: 100%;
+      max-width: 740px;
+    }
+
+    .choice-btn {
+      background: var(--btn-bg);
+      border: 1px solid var(--btn-border);
+      color: var(--text-main);
+      padding: clamp(0.48rem, 1.4vh, 0.95rem) clamp(0.6rem, 1.4vw, 1.2rem);
+      min-height: clamp(45px, 7.8vh, 66px);
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: clamp(1.1rem, 2.6vh, 1.5rem);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .choice-btn:hover:not(:disabled) {
+      background: var(--btn-hover);
+      border-color: #818cf8;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+    }
+
+    .choice-btn:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    .key-badge {
+      position: absolute;
+      top: 5px;
+      left: 7px;
+      font-size: clamp(0.62rem, 1.1vh, 0.72rem);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: #94a3b8;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    /* 正解アニメーション */
+    .choice-btn.is-correct {
+      background: var(--correct-bg) !important;
+      border-color: var(--correct-border) !important;
+      box-shadow: 0 0 25px var(--correct-glow) !important;
+      animation: pulseCorrect 0.4s ease;
+      color: #34d399;
+    }
+
+    @keyframes pulseCorrect {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+      100% { transform: scale(1); }
+    }
+
+    /* 不正解アニメーション */
+    .choice-btn.is-wrong {
+      background: var(--wrong-bg) !important;
+      border-color: var(--wrong-border) !important;
+      box-shadow: 0 0 25px var(--wrong-glow) !important;
+      animation: shakeWrong 0.4s ease;
+      color: #f87171;
+    }
+
+    @keyframes shakeWrong {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    .choice-btn.should-be {
+      border: 2px dashed #10b981 !important;
+      background: rgba(16, 185, 129, 0.1) !important;
+    }
+
+    /* 下部キーボードガイド */
+    .footer-help {
+      margin-top: clamp(0.35rem, 0.9vh, 0.75rem);
+      font-size: clamp(0.68rem, 1.3vh, 0.82rem);
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .footer-help kbd {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: #cbd5e1;
+      font-family: monospace;
+    }
+
+    /* 高さの低い画面（ノートPCなど）対応 */
+    @media (max-height: 660px) {
+      header {
+        height: 44px;
+        padding: 0 0.6rem;
+      }
+      .app-title { font-size: 0.85rem; }
+      .tip-text { display: none; }
+      .footer-help { display: none; }
+      .question-card {
+        padding: 0.5rem 1.2rem;
+        border-radius: 14px;
+      }
+      .math-display-wrapper {
+        min-height: 46px;
+        margin-bottom: 0.2rem;
+      }
+      .math-display {
+        font-size: 1.85rem;
+      }
+      .feedback-box {
+        min-height: 20px;
+        font-size: 0.78rem;
+        margin-bottom: 0.3rem;
+      }
+      .choices-grid {
+        gap: 0.4rem;
+      }
+      .choice-btn {
+        min-height: 40px;
+        padding: 0.3rem 0.6rem;
+        font-size: 1.1rem;
+      }
+    }
+
+    /* 完了・合格モーダル */
+    .result-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 12, 20, 0.88);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .result-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .result-card {
+      background: linear-gradient(145deg, #1f223a, #151728);
+      border: 2px solid rgba(251, 191, 36, 0.4);
+      border-radius: 24px;
+      padding: 2.2rem 2rem;
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(251, 191, 36, 0.2);
+      transform: scale(0.95);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .result-overlay.active .result-card {
+      transform: scale(1);
+    }
+
+    .result-badge {
+      display: inline-block;
+      font-size: 0.85rem;
+      padding: 0.3rem 1rem;
+      border-radius: 9999px;
+      background: rgba(251, 191, 36, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.5);
+      margin-bottom: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .result-card h2 {
+      font-size: 1.9rem;
+      margin-bottom: 0.4rem;
+      background: linear-gradient(135deg, #fef08a, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .score-circle {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: #fbbf24;
+      margin: 0.8rem 0;
+      text-shadow: 0 0 25px rgba(251, 191, 36, 0.5);
+    }
+
+    .result-stats-table {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 0.8rem 1rem;
+      margin-bottom: 1.4rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      font-size: 0.88rem;
+      color: var(--text-sub);
+    }
+
+    .result-stats-table strong {
+      color: #f1f5f9;
+      font-size: 1rem;
+    }
+
+    .result-buttons {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+    }
+
+    .btn-next-target {
+      background: linear-gradient(135deg, #fbbf24, #d97706);
+      border: none;
+      color: #1e1b4b;
+      font-size: 1rem;
+      font-weight: 800;
+      padding: 0.8rem 1.6rem;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .btn-next-target:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(245, 158, 11, 0.6);
+    }
+
+    .btn-restart {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.8rem 1.4rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-restart:hover {
+      background: rgba(255, 255, 255, 0.16);
+      transform: translateY(-2px);
+    }
+
+    /* 紙吹雪用キャンバス */
+    #confetti-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 90;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 紙吹雪 Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- ヘッダー -->
+  <header>
+    <div class="title-area">
+      <a href="index.html" class="ctrl-btn" style="text-decoration: none;" title="ポータル画面へ戻る">🏠 ポータル</a>
+      <span style="font-size: 1.2rem;">⚡</span>
+      <h1 class="app-title">ルートで約分</h1>
+
+      <!-- コース選択 -->
+      <select class="hdr-select" id="course-select" title="問題の形式を選択">
+        <option value="advanced" selected>📕 上級 (16 - √40)/√8</option>
+        <option value="binomial">📙 多項 (6 - √10)/√2</option>
+        <option value="monomial">📘 単項 6/√2</option>
+        <option value="mix">⚡ オールミックス</option>
+      </select>
+
+      <!-- 連続正解目標選択 -->
+      <select class="hdr-select" id="target-streak-select" title="連続正解の目標数を選択">
+        <option value="5">🎯 目標: 5連勝 (初級)</option>
+        <option value="10" selected>🎯 目標: 10連勝 (標準)</option>
+        <option value="15">🎯 目標: 15連勝 (上級)</option>
+        <option value="20">🎯 目標: 20連勝 (達人)</option>
+        <option value="30">🎯 目標: 30連勝 (マスター)</option>
+        <option value="50">🎯 目標: 50連勝 (完全制覇)</option>
+        <option value="0">🎯 目標: なし (フリー)</option>
+      </select>
+    </div>
+
+    <div class="header-controls">
+      <div class="stats-pill">
+        <span class="streak-container">
+          🔥 連続: <strong id="stat-streak" class="streak-highlight">0</strong> / <span id="stat-target-display">10</span>
+        </span>
+        <span>正解: <strong id="stat-correct">0</strong></span>
+        <span>正解率: <strong id="stat-accuracy">0%</strong></span>
+      </div>
+
+      <button class="ctrl-btn" id="btn-sound" title="音声を切り替え">
+        <span id="sound-icon">🔊</span>
+      </button>
+
+      <button class="ctrl-btn" id="btn-fullscreen" title="全画面表示（F11またはクリック）">
+        ⛶ 全画面
+      </button>
+    </div>
+  </header>
+
+  <!-- 目標連続正解ゲージ（プログレスバー） -->
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+
+  <!-- メイン画面 -->
+  <main>
+    <div class="question-card">
+      <div class="question-header">
+        <div class="question-num" id="question-label">第 1 問</div>
+        <div class="tip-text" id="tip-text">💡 分母のルートで約分後、a√b の形に変形しよう！</div>
+      </div>
+
+      <!-- 問題数式 -->
+      <div class="math-display-wrapper">
+        <div class="math-display" id="math-question">
+          <!-- 数式がここに描画されます -->
+        </div>
+      </div>
+
+      <!-- 正解・不正解メッセージ・解説 -->
+      <div class="feedback-box" id="feedback-box">
+        <span id="feedback-icon"></span>
+        <span id="feedback-text"></span>
+      </div>
+
+      <!-- 4択グリッド -->
+      <div class="choices-grid" id="choices-grid">
+        <button class="choice-btn" data-index="0">
+          <span class="key-badge">1</span>
+          <span class="choice-math"></span>
+        </button>
+        <button class="choice-btn" data-index="1">
+          <span class="key-badge">2</span>
+          <span class="choice-math"></span>
+        </button>
+        <button class="choice-btn" data-index="2">
+          <span class="key-badge">3</span>
+          <span class="choice-math"></span>
+        </button>
+        <button class="choice-btn" data-index="3">
+          <span class="key-badge">4</span>
+          <span class="choice-math"></span>
+        </button>
+      </div>
+
+      <!-- 操作ヒント -->
+      <div class="footer-help">
+        <span>キーボード: <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd> またはテンキー</span>
+        <span>•</span>
+        <span>全画面: <kbd>F11</kbd> または右上</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- 合格・目標達成モーダル -->
+  <div class="result-overlay" id="result-overlay">
+    <div class="result-card">
+      <div class="result-badge">🏆 GOAL ACHIEVED</div>
+      <h2>🎉 合格おめでとう！</h2>
+      <div class="score-circle" id="result-score">🔥 10 連勝 達成！</div>
+      
+      <div class="result-stats-table">
+        <div>コース: <strong id="res-course-name">📕 上級</strong></div>
+        <div>達成連勝: <strong id="res-streak-count">10問</strong></div>
+        <div>総回答数: <strong id="res-total-count">10問</strong></div>
+        <div>正解率: <strong id="res-accuracy">100%</strong></div>
+      </div>
+
+      <div class="result-buttons">
+        <button class="btn-next-target" id="btn-next-target">次の目標に挑戦 (+5連勝)</button>
+        <button class="btn-restart" id="btn-restart">もう一度挑戦</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================
+       問題データ 1: 単項型（50問）
+       ========================================================= */
+    const MONOMIAL_PROBLEMS = [
+      { type: 'monomial', a: 6, b: 2 }, { type: 'monomial', a: 10, b: 2 },
+      { type: 'monomial', a: 12, b: 3 }, { type: 'monomial', a: 15, b: 3 },
+      { type: 'monomial', a: 10, b: 5 }, { type: 'monomial', a: 20, b: 5 },
+      { type: 'monomial', a: 14, b: 7 }, { type: 'monomial', a: 21, b: 7 },
+      { type: 'monomial', a: 12, b: 6 }, { type: 'monomial', a: 18, b: 6 },
+      { type: 'monomial', a: 30, b: 10 }, { type: 'monomial', a: 20, b: 10 },
+      { type: 'monomial', a: 4, b: 2 }, { type: 'monomial', a: 8, b: 2 },
+      { type: 'monomial', a: 6, b: 3 }, { type: 'monomial', a: 18, b: 3 },
+      { type: 'monomial', a: 15, b: 5 }, { type: 'monomial', a: 25, b: 5 },
+      { type: 'monomial', a: 28, b: 7 }, { type: 'monomial', a: 35, b: 7 },
+      { type: 'monomial', a: 24, b: 6 }, { type: 'monomial', a: 30, b: 6 },
+      { type: 'monomial', a: 40, b: 10 }, { type: 'monomial', a: 50, b: 10 },
+      { type: 'monomial', a: 14, b: 2 }, { type: 'monomial', a: 16, b: 2 },
+      { type: 'monomial', a: 21, b: 3 }, { type: 'monomial', a: 27, b: 3 },
+      { type: 'monomial', a: 30, b: 5 }, { type: 'monomial', a: 40, b: 5 },
+      { type: 'monomial', a: 42, b: 7 }, { type: 'monomial', a: 49, b: 7 },
+      { type: 'monomial', a: 36, b: 6 }, { type: 'monomial', a: 42, b: 6 },
+      { type: 'monomial', a: 60, b: 10 }, { type: 'monomial', a: 70, b: 10 },
+      { type: 'monomial', a: 18, b: 2 }, { type: 'monomial', a: 24, b: 3 },
+      { type: 'monomial', a: 35, b: 5 }, { type: 'monomial', a: 48, b: 6 },
+      { type: 'monomial', a: 56, b: 7 }, { type: 'monomial', a: 80, b: 10 }, { type: 'monomial', a: 90, b: 10 },
+      { type: 'monomial', a: 22, b: 11 }, { type: 'monomial', a: 33, b: 11 },
+      { type: 'monomial', a: 26, b: 13 }, { type: 'monomial', a: 39, b: 13 },
+      { type: 'monomial', a: 28, b: 14 },
+      { type: 'monomial', a: 30, b: 15 }, { type: 'monomial', a: 45, b: 15 }
+    ];
+
+    /* =========================================================
+       問題データ 2: 多項基本型（50問）
+       ========================================================= */
+    const BINOMIAL_PROBLEMS = [
+      { type: 'binomial', a: 6, sign_c: -10, b: 2 },
+      { type: 'binomial', a: -10, sign_c: 14, b: 2 },
+      { type: 'binomial', a: -12, sign_c: -15, b: 3 },
+      { type: 'binomial', a: 15, sign_c: 21, b: 3 },
+      { type: 'binomial', a: -10, sign_c: 15, b: 5 },
+      { type: 'binomial', a: 20, sign_c: -35, b: 5 },
+      { type: 'binomial', a: -14, sign_c: -21, b: 7 },
+      { type: 'binomial', a: 21, sign_c: -35, b: 7 },
+      { type: 'binomial', a: -12, sign_c: 30, b: 6 },
+      { type: 'binomial', a: 18, sign_c: -42, b: 6 },
+      { type: 'binomial', a: -30, sign_c: -30, b: 10 },
+      { type: 'binomial', a: 4, sign_c: 6, b: 2 },
+      { type: 'binomial', a: -8, sign_c: -6, b: 2 },
+      { type: 'binomial', a: 10, sign_c: -10, b: 2 },
+      { type: 'binomial', a: -6, sign_c: 14, b: 2 },
+      { type: 'binomial', a: 8, sign_c: 10, b: 2 },
+      { type: 'binomial', a: 14, sign_c: -6, b: 2 },
+      { type: 'binomial', a: -12, sign_c: 14, b: 2 },
+      { type: 'binomial', a: 16, sign_c: -10, b: 2 },
+      { type: 'binomial', a: -18, sign_c: 6, b: 2 },
+      { type: 'binomial', a: 6, sign_c: -6, b: 3 },
+      { type: 'binomial', a: -9, sign_c: 15, b: 3 },
+      { type: 'binomial', a: 12, sign_c: 6, b: 3 },
+      { type: 'binomial', a: -15, sign_c: -21, b: 3 },
+      { type: 'binomial', a: 18, sign_c: -15, b: 3 },
+      { type: 'binomial', a: -21, sign_c: 6, b: 3 },
+      { type: 'binomial', a: 24, sign_c: 21, b: 3 },
+      { type: 'binomial', a: -27, sign_c: -6, b: 3 },
+      { type: 'binomial', a: 10, sign_c: -10, b: 5 },
+      { type: 'binomial', a: -15, sign_c: -15, b: 5 },
+      { type: 'binomial', a: 15, sign_c: 35, b: 5 },
+      { type: 'binomial', a: -20, sign_c: 10, b: 5 },
+      { type: 'binomial', a: 25, sign_c: -15, b: 5 },
+      { type: 'binomial', a: -30, sign_c: 35, b: 5 },
+      { type: 'binomial', a: 35, sign_c: -10, b: 5 },
+      { type: 'binomial', a: 12, sign_c: -18, b: 6 },
+      { type: 'binomial', a: -18, sign_c: 30, b: 6 },
+      { type: 'binomial', a: 24, sign_c: 42, b: 6 },
+      { type: 'binomial', a: -30, sign_c: -18, b: 6 },
+      { type: 'binomial', a: 36, sign_c: 30, b: 6 },
+      { type: 'binomial', a: 14, sign_c: 14, b: 7 },
+      { type: 'binomial', a: -21, sign_c: 21, b: 7 },
+      { type: 'binomial', a: 28, sign_c: -35, b: 7 },
+      { type: 'binomial', a: -35, sign_c: -14, b: 7 },
+      { type: 'binomial', a: 42, sign_c: 35, b: 7 },
+      { type: 'binomial', a: 20, sign_c: -20, b: 10 },
+      { type: 'binomial', a: -20, sign_c: 30, b: 10 },
+      { type: 'binomial', a: 30, sign_c: 70, b: 10 },
+      { type: 'binomial', a: -40, sign_c: -30, b: 10 },
+      { type: 'binomial', a: 50, sign_c: -20, b: 10 }
+    ];
+
+    /* =========================================================
+       問題データ 3: 上級発展型（合成数ルート型・50問）
+       ========================================================= */
+    const ADVANCED_PROBLEMS = [
+      { type: 'advanced', a: 16, sign_c: -40, b: 8 },
+      { type: 'advanced', a: -24, sign_c: 60, b: 12 },
+      { type: 'advanced', a: 36, sign_c: -126, b: 18 },
+      { type: 'advanced', a: -40, sign_c: -60, b: 20 },
+      { type: 'advanced', a: 48, sign_c: 120, b: 24 },
+      { type: 'advanced', a: -27, sign_c: 135, b: 27 },
+      { type: 'advanced', a: -56, sign_c: -84, b: 28 },
+      { type: 'advanced', a: 64, sign_c: -160, b: 32 },
+      { type: 'advanced', a: -40, sign_c: 120, b: 40 },
+      { type: 'advanced', a: 90, sign_c: -315, b: 45 },
+      { type: 'advanced', a: -48, sign_c: -240, b: 48 },
+      { type: 'advanced', a: -8, sign_c: 24, b: 8 },
+      { type: 'advanced', a: 24, sign_c: -24, b: 8 },
+      { type: 'advanced', a: -32, sign_c: -40, b: 8 },
+      { type: 'advanced', a: 40, sign_c: 56, b: 8 },
+      { type: 'advanced', a: -16, sign_c: -56, b: 8 },
+      { type: 'advanced', a: 8, sign_c: -40, b: 8 },
+      { type: 'advanced', a: -24, sign_c: 56, b: 8 },
+      { type: 'advanced', a: 12, sign_c: -24, b: 12 },
+      { type: 'advanced', a: -36, sign_c: -60, b: 12 },
+      { type: 'advanced', a: 48, sign_c: 84, b: 12 },
+      { type: 'advanced', a: -12, sign_c: 60, b: 12 },
+      { type: 'advanced', a: 24, sign_c: -84, b: 12 },
+      { type: 'advanced', a: -48, sign_c: -24, b: 12 },
+      { type: 'advanced', a: 36, sign_c: 60, b: 12 },
+      { type: 'advanced', a: -18, sign_c: 54, b: 18 },
+      { type: 'advanced', a: 54, sign_c: 90, b: 18 },
+      { type: 'advanced', a: -36, sign_c: -90, b: 18 },
+      { type: 'advanced', a: 18, sign_c: -126, b: 18 },
+      { type: 'advanced', a: -54, sign_c: 54, b: 18 },
+      { type: 'advanced', a: 20, sign_c: -40, b: 20 },
+      { type: 'advanced', a: -60, sign_c: 60, b: 20 },
+      { type: 'advanced', a: 40, sign_c: 140, b: 20 },
+      { type: 'advanced', a: -20, sign_c: -140, b: 20 },
+      { type: 'advanced', a: 80, sign_c: -60, b: 20 },
+      { type: 'advanced', a: -24, sign_c: -48, b: 24 },
+      { type: 'advanced', a: 72, sign_c: -120, b: 24 },
+      { type: 'advanced', a: -48, sign_c: 168, b: 24 },
+      { type: 'advanced', a: 24, sign_c: 120, b: 24 },
+      { type: 'advanced', a: 54, sign_c: -54, b: 27 },
+      { type: 'advanced', a: -81, sign_c: -135, b: 27 },
+      { type: 'advanced', a: 27, sign_c: 189, b: 27 },
+      { type: 'advanced', a: -54, sign_c: 54, b: 27 },
+      { type: 'advanced', a: 28, sign_c: 56, b: 28 },
+      { type: 'advanced', a: -28, sign_c: -140, b: 28 },
+      { type: 'advanced', a: 84, sign_c: 84, b: 28 },
+      { type: 'advanced', a: -32, sign_c: 96, b: 32 },
+      { type: 'advanced', a: 96, sign_c: -224, b: 32 },
+      { type: 'advanced', a: 80, sign_c: -280, b: 40 },
+      { type: 'advanced', a: -45, sign_c: 90, b: 45 }
+    ];
+
+    /* =========================================================
+       効果音（Web Audio API）
+       ========================================================= */
+    class SoundFX {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+      }
+      playCorrect() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc1.type = 'sine';
+        osc2.type = 'sine';
+        osc1.frequency.setValueAtTime(659.25, now);
+        osc1.frequency.exponentialRampToValueAtTime(1046.50, now + 0.12);
+        osc2.frequency.setValueAtTime(880.00, now + 0.08);
+        osc2.frequency.exponentialRampToValueAtTime(1318.51, now + 0.2);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc1.start(now);
+        osc2.start(now + 0.08);
+        osc1.stop(now + 0.5);
+        osc2.stop(now + 0.5);
+      }
+      playWrong() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.setValueAtTime(140, now + 0.15);
+
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.35);
+      }
+      playVictory() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        // 華やかな勝利ファンファーレ (C5 -> E5 -> G5 -> C6)
+        const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+        notes.forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const t = this.ctx.currentTime + i * 0.14;
+          osc.type = i === notes.length - 1 ? 'triangle' : 'sine';
+          osc.frequency.setValueAtTime(freq, t);
+          gain.gain.setValueAtTime(0.3, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + (i === notes.length - 1 ? 0.9 : 0.4));
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + (i === notes.length - 1 ? 0.9 : 0.4));
+        });
+      }
+    }
+
+    const sound = new SoundFX();
+
+    /* =========================================================
+       平方根簡単化ヘルパー (n = s^2 * r)
+       ========================================================= */
+    function simplifySqrt(n) {
+      let s = 1;
+      let r = n;
+      for (let i = Math.floor(Math.sqrt(n)); i >= 2; i--) {
+        if (n % (i * i) === 0) {
+          s = i;
+          r = n / (i * i);
+          break;
+        }
+      }
+      return { s, r };
+    }
+
+    function formatTermLatex(k, b) {
+      if (k === 1) return `\\sqrt{${b}}`;
+      if (k === -1) return `-\\sqrt{${b}}`;
+      return `${k}\\sqrt{${b}}`;
+    }
+
+    function formatTermText(k, b) {
+      if (k === 1) return `√${b}`;
+      if (k === -1) return `-√${b}`;
+      return `${k}√${b}`;
+    }
+
+    /* =========================================================
+       問題生成
+       ========================================================= */
+    function generateMonomialQuestion(a, b) {
+      const k = Math.floor(a / b);
+      const correctLatex = formatTermLatex(k, b);
+      const correctText = formatTermText(k, b);
+      const correctAnswer = { latex: correctLatex, text: correctText, isCorrect: true };
+      const distractors = [];
+      const seen = new Set([correctLatex]);
+
+      distractors.push({ latex: `${k}`, text: `${k}` });
+      if (k > 1 && k !== b) distractors.push({ latex: `\\sqrt{${k}}`, text: `√${k}` });
+      distractors.push({ latex: `${a}\\sqrt{${b}}`, text: `${a}√${b}` });
+      if (k > 1) distractors.push({ latex: formatTermLatex(k - 1, b), text: formatTermText(k - 1, b) });
+      distractors.push({ latex: formatTermLatex(k + 1, b), text: formatTermText(k + 1, b) });
+
+      const choices = [correctAnswer];
+      for (const d of distractors) {
+        if (!seen.has(d.latex)) {
+          seen.add(d.latex);
+          choices.push({ ...d, isCorrect: false });
+          if (choices.length === 4) break;
+        }
+      }
+      shuffleArray(choices);
+      return {
+        type: 'monomial',
+        questionLatex: `\\frac{${a}}{\\sqrt{${b}}}`,
+        fallbackHtml: `<span class="frac"><span class="num">${a}</span><span class="den"><span class="sqrt-symbol">√</span>${b}</span></span>`,
+        correctText,
+        explainText: `${a} ÷ ${b} = ${k} なので ${correctText}`,
+        choices
+      };
+    }
+
+    function generateBinomialQuestion(a, sign_c, b) {
+      const k = a / b;
+      const c = Math.abs(sign_c);
+      const m = c / b;
+      const signStr = sign_c > 0 ? '+' : '-';
+      const oppSignStr = sign_c > 0 ? '-' : '+';
+
+      const correctLatex = `${formatTermLatex(k, b)} ${signStr} \\sqrt{${m}}`;
+      const correctText = `${formatTermText(k, b)} ${signStr} √${m}`;
+      const correctAnswer = { latex: correctLatex, text: correctText, isCorrect: true };
+
+      const distractors = [];
+      const seen = new Set([correctLatex]);
+
+      distractors.push({ latex: `${k} ${signStr} \\sqrt{${m}}`, text: `${k} ${signStr} √${m}` });
+      distractors.push({ latex: `${formatTermLatex(k, b)} ${oppSignStr} \\sqrt{${m}}`, text: `${formatTermText(k, b)} ${oppSignStr} √${m}` });
+      distractors.push({ latex: `${k} ${oppSignStr} \\sqrt{${m}}`, text: `${k} ${oppSignStr} √${m}` });
+      distractors.push({ latex: `${formatTermLatex(k, b)} ${signStr} \\sqrt{${c}}`, text: `${formatTermText(k, b)} ${signStr} √${c}` });
+
+      const choices = [correctAnswer];
+      for (const d of distractors) {
+        if (!seen.has(d.latex)) {
+          seen.add(d.latex);
+          choices.push({ ...d, isCorrect: false });
+          if (choices.length === 4) break;
+        }
+      }
+      shuffleArray(choices);
+      const qSign = sign_c > 0 ? '+' : '-';
+      return {
+        type: 'binomial',
+        questionLatex: `\\frac{${a} ${qSign} \\sqrt{${c}}}{\\sqrt{${b}}}`,
+        fallbackHtml: `<span class="frac"><span class="num">${a} ${qSign} √${c}</span><span class="den"><span class="sqrt-symbol">√</span>${b}</span></span>`,
+        correctText,
+        explainText: `${a} ÷ ${b} = ${k}（${formatTermText(k, b)}）と √${c} ÷ √${b} = √${m} で ${correctText}`,
+        choices
+      };
+    }
+
+    function generateAdvancedQuestion(a, sign_c, b) {
+      const k = a / b;
+      const c = Math.abs(sign_c);
+      const m = c / b;
+      const { s, r } = simplifySqrt(b);
+      const K = k * s;
+
+      const signStr = sign_c > 0 ? '+' : '-';
+      const oppSignStr = sign_c > 0 ? '-' : '+';
+
+      const correctLatex = `${formatTermLatex(K, r)} ${signStr} \\sqrt{${m}}`;
+      const correctText = `${formatTermText(K, r)} ${signStr} √${m}`;
+      const correctAnswer = { latex: correctLatex, text: correctText, isCorrect: true };
+
+      const distractors = [];
+      const seen = new Set([correctLatex]);
+
+      if (s > 1) {
+        distractors.push({
+          latex: `${formatTermLatex(k, r)} ${signStr} \\sqrt{${m}}`,
+          text: `${formatTermText(k, r)} ${signStr} √${m}`
+        });
+      }
+      distractors.push({ latex: `${K} ${signStr} \\sqrt{${m}}`, text: `${K} ${signStr} √${m}` });
+      distractors.push({ latex: `${formatTermLatex(K, r)} ${oppSignStr} \\sqrt{${m}}`, text: `${formatTermText(K, r)} ${oppSignStr} √${m}` });
+      distractors.push({ latex: `${K} ${oppSignStr} \\sqrt{${m}}`, text: `${K} ${oppSignStr} √${m}` });
+      distractors.push({ latex: `${formatTermLatex(K, r)} ${signStr} \\sqrt{${c}}`, text: `${formatTermText(K, r)} ${signStr} √${c}` });
+
+      const choices = [correctAnswer];
+      for (const d of distractors) {
+        if (!seen.has(d.latex)) {
+          seen.add(d.latex);
+          choices.push({ ...d, isCorrect: false });
+          if (choices.length === 4) break;
+        }
+      }
+      shuffleArray(choices);
+      const qSign = sign_c > 0 ? '+' : '-';
+      return {
+        type: 'advanced',
+        questionLatex: `\\frac{${a} ${qSign} \\sqrt{${c}}}{\\sqrt{${b}}}`,
+        fallbackHtml: `<span class="frac"><span class="num">${a} ${qSign} √${c}</span><span class="den"><span class="sqrt-symbol">√</span>${b}</span></span>`,
+        correctText,
+        explainText: `${a} ÷ ${b} = ${k}（${k}√${b} = ${K}√${r}）と √${c} ÷ √${b} = √${m} で ${correctText}`,
+        choices
+      };
+    }
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    function renderMath(element, latexString, fallbackHtml) {
+      if (window.katex) {
+        try {
+          window.katex.render(latexString, element, {
+            throwOnError: false,
+            displayMode: true
+          });
+          return;
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      element.innerHTML = fallbackHtml || latexString;
+    }
+
+    /* =========================================================
+       アプリケーション状態管理
+       ========================================================= */
+    const state = {
+      course: 'advanced',
+      targetStreak: 10, // 連続正解目標数 (0はフリー)
+      currentIndex: 0,
+      score: 0,
+      totalAnswered: 0,
+      streak: 0,
+      isAnsweringLocked: false,
+      currentProblemData: null,
+      passedThisSession: false
+    };
+
+    // DOM要素
+    const mathQuestionEl = document.getElementById('math-question');
+    const questionLabelEl = document.getElementById('question-label');
+    const tipTextEl = document.getElementById('tip-text');
+    const progressFillEl = document.getElementById('progress-fill');
+    const choiceButtons = document.querySelectorAll('.choice-btn');
+    const feedbackBox = document.getElementById('feedback-box');
+    const feedbackIcon = document.getElementById('feedback-icon');
+    const feedbackText = document.getElementById('feedback-text');
+
+    const statCorrectEl = document.getElementById('stat-correct');
+    const statAccuracyEl = document.getElementById('stat-accuracy');
+    const statStreakEl = document.getElementById('stat-streak');
+    const statTargetDisplayEl = document.getElementById('stat-target-display');
+    const courseSelect = document.getElementById('course-select');
+    const targetStreakSelect = document.getElementById('target-streak-select');
+
+    const btnSound = document.getElementById('btn-sound');
+    const soundIcon = document.getElementById('sound-icon');
+    const btnFullscreen = document.getElementById('btn-fullscreen');
+
+    const resultOverlay = document.getElementById('result-overlay');
+    const resultScoreEl = document.getElementById('result-score');
+    const resCourseNameEl = document.getElementById('res-course-name');
+    const resStreakCountEl = document.getElementById('res-streak-count');
+    const resTotalCountEl = document.getElementById('res-total-count');
+    const resAccuracyEl = document.getElementById('res-accuracy');
+    const btnNextTarget = document.getElementById('btn-next-target');
+    const btnRestart = document.getElementById('btn-restart');
+
+    /* =========================================================
+       初期化 & ゲームループ
+       ========================================================= */
+    function initGame(resetStreakOnly = false) {
+      if (!resetStreakOnly) {
+        state.score = 0;
+        state.totalAnswered = 0;
+      }
+      state.streak = 0;
+      state.currentIndex = 0;
+      state.isAnsweringLocked = false;
+      state.passedThisSession = false;
+
+      // コース名とヒント
+      if (state.course === 'advanced') {
+        tipTextEl.textContent = '💡 分母のルートで約分後、a√b の形に変形しよう！';
+      } else if (state.course === 'binomial') {
+        tipTextEl.textContent = '💡 分母のルートで「左の数」と「右のルート」をそれぞれ約分！';
+      } else if (state.course === 'monomial') {
+        tipTextEl.textContent = '💡 分子をルートの中身で割って √ をつける！';
+      } else {
+        tipTextEl.textContent = '💡 単項・多項・上級の全150問からランダム出題！';
+      }
+
+      statTargetDisplayEl.textContent = state.targetStreak > 0 ? state.targetStreak : '∞';
+      resultOverlay.classList.remove('active');
+
+      updateStats();
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      state.isAnsweringLocked = false;
+      feedbackBox.className = 'feedback-box';
+      feedbackText.textContent = '';
+      feedbackIcon.textContent = '';
+
+      questionLabelEl.textContent = `第 ${state.totalAnswered + 1} 問`;
+
+      // ランダムに問題を選ぶ
+      const pickList = state.course === 'advanced' ? ADVANCED_PROBLEMS :
+                       state.course === 'binomial' ? BINOMIAL_PROBLEMS :
+                       state.course === 'monomial' ? MONOMIAL_PROBLEMS :
+                       [...ADVANCED_PROBLEMS, ...BINOMIAL_PROBLEMS, ...MONOMIAL_PROBLEMS];
+      const prob = pickList[Math.floor(Math.random() * pickList.length)];
+
+      if (prob.type === 'advanced') {
+        state.currentProblemData = generateAdvancedQuestion(prob.a, prob.sign_c, prob.b);
+      } else if (prob.type === 'binomial') {
+        state.currentProblemData = generateBinomialQuestion(prob.a, prob.sign_c, prob.b);
+      } else {
+        state.currentProblemData = generateMonomialQuestion(prob.a, prob.b);
+      }
+
+      renderMath(mathQuestionEl, state.currentProblemData.questionLatex, state.currentProblemData.fallbackHtml);
+
+      choiceButtons.forEach((btn, idx) => {
+        btn.className = 'choice-btn';
+        btn.disabled = false;
+        const choice = state.currentProblemData.choices[idx];
+        const span = btn.querySelector('.choice-math');
+        renderMath(span, choice.latex, choice.text);
+      });
+    }
+
+    /* =========================================================
+       回答判定処理
+       ========================================================= */
+    function handleChoice(index) {
+      if (state.isAnsweringLocked) return;
+      state.isAnsweringLocked = true;
+
+      const choice = state.currentProblemData.choices[index];
+      const clickedBtn = choiceButtons[index];
+      state.totalAnswered++;
+
+      if (choice.isCorrect) {
+        state.score++;
+        state.streak++;
+        sound.playCorrect();
+
+        clickedBtn.classList.add('is-correct');
+        feedbackBox.className = 'feedback-box show correct';
+        feedbackIcon.textContent = '✨ 正解！';
+        feedbackText.textContent = state.currentProblemData.explainText;
+
+        updateStats();
+
+        // 目標連続正解に到達したかチェック！
+        if (state.targetStreak > 0 && state.streak >= state.targetStreak) {
+          setTimeout(() => {
+            showVictory();
+          }, 600);
+          return;
+        }
+
+        // 次の問題へ
+        setTimeout(() => {
+          loadQuestion();
+        }, 680);
+
+      } else {
+        // 不正解：連続ストップ！
+        const prevStreak = state.streak;
+        state.streak = 0;
+        sound.playWrong();
+
+        clickedBtn.classList.add('is-wrong');
+        feedbackBox.className = 'feedback-box show wrong';
+        feedbackIcon.textContent = prevStreak >= 3 ? `💔 連勝ストップ！（${prevStreak}連勝でした）` : '⚠️ おしい！';
+        feedbackText.textContent = `正解は ${state.currentProblemData.correctText} （${state.currentProblemData.explainText}）`;
+
+        // ゲージの赤フラッシュ
+        progressFillEl.classList.add('reset-flash');
+        setTimeout(() => {
+          progressFillEl.classList.remove('reset-flash');
+        }, 400);
+
+        choiceButtons.forEach((btn, i) => {
+          if (state.currentProblemData.choices[i].isCorrect) {
+            btn.classList.add('should-be');
+          }
+        });
+
+        updateStats();
+
+        setTimeout(() => {
+          loadQuestion();
+        }, 2100);
+      }
+    }
+
+    function updateStats() {
+      statCorrectEl.textContent = state.score;
+      const acc = state.totalAnswered > 0 ? Math.round((state.score / state.totalAnswered) * 100) : 0;
+      statAccuracyEl.textContent = `${acc}%`;
+      statStreakEl.textContent = state.streak;
+
+      // プログレスバーの更新（目標までの進捗率）
+      if (state.targetStreak > 0) {
+        const percent = Math.min((state.streak / state.targetStreak) * 100, 100);
+        progressFillEl.style.width = `${percent}%`;
+      } else {
+        progressFillEl.style.width = '100%';
+      }
+    }
+
+    /* =========================================================
+       合格画面・目標達成
+       ========================================================= */
+    function showVictory() {
+      sound.playVictory();
+      launchConfetti();
+
+      resultScoreEl.textContent = `🔥 ${state.targetStreak} 連続正解 達成！`;
+
+      const courseNames = {
+        advanced: '📕 上級 (16 - √40)/√8',
+        binomial: '📙 多項 (6 - √10)/√2',
+        monomial: '📘 単項 6/√2',
+        mix: '⚡ オールミックス'
+      };
+      resCourseNameEl.textContent = courseNames[state.course] || state.course;
+      resStreakCountEl.textContent = `${state.streak} 連勝`;
+      resTotalCountEl.textContent = `${state.totalAnswered} 問`;
+      const acc = Math.round((state.score / state.totalAnswered) * 100);
+      resAccuracyEl.textContent = `${acc}%`;
+
+      // 次の目標ボタンのテキスト
+      const nextTargets = { 5: 10, 10: 15, 15: 20, 20: 30, 30: 50 };
+      const nextT = nextTargets[state.targetStreak];
+      if (nextT) {
+        btnNextTarget.style.display = 'inline-block';
+        btnNextTarget.textContent = `次の目標へ（${nextT}連勝に挑戦）`;
+        btnNextTarget.onclick = () => {
+          state.targetStreak = nextT;
+          targetStreakSelect.value = `${nextT}`;
+          initGame();
+        };
+      } else {
+        btnNextTarget.style.display = 'none';
+      }
+
+      resultOverlay.classList.add('active');
+    }
+
+    function launchConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#fbbf24', '#f59e0b', '#6366f1', '#38bdf8', '#34d399', '#f43f5e', '#a855f7'];
+
+      for (let i = 0; i < 120; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 22,
+          vy: (Math.random() - 0.8) * 18,
+          size: Math.random() * 9 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 12,
+          alpha: 1
+        });
+      }
+
+      let animId;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+        for (const p of particles) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.38;
+          p.rotation += p.rotationSpeed;
+          p.alpha -= 0.007;
+
+          if (p.alpha > 0) {
+            alive = true;
+            ctx.save();
+            ctx.globalAlpha = Math.max(p.alpha, 0);
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+            ctx.restore();
+          }
+        }
+        if (alive) {
+          animId = requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      cancelAnimationFrame(animId);
+      animate();
+    }
+
+    /* =========================================================
+       イベントリスナー設定
+       ========================================================= */
+    choiceButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.getAttribute('data-index'), 10);
+        handleChoice(idx);
+      });
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (state.isAnsweringLocked) return;
+      if (['1', 'Numpad1'].includes(e.code) || e.key === '1') {
+        handleChoice(0);
+      } else if (['2', 'Numpad2'].includes(e.code) || e.key === '2') {
+        handleChoice(1);
+      } else if (['3', 'Numpad3'].includes(e.code) || e.key === '3') {
+        handleChoice(2);
+      } else if (['4', 'Numpad4'].includes(e.code) || e.key === '4') {
+        handleChoice(3);
+      }
+    });
+
+    courseSelect.addEventListener('change', (e) => {
+      state.course = e.target.value;
+      initGame();
+    });
+
+    targetStreakSelect.addEventListener('change', (e) => {
+      state.targetStreak = parseInt(e.target.value, 10);
+      initGame(true);
+    });
+
+    btnRestart.addEventListener('click', () => {
+      initGame();
+    });
+
+    btnFullscreen.addEventListener('click', toggleFullscreen);
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.warn(`Fullscreen error: ${err.message}`);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement) {
+        btnFullscreen.innerHTML = '🗗 解除';
+      } else {
+        btnFullscreen.innerHTML = '⛶ 全画面';
+      }
+    });
+
+    btnSound.addEventListener('click', () => {
+      sound.enabled = !sound.enabled;
+      soundIcon.textContent = sound.enabled ? '🔊' : '🔇';
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initGame();
+    });
+  </script>
+</body>
+</html>
